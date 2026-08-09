@@ -1,0 +1,1037 @@
+import React, { useState, useEffect } from 'react';
+
+const IconOverview = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect width="7" height="9" x="3" y="3" rx="1.5"/><rect width="7" height="5" x="14" y="3" rx="1.5"/><rect width="7" height="9" x="14" y="12" rx="1.5"/><rect width="7" height="5" x="3" y="16" rx="1.5"/></svg>
+);
+const IconTransactions = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4"/><polyline points="14 2 14 8 20 8"/><path d="M2 15h10"/><path d="m5 12-3 3 3 3"/></svg>
+);
+const IconAccounts = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+);
+const IconVault = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M12 9v-2"/></svg>
+);
+const IconLoan = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5-2.5a1 1 0 1 0-3-3l-3.88 3.88a3 3 0 0 0-4.24 4.24l.88.88a1 1 0 0 0 1.42 0l2.12-2.12a1 1 0 0 1 1.42 0l2.12 2.12a1 1 0 0 0 1.42 0l.88-.88a3 3 0 0 0 0-4.24L14 14Z"/></svg>
+);
+const IconAnalytics = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+);
+const IconUndo = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+);
+const IconRedo = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/></svg>
+);
+const IconDownload = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+);
+const IconUpload = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+);
+const IconSun = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+);
+const IconMoon = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+);
+const IconTrash = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+);
+const IconPlus = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+);
+const IconSearch = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+);
+
+export default function App() {
+  const [darkMode, setDarkMode] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [currency, setCurrency] = useState('AED');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const exchangeRates = { AED: 1, USD: 3.67, PKR: 0.013 };
+
+  const convertToAED = (amt, curr) => amt * (exchangeRates[curr] || 1);
+  const convertFromAED = (amtAED, targetCurr) => amtAED / (exchangeRates[targetCurr] || 1);
+
+  const STORAGE_KEY = 'aleemfin_data_v8';
+
+  const loadStoredData = (key, fallback) => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed[key]) return parsed[key];
+      }
+    } catch (e) {}
+    return fallback;
+  };
+
+  const [accounts, setAccounts] = useState(() => loadStoredData('accounts', [
+    { id: '1', name: 'DIB (UAE)', type: 'Bank', balance: 14500, currency: 'AED', color: 'from-emerald-500/10 to-teal-500/10 border-emerald-500/20' },
+    { id: '2', name: 'Fiverr', type: 'Wallet', balance: 1250, currency: 'USD', color: 'from-blue-500/10 to-indigo-500/10 border-blue-500/20' },
+    { id: '3', name: 'PayPal', type: 'Wallet', balance: 850, currency: 'USD', color: 'from-sky-500/10 to-blue-500/10 border-sky-500/20' },
+    { id: '4', name: 'UBL Pakistan', type: 'Bank', balance: 250000, currency: 'PKR', color: 'from-amber-500/10 to-orange-500/10 border-amber-500/20' },
+  ]));
+
+  const [assets, setAssets] = useState(() => loadStoredData('assets', [
+    { id: '1', name: 'Physical Gold (24k)', category: 'Gold', weightGrams: 50, purchasePriceAED: 11000, currentPriceAED: 13750 },
+    { id: '2', name: 'Downtown Apartment', category: 'Property', purchasePriceAED: 1000000, currentPriceAED: 1200000 },
+  ]));
+
+  const [loans, setLoans] = useState(() => loadStoredData('loans', [
+    { id: '1', type: 'lent', name: 'Ahmad Khan', amount: 5000, repaid: 2000, currency: 'AED', whatsapp: '+971501234567', dueDate: '2026-09-30' },
+    { id: '2', type: 'borrowed', name: 'Family Support', amount: 20000, repaid: 0, currency: 'AED', whatsapp: '+971509876543', dueDate: '2026-12-31' }
+  ]));
+
+  const [transactions, setTransactions] = useState(() => loadStoredData('transactions', [
+    { id: 't1', title: 'Monthly Salary', type: 'income', category: 'Salary', amount: 18000, currency: 'AED', accountId: '1', date: '2026-08-01' },
+    { id: 't2', title: 'Groceries', type: 'expense', category: 'Groceries', amount: 1200, currency: 'AED', accountId: '1', date: '2026-08-03' },
+    { id: 't3', title: "Wife Allowance", type: 'expense', category: 'Family', amount: 3000, currency: 'AED', accountId: '1', date: '2026-08-02' },
+  ]));
+
+  const persistAllData = (newAccs, newAsts, newLoans, newTxns) => {
+    try {
+      const dataPayload = { accounts: newAccs, assets: newAsts, loans: newLoans, transactions: newTxns };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(dataPayload));
+    } catch (e) {}
+  };
+
+  const [history, setHistory] = useState([]);
+  const [redoStack, setRedoStack] = useState([]);
+
+  const saveStateToHistory = () => {
+    const currentState = { accounts, assets, loans, transactions };
+    setHistory(prev => [...prev.slice(-15), currentState]);
+    setRedoStack([]);
+  };
+
+  const handleUndo = () => {
+    if (history.length === 0) return;
+    const previousState = history[history.length - 1];
+    const currentState = { accounts, assets, loans, transactions };
+    setRedoStack(prev => [currentState, ...prev]);
+    setHistory(prev => prev.slice(0, prev.length - 1));
+    setAccounts(previousState.accounts);
+    setAssets(previousState.assets);
+    setLoans(previousState.loans);
+    setTransactions(previousState.transactions);
+    persistAllData(previousState.accounts, previousState.assets, previousState.loans, previousState.transactions);
+  };
+
+  const handleRedo = () => {
+    if (redoStack.length === 0) return;
+    const nextState = redoStack[0];
+    const currentState = { accounts, assets, loans, transactions };
+    setHistory(prev => [...prev, currentState]);
+    setRedoStack(prev => redoStack.slice(1));
+    setAccounts(nextState.accounts);
+    setAssets(nextState.assets);
+    setLoans(nextState.loans);
+    setTransactions(nextState.transactions);
+    persistAllData(nextState.accounts, nextState.assets, nextState.loans, nextState.transactions);
+  };
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState('income');
+  const [repaymentModalLoan, setRepaymentModalLoan] = useState(null);
+  const [repayAmount, setRepayAmount] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState(null);
+
+  const [formInput, setFormInput] = useState({
+    title: '',
+    category: 'Salary',
+    amount: '',
+    currency: 'AED',
+    accountId: '1',
+    toAccountId: '2',
+    weightGrams: '',
+    purchasePriceAED: '',
+    currentPriceAED: '',
+    assetCategory: 'Gold',
+    loanType: 'lent',
+    whatsapp: '',
+    dueDate: '',
+    date: new Date().toISOString().split('T')[0]
+  });
+
+  const totalLiquidAED = accounts.reduce((acc, item) => acc + convertToAED(item.balance, item.currency), 0);
+  const totalPhysicalAED = assets.reduce((acc, item) => acc + (item.currentPriceAED || 0), 0);
+  const totalLoansLentAED = loans.filter(l => l.type === 'lent').reduce((acc, l) => acc + convertToAED(l.amount - (l.repaid || 0), l.currency), 0);
+  const totalLoansBorrowedAED = loans.filter(l => l.type === 'borrowed').reduce((acc, l) => acc + convertToAED(l.amount - (l.repaid || 0), l.currency), 0);
+
+  const netWorthWithoutFixedAssets = totalLiquidAED + totalLoansLentAED - totalLoansBorrowedAED;
+  const netWorthTotal = totalLiquidAED + totalPhysicalAED + totalLoansLentAED - totalLoansBorrowedAED;
+  const cashOnHandAndAccounts = totalLiquidAED + totalLoansLentAED;
+
+  const currentMonthPrefix = '2026-08';
+  const monthlyTransactions = transactions.filter(t => t.date && t.date.startsWith(currentMonthPrefix));
+  
+  const monthlyIncomeAED = monthlyTransactions.filter(t => t.type === 'income').reduce((acc, t) => acc + convertToAED(t.amount, t.currency), 0);
+  const monthlyExpenseAED = monthlyTransactions.filter(t => t.type === 'expense').reduce((acc, t) => acc + convertToAED(t.amount, t.currency), 0);
+  const monthlySavingsAED = monthlyIncomeAED - monthlyExpenseAED;
+  const savingsRate = monthlyIncomeAED > 0 ? Math.max(0, Math.round((monthlySavingsAED / monthlyIncomeAED) * 100)) : 0;
+  
+  const emergencyRunwayMonths = monthlyExpenseAED > 0 ? (totalLiquidAED / monthlyExpenseAED).toFixed(1) : (totalLiquidAED > 0 ? '12+' : '0');
+
+  const fmt = (amtAED) => {
+    const converted = convertFromAED(amtAED, currency);
+    return `${currency} ${converted.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    saveStateToHistory();
+    const amt = Number(formInput.amount);
+
+    let updatedAccs = [...accounts];
+    let updatedAsts = [...assets];
+    let updatedLoans = [...loans];
+    let updatedTxns = [...transactions];
+
+    if (modalType === 'account') {
+      updatedAccs.push({ id: Date.now().toString(), name: formInput.title, type: 'Bank', balance: amt, currency: formInput.currency, color: 'from-emerald-500/10 to-teal-500/10 border-emerald-500/20' });
+      setAccounts(updatedAccs);
+    } else if (modalType === 'asset') {
+      const curVal = Number(formInput.currentPriceAED) || amt;
+      const purVal = Number(formInput.purchasePriceAED) || amt;
+      updatedAsts.push({ id: Date.now().toString(), name: formInput.title, category: formInput.assetCategory, weightGrams: Number(formInput.weightGrams) || 0, purchasePriceAED: purVal, currentPriceAED: curVal });
+      setAssets(updatedAsts);
+    } else if (modalType === 'loan') {
+      updatedLoans.push({ id: Date.now().toString(), type: formInput.loanType, name: formInput.title, amount: amt, repaid: 0, currency: formInput.currency, whatsapp: formInput.whatsapp, dueDate: formInput.dueDate });
+      setLoans(updatedLoans);
+    } else if (modalType === 'transfer') {
+      const fromAcc = accounts.find(a => a.id === formInput.accountId);
+      const toAcc = accounts.find(a => a.id === formInput.toAccountId);
+      if (!fromAcc || !toAcc) return;
+
+      updatedAccs = accounts.map(acc => {
+        if (acc.id === fromAcc.id) return { ...acc, balance: acc.balance - amt };
+        if (acc.id === toAcc.id) return { ...acc, balance: acc.balance + amt };
+        return acc;
+      });
+      setAccounts(updatedAccs);
+
+      const newTx = {
+        id: Date.now().toString(),
+        title: `Transfer: ${fromAcc.name} → ${toAcc.name}`,
+        type: 'transfer',
+        category: 'Transfer',
+        amount: amt,
+        currency: fromAcc.currency,
+        accountId: fromAcc.id,
+        toAccountId: toAcc.id,
+        date: formInput.date
+      };
+      updatedTxns = [newTx, ...transactions];
+      setTransactions(updatedTxns);
+    } else if (['income', 'expense'].includes(modalType)) {
+      const accId = formInput.accountId;
+      const targetAcc = accounts.find(a => a.id === accId);
+      
+      const newTx = {
+        id: Date.now().toString(),
+        title: formInput.title,
+        type: modalType,
+        category: formInput.category,
+        amount: amt,
+        currency: formInput.currency,
+        accountId: accId,
+        date: formInput.date
+      };
+      updatedTxns = [newTx, ...transactions];
+      setTransactions(updatedTxns);
+
+      if (targetAcc) {
+        updatedAccs = accounts.map(acc => {
+          if (acc.id === targetAcc.id) {
+            const delta = modalType === 'income' ? amt : -amt;
+            return { ...acc, balance: acc.balance + delta };
+          }
+          return acc;
+        });
+        setAccounts(updatedAccs);
+      }
+    }
+
+    persistAllData(updatedAccs, updatedAsts, updatedLoans, updatedTxns);
+    setModalOpen(false);
+    setFormInput({ title: '', category: 'Salary', amount: '', currency: 'AED', accountId: accounts[0]?.id || '1', toAccountId: accounts[1]?.id || '2', weightGrams: '', purchasePriceAED: '', currentPriceAED: '', assetCategory: 'Gold', loanType: 'lent', whatsapp: '', dueDate: '', date: new Date().toISOString().split('T')[0] });
+  };
+
+  const handleRepaymentSubmit = (e) => {
+    e.preventDefault();
+    if (!repaymentModalLoan || !repayAmount) return;
+    saveStateToHistory();
+    const amt = Number(repayAmount);
+
+    const updatedLoans = loans.map(l => {
+      if (l.id === repaymentModalLoan.id) {
+        const newRepaid = Math.min(l.amount, (l.repaid || 0) + amt);
+        return { ...l, repaid: newRepaid };
+      }
+      return l;
+    });
+
+    setLoans(updatedLoans);
+    persistAllData(accounts, assets, updatedLoans, transactions);
+    setRepaymentModalLoan(null);
+    setRepayAmount('');
+  };
+
+  const confirmDelete = () => {
+    if (!deleteTarget) return;
+    saveStateToHistory();
+
+    let updatedAccs = [...accounts];
+    let updatedAsts = [...assets];
+    let updatedLoans = [...loans];
+    let updatedTxns = [...transactions];
+
+    if (deleteTarget.type === 'transaction') {
+      const tx = transactions.find(t => t.id === deleteTarget.id);
+      if (tx && tx.accountId && tx.type !== 'transfer') {
+        updatedAccs = accounts.map(acc => {
+          if (acc.id === tx.accountId) {
+            const revDelta = tx.type === 'income' ? -tx.amount : tx.amount;
+            return { ...acc, balance: acc.balance + revDelta };
+          }
+          return acc;
+        });
+        setAccounts(updatedAccs);
+      }
+      updatedTxns = transactions.filter(t => t.id !== deleteTarget.id);
+      setTransactions(updatedTxns);
+    } else if (deleteTarget.type === 'account') {
+      updatedAccs = accounts.filter(acc => acc.id !== deleteTarget.id);
+      setAccounts(updatedAccs);
+    } else if (deleteTarget.type === 'asset') {
+      updatedAsts = assets.filter(ast => ast.id !== deleteTarget.id);
+      setAssets(updatedAsts);
+    } else if (deleteTarget.type === 'loan') {
+      updatedLoans = loans.filter(l => l.id !== deleteTarget.id);
+      setLoans(updatedLoans);
+    }
+
+    persistAllData(updatedAccs, updatedAsts, updatedLoans, updatedTxns);
+    setDeleteTarget(null);
+  };
+
+  const exportBackup = () => {
+    const data = { accounts, assets, loans, transactions };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `aleemfin_backup_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+  };
+
+  const importBackup = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const parsed = JSON.parse(event.target.result);
+        if (!parsed.accounts || !parsed.transactions) throw new Error('Invalid structure');
+        saveStateToHistory();
+        setAccounts(parsed.accounts);
+        if (parsed.assets) setAssets(parsed.assets);
+        if (parsed.loans) setLoans(parsed.loans);
+        setTransactions(parsed.transactions);
+        persistAllData(parsed.accounts, parsed.assets || assets, parsed.loans || loans, parsed.transactions);
+      } catch (err) {}
+    };
+    reader.readAsText(file);
+  };
+
+  const navItems = [
+    { id: 'overview', label: 'Overview', icon: IconOverview },
+    { id: 'transactions', label: 'Ledger', icon: IconTransactions },
+    { id: 'accounts', label: 'Accounts', icon: IconAccounts },
+    { id: 'vault', label: 'Assets', icon: IconVault },
+    { id: 'loans', label: 'Loans', icon: IconLoan },
+    { id: 'analytics', label: 'Analytics', icon: IconAnalytics },
+  ];
+
+  const filteredTransactions = transactions.filter(t => 
+    t.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    t.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div className={`min-h-screen transition-colors duration-300 pb-28 md:pb-10 flex flex-col ${darkMode ? 'bg-zinc-950 text-zinc-100' : 'bg-zinc-100 text-zinc-900'}`}>
+      
+      {/* Top Header / Desktop Sidebar Switcher */}
+      <header className={`sticky top-0 z-40 backdrop-blur-2xl border-b ${darkMode ? 'bg-zinc-900/85 border-zinc-800/80' : 'bg-white/85 border-zinc-200/80'}`}>
+        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+          
+          <div className="flex items-center space-x-3">
+            <div className="p-2.5 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-2xl text-white shadow-lg shadow-emerald-500/25">
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" /><path d="M3 5v14a2 2 0 0 0 2 2h16v-5" /><path d="M18 12a2 2 0 0 0 0 4h4v-4Z" /></svg>
+            </div>
+            <div>
+              <h1 className="font-extrabold text-sm tracking-tight">AleemFin</h1>
+              <p className={`text-[10px] font-semibold ${darkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>Command Center</p>
+            </div>
+          </div>
+
+          {/* Desktop Navigation Header */}
+          <nav className="hidden md:flex items-center space-x-1 bg-zinc-200/50 dark:bg-zinc-800/50 p-1 rounded-2xl border border-zinc-300/40 dark:border-zinc-700/50">
+            {navItems.map(tab => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${isActive ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'}`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* Top Actions: Currency selector, Undo/Redo, Dark Mode */}
+          <div className="flex items-center space-x-2">
+            <select 
+              value={currency} 
+              onChange={(e) => setCurrency(e.target.value)}
+              className="text-xs px-2.5 py-1.5 rounded-xl border font-bold outline-none bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 cursor-pointer"
+            >
+              <option value="AED">AED</option>
+              <option value="USD">USD</option>
+              <option value="PKR">PKR</option>
+            </select>
+
+            <button onClick={handleUndo} disabled={history.length === 0} title="Undo" className={`p-2 rounded-xl border text-xs disabled:opacity-30 ${darkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300' : 'bg-white border-zinc-200 text-zinc-700'}`}>
+              <IconUndo className="w-4 h-4" />
+            </button>
+            <button onClick={handleRedo} disabled={redoStack.length === 0} title="Redo" className={`p-2 rounded-xl border text-xs disabled:opacity-30 ${darkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300' : 'bg-white border-zinc-200 text-zinc-700'}`}>
+              <IconRedo className="w-4 h-4" />
+            </button>
+            <button onClick={exportBackup} title="Backup" className={`p-2 rounded-xl border text-xs ${darkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300' : 'bg-white border-zinc-200 text-zinc-700'}`}>
+              <IconDownload className="w-4 h-4" />
+            </button>
+            <label className={`p-2 rounded-xl border text-xs cursor-pointer ${darkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300' : 'bg-white border-zinc-200 text-zinc-700'}`}>
+              <IconUpload className="w-4 h-4" />
+              <input type="file" accept=".json" onChange={importBackup} className="hidden" />
+            </label>
+            <button onClick={() => setDarkMode(!darkMode)} className={`p-2 rounded-xl border ${darkMode ? 'bg-zinc-900 border-zinc-800 text-amber-400' : 'bg-white border-zinc-200 text-zinc-600'}`}>
+              {darkMode ? <IconSun className="w-4 h-4" /> : <IconMoon className="w-4 h-4" />}
+            </button>
+          </div>
+
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      <main className="max-w-4xl mx-auto px-4 py-6 space-y-6 flex-1 w-full">
+
+        {activeTab === 'overview' && (
+          <div className="space-y-6">
+            
+            {/* NET WORTH HERO CARD (with focus on Cash/Accounts + Lent-out total) */}
+            <div className="p-6 md:p-8 rounded-3xl bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-950 text-zinc-100 border border-zinc-800 shadow-2xl space-y-6 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+              
+              <div className="flex justify-between items-start">
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                    Primary Liquidity & Cash
+                  </span>
+                  <h2 className="text-3xl md:text-5xl font-extrabold mt-2 text-white tracking-tight">
+                    {fmt(cashOnHandAndAccounts)}
+                  </h2>
+                  <p className="text-xs text-zinc-400 mt-1">Available across all bank accounts & wallets (incl. lent-out loans)</p>
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Total Net Worth</span>
+                  <h3 className="text-sm md:text-base font-bold text-zinc-300 mt-0.5">
+                    {fmt(netWorthTotal)}
+                  </h3>
+                  <span className="text-[10px] text-zinc-500 block">Excl. Fixed: {fmt(netWorthWithoutFixedAssets)}</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-4 border-t border-zinc-800/80 text-xs">
+                <div className="bg-zinc-800/40 p-3 rounded-2xl border border-zinc-700/40">
+                  <span className="text-zinc-400 block text-[10px] uppercase font-bold">Liquid Cash</span>
+                  <strong className="text-sm text-zinc-100 mt-0.5 block">{fmt(totalLiquidAED)}</strong>
+                </div>
+                <div className="bg-zinc-800/40 p-3 rounded-2xl border border-zinc-700/40">
+                  <span className="text-zinc-400 block text-[10px] uppercase font-bold">Lent Out</span>
+                  <strong className="text-sm text-emerald-400 mt-0.5 block">{fmt(totalLoansLentAED)}</strong>
+                </div>
+                <div className="bg-zinc-800/40 p-3 rounded-2xl border border-zinc-700/40">
+                  <span className="text-zinc-400 block text-[10px] uppercase font-bold">Physical Assets</span>
+                  <strong className="text-sm text-amber-400 mt-0.5 block">{fmt(totalPhysicalAED)}</strong>
+                </div>
+                <div className="bg-zinc-800/40 p-3 rounded-2xl border border-zinc-700/40">
+                  <span className="text-zinc-400 block text-[10px] uppercase font-bold">Borrowed Debt</span>
+                  <strong className="text-sm text-rose-400 mt-0.5 block">{fmt(totalLoansBorrowedAED)}</strong>
+                </div>
+              </div>
+            </div>
+
+            {/* QUICK-GLANCE DASHBOARD TILES (Tappable to jump directly to sections) */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+              
+              {/* Accounts Tile */}
+              <div 
+                onClick={() => setActiveTab('accounts')}
+                className={`p-4 rounded-3xl border cursor-pointer transition-all hover:scale-[1.02] ${darkMode ? 'bg-zinc-900/60 border-zinc-800 hover:border-emerald-500/50' : 'bg-white border-zinc-200 hover:border-emerald-500/50'} shadow-sm space-y-2`}
+              >
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Accounts</span>
+                  <IconAccounts className="w-4 h-4 text-emerald-500" />
+                </div>
+                <h3 className="text-base font-extrabold">{accounts.length} Active</h3>
+                <p className="text-[11px] text-emerald-500 font-semibold">{fmt(totalLiquidAED)}</p>
+              </div>
+
+              {/* Assets Tile */}
+              <div 
+                onClick={() => setActiveTab('vault')}
+                className={`p-4 rounded-3xl border cursor-pointer transition-all hover:scale-[1.02] ${darkMode ? 'bg-zinc-900/60 border-zinc-800 hover:border-amber-500/50' : 'bg-white border-zinc-200 hover:border-amber-500/50'} shadow-sm space-y-2`}
+              >
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Vault Assets</span>
+                  <IconVault className="w-4 h-4 text-amber-500" />
+                </div>
+                <h3 className="text-base font-extrabold">{assets.length} Holdings</h3>
+                <p className="text-[11px] text-amber-500 font-semibold">{fmt(totalPhysicalAED)}</p>
+              </div>
+
+              {/* Loans Tile */}
+              <div 
+                onClick={() => setActiveTab('loans')}
+                className={`p-4 rounded-3xl border cursor-pointer transition-all hover:scale-[1.02] ${darkMode ? 'bg-zinc-900/60 border-zinc-800 hover:border-teal-500/50' : 'bg-white border-zinc-200 hover:border-teal-500/50'} shadow-sm space-y-2`}
+              >
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Loans & Debt</span>
+                  <IconLoan className="w-4 h-4 text-teal-500" />
+                </div>
+                <h3 className="text-base font-extrabold">{loans.length} Parties</h3>
+                <p className="text-[11px] text-teal-500 font-semibold">Lent: {fmt(totalLoansLentAED)}</p>
+              </div>
+
+              {/* This Month Tile */}
+              <div 
+                onClick={() => setActiveTab('transactions')}
+                className={`p-4 rounded-3xl border cursor-pointer transition-all hover:scale-[1.02] ${darkMode ? 'bg-zinc-900/60 border-zinc-800 hover:border-blue-500/50' : 'bg-white border-zinc-200 hover:border-blue-500/50'} shadow-sm space-y-2`}
+              >
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">August Pulse</span>
+                  <IconAnalytics className="w-4 h-4 text-blue-500" />
+                </div>
+                <h3 className="text-base font-extrabold">{savingsRate}% Saved</h3>
+                <p className="text-[11px] text-blue-500 font-semibold">Net: {fmt(monthlySavingsAED)}</p>
+              </div>
+
+            </div>
+
+            {/* PRIMARY ACTION BUTTONS BAR */}
+            <div className={`p-4 rounded-3xl border ${darkMode ? 'bg-zinc-900/40 border-zinc-800' : 'bg-white border-zinc-200'} shadow-sm space-y-3`}>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 block px-1">Quick Action Entry</span>
+              <div className="grid grid-cols-4 gap-2.5">
+                <button onClick={() => { setModalType('income'); setFormInput({title:'', category:'Salary', amount:'', currency:'AED', accountId: accounts[0]?.id || '1', date: new Date().toISOString().split('T')[0]}); setModalOpen(true); }} className={`p-3 rounded-2xl border text-center flex flex-col items-center justify-center transition-all shadow-sm ${darkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-100 hover:border-emerald-500' : 'bg-zinc-50 border-zinc-200 text-zinc-800 hover:border-emerald-500'}`}>
+                  <div className="w-8 h-8 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-1.5">
+                    <IconPlus className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                  <span className="text-xs font-bold">Income</span>
+                </button>
+                <button onClick={() => { setModalType('expense'); setFormInput({title:'', category:'Groceries', amount:'', currency:'AED', accountId: accounts[0]?.id || '1', date: new Date().toISOString().split('T')[0]}); setModalOpen(true); }} className={`p-3 rounded-2xl border text-center flex flex-col items-center justify-center transition-all shadow-sm ${darkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-100 hover:border-rose-500' : 'bg-zinc-50 border-zinc-200 text-zinc-800 hover:border-rose-500'}`}>
+                  <div className="w-8 h-8 rounded-xl bg-rose-500/15 flex items-center justify-center mb-1.5">
+                    <IconPlus className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+                  </div>
+                  <span className="text-xs font-bold">Expense</span>
+                </button>
+                <button onClick={() => { setModalType('transfer'); setFormInput({title:'', amount:'', currency:'AED', accountId: accounts[0]?.id || '1', toAccountId: accounts[1]?.id || '2', date: new Date().toISOString().split('T')[0]}); setModalOpen(true); }} className={`p-3 rounded-2xl border text-center flex flex-col items-center justify-center transition-all shadow-sm ${darkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-100 hover:border-blue-500' : 'bg-zinc-50 border-zinc-200 text-zinc-800 hover:border-blue-500'}`}>
+                  <div className="w-8 h-8 rounded-xl bg-blue-500/15 flex items-center justify-center mb-1.5">
+                    <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>
+                  </div>
+                  <span className="text-xs font-bold">Transfer</span>
+                </button>
+                <button onClick={() => { setModalType('loan'); setFormInput({title:'', amount:'', currency:'AED', loanType:'lent', whatsapp:'', dueDate:'', date: new Date().toISOString().split('T')[0]}); setModalOpen(true); }} className={`p-3 rounded-2xl border text-center flex flex-col items-center justify-center transition-all shadow-sm ${darkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-100 hover:border-teal-500' : 'bg-zinc-50 border-zinc-200 text-zinc-800 hover:border-teal-500'}`}>
+                  <div className="w-8 h-8 rounded-xl bg-teal-500/15 flex items-center justify-center mb-1.5">
+                    <IconLoan className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                  </div>
+                  <span className="text-xs font-bold">Loan</span>
+                </button>
+              </div>
+            </div>
+
+            {/* RECENT LEDGER PREVIEW */}
+            <div className="space-y-3">
+              <div className="flex justify-between items-center px-1">
+                <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Recent Transactions</span>
+                <button onClick={() => setActiveTab('transactions')} className="text-xs font-bold text-emerald-500 hover:underline">View All →</button>
+              </div>
+              <div className="space-y-2">
+                {transactions.slice(0, 4).map(tx => (
+                  <div key={tx.id} className={`p-4 rounded-2xl border flex justify-between items-center text-xs ${darkMode ? 'bg-zinc-900/40 border-zinc-800' : 'bg-white border-zinc-200'}`}>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase ${tx.type === 'income' ? 'bg-emerald-500/15 text-emerald-500' : tx.type === 'expense' ? 'bg-rose-500/15 text-rose-500' : 'bg-blue-500/15 text-blue-500'}`}>
+                          {tx.category}
+                        </span>
+                        <span className="text-[10px] text-zinc-400">{tx.date}</span>
+                      </div>
+                      <p className="font-bold mt-1 text-sm">{tx.title}</p>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <span className={`font-extrabold text-sm ${tx.type === 'income' ? 'text-emerald-500' : tx.type === 'expense' ? 'text-rose-500' : 'text-blue-500'}`}>
+                        {tx.type === 'income' ? '+' : tx.type === 'expense' ? '-' : ''}{tx.currency} {tx.amount.toLocaleString()}
+                      </span>
+                      <button onClick={() => setDeleteTarget({ type: 'transaction', id: tx.id, name: tx.title })} title="Delete" className="p-1.5 rounded-xl text-zinc-400 hover:text-rose-500 hover:bg-rose-500/10"><IconTrash className="w-4 h-4" /></button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        )}
+
+        {activeTab === 'transactions' && (
+          <div className="space-y-4">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 px-1">
+              <div>
+                <h2 className="text-base font-extrabold">Transactions Ledger</h2>
+                <p className="text-xs text-zinc-400">Search and filter all financial activity</p>
+              </div>
+              <button onClick={() => { setModalType('income'); setFormInput({title:'', category:'Salary', amount:'', currency:'AED', accountId: accounts[0]?.id || '1', date: new Date().toISOString().split('T')[0]}); setModalOpen(true); }} className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xs font-bold shadow-lg shadow-emerald-600/20">+ Add Entry</button>
+            </div>
+
+            {/* Search Input */}
+            <div className="relative">
+              <IconSearch className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3" />
+              <input 
+                type="text" 
+                placeholder="Search by title or category..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={`w-full pl-10 pr-4 py-2.5 rounded-2xl border text-xs outline-none font-medium ${darkMode ? 'bg-zinc-900 border-zinc-800 text-white placeholder-zinc-500' : 'bg-white border-zinc-200 text-zinc-900 placeholder-zinc-400'}`}
+              />
+            </div>
+            
+            <div className="space-y-2.5">
+              {filteredTransactions.length === 0 && (
+                <div className={`p-12 text-center rounded-3xl border ${darkMode ? 'bg-zinc-900/40 border-zinc-800 text-zinc-400' : 'bg-white border-zinc-200 text-zinc-500'}`}>
+                  <p className="text-xs font-medium">No matching transactions found.</p>
+                </div>
+              )}
+              {filteredTransactions.map(tx => (
+                <div key={tx.id} className={`p-4 rounded-2xl border flex justify-between items-center ${darkMode ? 'bg-zinc-900/40 border-zinc-800' : 'bg-white border-zinc-200'}`}>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase ${tx.type === 'income' ? 'bg-emerald-500/15 text-emerald-500' : tx.type === 'expense' ? 'bg-rose-500/15 text-rose-500' : 'bg-blue-500/15 text-blue-500'}`}>
+                        {tx.category}
+                      </span>
+                      <span className="text-[10px] text-zinc-400">{tx.date}</span>
+                    </div>
+                    <h3 className="font-bold text-sm mt-1">{tx.title}</h3>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <span className={`font-bold text-sm ${tx.type === 'income' ? 'text-emerald-500' : tx.type === 'expense' ? 'text-rose-500' : 'text-blue-500'}`}>
+                      {tx.type === 'income' ? '+' : tx.type === 'expense' ? '-' : ''}{tx.currency} {tx.amount.toLocaleString()}
+                    </span>
+                    <button onClick={() => setDeleteTarget({ type: 'transaction', id: tx.id, name: tx.title })} title="Delete" className="p-1.5 rounded-xl text-zinc-400 hover:text-rose-500 hover:bg-rose-500/10"><IconTrash className="w-4 h-4" /></button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'accounts' && (
+          <div className="space-y-4">
+            <div className="flex justify-between items-center px-1">
+              <div>
+                <h2 className="text-base font-extrabold">Bank Accounts & Wallets</h2>
+                <p className="text-xs text-zinc-400">Total liquid balance across all accounts</p>
+              </div>
+              <button onClick={() => { setModalType('account'); setFormInput({title:'', amount:'', currency:'AED'}); setModalOpen(true); }} className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xs font-bold shadow-lg shadow-emerald-600/20">+ New Account</button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {accounts.map(acc => (
+                <div key={acc.id} className={`p-5 rounded-3xl border bg-gradient-to-br ${acc.color || 'from-zinc-500/10 to-zinc-500/5 border-zinc-500/20'} flex justify-between items-center shadow-sm`}>
+                  <div>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider opacity-70">{acc.type || 'Bank Account'}</span>
+                    <h3 className="font-extrabold text-base mt-1">{acc.name}</h3>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="text-right">
+                      <span className="text-[10px] font-bold opacity-70 block">{acc.currency}</span>
+                      <span className="font-extrabold text-base text-emerald-600 dark:text-emerald-400">{acc.balance.toLocaleString()}</span>
+                    </div>
+                    <button onClick={() => setDeleteTarget({ type: 'account', id: acc.id, name: acc.name })} title="Delete" className="p-2 rounded-xl text-zinc-400 hover:text-rose-500 hover:bg-rose-500/10"><IconTrash className="w-4 h-4" /></button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'vault' && (
+          <div className="space-y-4">
+            <div className="flex justify-between items-center px-1">
+              <div>
+                <h2 className="text-base font-extrabold">Vault & Physical Assets</h2>
+                <p className="text-xs text-zinc-400">Gold holdings by weight and real estate valuation</p>
+              </div>
+              <button onClick={() => { setModalType('asset'); setFormInput({title:'', amount:'', weightGrams:'', assetCategory:'Gold', purchasePriceAED:'', currentPriceAED:''}); setModalOpen(true); }} className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-2xl text-xs font-bold shadow-lg shadow-amber-600/20">+ Add Asset</button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {assets.map(ast => {
+                const gain = ast.currentPriceAED - ast.purchasePriceAED;
+                const gainPct = ast.purchasePriceAED > 0 ? ((gain / ast.purchasePriceAED) * 100).toFixed(1) : 0;
+                return (
+                  <div key={ast.id} className={`p-5 rounded-3xl border flex justify-between items-center shadow-sm ${darkMode ? 'bg-zinc-900/40 border-zinc-800' : 'bg-white border-zinc-200'}`}>
+                    <div>
+                      <span className="px-2.5 py-1 bg-amber-500/15 text-amber-600 dark:text-amber-400 rounded-full text-[10px] font-extrabold uppercase">{ast.category}</span>
+                      <h3 className="font-extrabold text-sm mt-2">{ast.name}</h3>
+                      {ast.weightGrams ? <p className="text-[11px] text-zinc-400 mt-0.5">Weight: {ast.weightGrams}g</p> : null}
+                      <p className={`text-[11px] font-extrabold mt-1 ${gain >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                        {gain >= 0 ? '+' : ''}AED {gain.toLocaleString()} ({gainPct}%)
+                      </p>
+                    </div>
+                    <div className="flex items-center space-x-3 text-right">
+                      <div>
+                        <span className="text-[10px] text-zinc-400 uppercase font-bold block">Current Value</span>
+                        <span className="font-extrabold text-base text-amber-600 dark:text-amber-400">AED {ast.currentPriceAED.toLocaleString()}</span>
+                      </div>
+                      <button onClick={() => setDeleteTarget({ type: 'asset', id: ast.id, name: ast.name })} title="Delete" className="p-2 rounded-xl text-zinc-400 hover:text-rose-500 hover:bg-rose-500/10"><IconTrash className="w-4 h-4" /></button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'loans' && (
+          <div className="space-y-4">
+            <div className="flex justify-between items-center px-1">
+              <div>
+                <h2 className="text-base font-extrabold">Loans & Liabilities</h2>
+                <p className="text-xs text-zinc-400">Track lent balances and borrowed debts with WhatsApp reminders</p>
+              </div>
+              <button onClick={() => { setModalType('loan'); setFormInput({title:'', amount:'', currency:'AED', loanType:'lent', whatsapp:'', dueDate:''}); setModalOpen(true); }} className="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-2xl text-xs font-bold shadow-lg shadow-teal-600/20">+ Add Loan</button>
+            </div>
+
+            <div className="space-y-3">
+              {loans.map(loan => {
+                const repaid = loan.repaid || 0;
+                const outstanding = loan.amount - repaid;
+                const percentPaid = Math.round((repaid / loan.amount) * 100) || 0;
+                const isFullyPaid = outstanding <= 0;
+
+                const waText = `Hi ${loan.name}, reminder regarding the outstanding balance of ${loan.currency} ${outstanding.toLocaleString()}`;
+
+                return (
+                  <div key={loan.id} className={`p-5 rounded-3xl border space-y-3 shadow-sm ${darkMode ? 'bg-zinc-900/40 border-zinc-800' : 'bg-white border-zinc-200'}`}>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase ${loan.type === 'lent' ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/15 text-rose-500'}`}>
+                            {loan.type === 'lent' ? 'Lent Out' : 'Borrowed Liability'}
+                          </span>
+                          {isFullyPaid && <span className="px-2.5 py-1 bg-blue-500/15 text-blue-500 rounded-full text-[10px] font-extrabold uppercase">Fully Settled</span>}
+                        </div>
+                        <h3 className="font-extrabold text-sm mt-2">{loan.name}</h3>
+                        {loan.whatsapp && !isFullyPaid && (
+                          <a href={`https://wa.me/${loan.whatsapp.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(waText)}`} target="_blank" rel="noreferrer" className="text-[11px] text-emerald-500 hover:underline font-semibold block mt-1">
+                            💬 Send WhatsApp Reminder
+                          </a>
+                        )}
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <div className="text-right">
+                          <span className={`font-extrabold text-base block ${isFullyPaid ? 'text-zinc-400 line-through' : loan.type === 'lent' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'}`}>{loan.currency} {outstanding.toLocaleString()}</span>
+                          <span className="text-[10px] text-zinc-400 font-medium">Original: {loan.amount.toLocaleString()}</span>
+                        </div>
+                        <button onClick={() => setDeleteTarget({ type: 'loan', id: loan.id, name: loan.name })} title="Delete" className="p-2 rounded-xl text-zinc-400 hover:text-rose-500 hover:bg-rose-500/10"><IconTrash className="w-4 h-4" /></button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5 pt-1">
+                      <div className="flex justify-between text-[11px] font-semibold text-zinc-400">
+                        <span>Repaid: {loan.currency} {repaid.toLocaleString()}</span>
+                        <span>{percentPaid}% Completed</span>
+                      </div>
+                      <div className="w-full bg-zinc-800/20 dark:bg-zinc-800 h-2.5 rounded-full overflow-hidden">
+                        <div className="bg-emerald-500 h-full transition-all duration-300 rounded-full" style={{ width: `${percentPaid}%` }}></div>
+                      </div>
+                    </div>
+
+                    {!isFullyPaid && (
+                      <div className="pt-2 flex justify-end">
+                        <button onClick={() => { setRepaymentModalLoan(loan); setRepayAmount(outstanding.toString()); }} className="px-3.5 py-1.5 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/25 rounded-xl text-xs font-bold transition-all">
+                          + Record Repayment
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'analytics' && (
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-base font-extrabold">Financial Health Analytics</h2>
+              <p className="text-xs text-zinc-400">Savings rate, emergency runway & cash flow breakdown</p>
+            </div>
+            
+            <div className={`p-6 rounded-3xl border space-y-4 shadow-sm ${darkMode ? 'bg-zinc-900/40 border-zinc-800' : 'bg-white border-zinc-200'}`}>
+              <div className="space-y-3 text-xs md:text-sm">
+                <div className="flex justify-between pb-2 border-b border-zinc-200 dark:border-zinc-800"><span>Monthly Income</span><span className="font-extrabold text-emerald-500">{fmt(monthlyIncomeAED)}</span></div>
+                <div className="flex justify-between pb-2 border-b border-zinc-200 dark:border-zinc-800"><span>Monthly Expenses</span><span className="font-extrabold text-rose-500">{fmt(monthlyExpenseAED)}</span></div>
+                <div className="flex justify-between pt-1 font-extrabold text-base"><span>Monthly Net Savings</span><span className="text-blue-500">{fmt(monthlySavingsAED)}</span></div>
+              </div>
+              <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800 text-xs text-zinc-400 space-y-2.5 font-medium">
+                <p>💡 Emergency fund covers <strong>~{emergencyRunwayMonths} months</strong> of current monthly essential spend.</p>
+                <p>💡 Monthly savings rate is currently operating at <strong>{savingsRate}%</strong>.</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+      </main>
+
+      {/* 6-TAB ADAPTIVE MOBILE BOTTOM NAVIGATION (All 6 tabs visible, no More menu) */}
+      <nav className={`md:hidden fixed bottom-0 left-0 right-0 z-40 backdrop-blur-2xl border-t ${darkMode ? 'bg-zinc-900/95 border-zinc-800' : 'bg-white/95 border-zinc-200'}`}>
+        <div className="max-w-md mx-auto px-1 h-16 grid grid-cols-6 items-center">
+          {navItems.map(tab => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex flex-col items-center justify-center py-1.5 rounded-2xl transition-all ${isActive ? 'text-emerald-500 font-extrabold scale-105' : darkMode ? 'text-zinc-400 hover:text-zinc-200' : 'text-zinc-500 hover:text-zinc-800'}`}
+              >
+                <div className={`p-1 rounded-xl transition-all ${isActive ? 'bg-emerald-500/15 text-emerald-500' : ''}`}>
+                  <Icon className="w-4 h-4" />
+                </div>
+                <span className="text-[9px] mt-0.5 tracking-tight">{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </nav>
+
+      {/* Delete Confirmation Modal */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className={`w-full max-w-xs rounded-3xl border p-5 shadow-2xl space-y-3 ${darkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-100' : 'bg-white border-zinc-200 text-zinc-900'}`}>
+            <h3 className="font-extrabold text-sm">Confirm Deletion</h3>
+            <p className="text-xs text-zinc-400">Are you sure you want to delete <strong className="text-zinc-200">"{deleteTarget.name}"</strong>? This action cannot be undone.</p>
+            <div className="pt-2 flex justify-end space-x-2">
+              <button type="button" onClick={() => setDeleteTarget(null)} className={`px-3.5 py-2 rounded-xl text-xs font-semibold border ${darkMode ? 'border-zinc-800 hover:bg-zinc-800' : 'border-zinc-200 hover:bg-zinc-100'}`}>Cancel</button>
+              <button type="button" onClick={confirmDelete} className="px-3.5 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20">Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Loan Repayment Modal */}
+      {repaymentModalLoan && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/60 backdrop-blur-sm">
+          <div className={`w-full max-w-sm rounded-3xl border p-5 shadow-2xl ${darkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-100' : 'bg-white border-zinc-200 text-zinc-900'}`}>
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="font-extrabold text-sm">Record Repayment for {repaymentModalLoan.name}</h3>
+              <button onClick={() => setRepaymentModalLoan(null)} className="p-1 rounded-lg hover:bg-zinc-800 text-zinc-400">✕</button>
+            </div>
+            <form onSubmit={handleRepaymentSubmit} className="space-y-3">
+              <div>
+                <label className="block text-[11px] font-bold mb-1">Repayment Amount ({repaymentModalLoan.currency})</label>
+                <input 
+                  type="number" 
+                  required 
+                  autoFocus
+                  placeholder="0.00"
+                  value={repayAmount}
+                  onChange={(e) => setRepayAmount(e.target.value)}
+                  className={`w-full px-3.5 py-2.5 rounded-2xl text-xs border outline-none font-bold ${darkMode ? 'bg-zinc-950 border-zinc-800 text-emerald-400' : 'bg-zinc-50 border-zinc-200 text-emerald-600'}`}
+                />
+              </div>
+              <div className="pt-2 flex justify-end space-x-2">
+                <button type="button" onClick={() => setRepaymentModalLoan(null)} className={`px-3.5 py-2 rounded-xl text-xs font-semibold border ${darkMode ? 'border-zinc-800' : 'border-zinc-200'}`}>Cancel</button>
+                <button type="submit" className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-600/20">Confirm Repayment</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Main Entry Modal */}
+      {modalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/60 backdrop-blur-sm">
+          <div className={`w-full max-w-sm rounded-3xl border p-5 shadow-2xl ${darkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-100' : 'bg-white border-zinc-200 text-zinc-900'}`}>
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="font-extrabold text-sm capitalize">Add {modalType}</h3>
+              <button onClick={() => setModalOpen(false)} className="p-1 rounded-lg hover:bg-zinc-800 text-zinc-400">✕</button>
+            </div>
+
+            <form onSubmit={handleFormSubmit} className="space-y-3">
+              {modalType !== 'transfer' && (
+                <div>
+                  <label className="block text-[11px] font-bold mb-1">Title / Name</label>
+                  <input 
+                    type="text" 
+                    required 
+                    placeholder="e.g. Salary, Groceries, Gold Bar"
+                    value={formInput.title}
+                    onChange={(e) => setFormInput({...formInput, title: e.target.value})}
+                    className={`w-full px-3.5 py-2.5 rounded-2xl text-xs border outline-none font-medium ${darkMode ? 'bg-zinc-950 border-zinc-800 text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-900'}`}
+                  />
+                </div>
+              )}
+
+              {modalType === 'account' && (
+                <div>
+                  <label className="block text-[11px] font-bold mb-1">Initial Balance</label>
+                  <input type="number" required placeholder="0.00" value={formInput.amount} onChange={(e) => setFormInput({...formInput, amount: e.target.value})} className={`w-full px-3.5 py-2.5 rounded-2xl text-xs border outline-none font-medium ${darkMode ? 'bg-zinc-950 border-zinc-800 text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-900'}`} />
+                </div>
+              )}
+
+              {modalType === 'transfer' && (
+                <>
+                  <div>
+                    <label className="block text-[11px] font-bold mb-1">From Account</label>
+                    <select value={formInput.accountId} onChange={(e) => setFormInput({...formInput, accountId: e.target.value})} className={`w-full px-3.5 py-2.5 rounded-2xl text-xs border outline-none font-medium ${darkMode ? 'bg-zinc-950 border-zinc-800 text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-900'}`}>
+                      {accounts.map(acc => <option key={acc.id} value={acc.id}>{acc.name} ({acc.balance} {acc.currency})</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold mb-1">To Account</label>
+                    <select value={formInput.toAccountId} onChange={(e) => setFormInput({...formInput, toAccountId: e.target.value})} className={`w-full px-3.5 py-2.5 rounded-2xl text-xs border outline-none font-medium ${darkMode ? 'bg-zinc-950 border-zinc-800 text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-900'}`}>
+                      {accounts.map(acc => <option key={acc.id} value={acc.id}>{acc.name} ({acc.balance} {acc.currency})</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold mb-1">Transfer Amount</label>
+                    <input type="number" required placeholder="0.00" value={formInput.amount} onChange={(e) => setFormInput({...formInput, amount: e.target.value})} className={`w-full px-3.5 py-2.5 rounded-2xl text-xs border outline-none font-medium ${darkMode ? 'bg-zinc-950 border-zinc-800 text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-900'}`} />
+                  </div>
+                </>
+              )}
+
+              {modalType === 'loan' && (
+                <>
+                  <div>
+                    <label className="block text-[11px] font-bold mb-1">Loan Direction</label>
+                    <select value={formInput.loanType} onChange={(e) => setFormInput({...formInput, loanType: e.target.value})} className={`w-full px-3.5 py-2.5 rounded-2xl text-xs border outline-none font-medium ${darkMode ? 'bg-zinc-950 border-zinc-800 text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-900'}`}>
+                      <option value="lent">Lent Out to Someone</option>
+                      <option value="borrowed">Borrowed Liability</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold mb-1">WhatsApp Number</label>
+                    <input type="text" placeholder="+971501234567" value={formInput.whatsapp} onChange={(e) => setFormInput({...formInput, whatsapp: e.target.value})} className={`w-full px-3.5 py-2.5 rounded-2xl text-xs border outline-none font-medium ${darkMode ? 'bg-zinc-950 border-zinc-800 text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-900'}`} />
+                  </div>
+                </>
+              )}
+
+              {modalType === 'asset' && (
+                <>
+                  <div>
+                    <label className="block text-[11px] font-bold mb-1">Asset Category</label>
+                    <select value={formInput.assetCategory} onChange={(e) => setFormInput({...formInput, assetCategory: e.target.value})} className={`w-full px-3.5 py-2.5 rounded-2xl text-xs border outline-none font-medium ${darkMode ? 'bg-zinc-950 border-zinc-800 text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-900'}`}>
+                      <option value="Gold">Gold</option>
+                      <option value="Property">Property</option>
+                      <option value="Vehicle">Vehicle</option>
+                      <option value="Other">Other Asset</option>
+                    </select>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-[11px] font-bold mb-1">Purchase Price (AED)</label>
+                      <input type="number" required placeholder="0" value={formInput.purchasePriceAED} onChange={(e) => setFormInput({...formInput, purchasePriceAED: e.target.value})} className={`w-full px-3.5 py-2.5 rounded-2xl text-xs border outline-none font-medium ${darkMode ? 'bg-zinc-950 border-zinc-800 text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-900'}`} />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold mb-1">Current Value (AED)</label>
+                      <input type="number" required placeholder="0" value={formInput.currentPriceAED} onChange={(e) => setFormInput({...formInput, currentPriceAED: e.target.value})} className={`w-full px-3.5 py-2.5 rounded-2xl text-xs border outline-none font-medium ${darkMode ? 'bg-zinc-950 border-zinc-800 text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-900'}`} />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {['income', 'expense'].includes(modalType) && (
+                <>
+                  <div>
+                    <label className="block text-[11px] font-bold mb-1">Category</label>
+                    <select value={formInput.category} onChange={(e) => setFormInput({...formInput, category: e.target.value})} className={`w-full px-3.5 py-2.5 rounded-2xl text-xs border outline-none font-medium ${darkMode ? 'bg-zinc-950 border-zinc-800 text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-900'}`}>
+                      {modalType === 'income' ? (
+                        <><option value="Salary">Salary</option><option value="Freelance">Freelance</option><option value="Bonus">Bonus</option><option value="Other Income">Other Income</option></>
+                      ) : (
+                        <><option value="Groceries">Groceries</option><option value="Family">Family Allowance</option><option value="Bills">Bills & Utilities</option><option value="Shopping">Shopping</option><option value="Transport">Transport</option></>
+                      )}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold mb-1">Deduct / Deposit Account</label>
+                    <select value={formInput.accountId} onChange={(e) => setFormInput({...formInput, accountId: e.target.value})} className={`w-full px-3.5 py-2.5 rounded-2xl text-xs border outline-none font-medium ${darkMode ? 'bg-zinc-950 border-zinc-800 text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-900'}`}>
+                      {accounts.map(acc => <option key={acc.id} value={acc.id}>{acc.name} ({acc.balance} {acc.currency})</option>)}
+                    </select>
+                  </div>
+                </>
+              )}
+
+              {['income', 'expense', 'loan'].includes(modalType) && (
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-[11px] font-bold mb-1">Amount</label>
+                    <input type="number" required placeholder="0.00" value={formInput.amount} onChange={(e) => setFormInput({...formInput, amount: e.target.value})} className={`w-full px-3.5 py-2.5 rounded-2xl text-xs border outline-none font-medium ${darkMode ? 'bg-zinc-950 border-zinc-800 text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-900'}`} />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold mb-1">Currency</label>
+                    <select value={formInput.currency} onChange={(e) => setFormInput({...formInput, currency: e.target.value})} className={`w-full px-3.5 py-2.5 rounded-2xl text-xs border outline-none font-medium ${darkMode ? 'bg-zinc-950 border-zinc-800 text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-900'}`}>
+                      <option value="AED">AED</option>
+                      <option value="USD">USD</option>
+                      <option value="PKR">PKR</option>
+                    </select>
+                  </div>
+                </div>
+              )}
+
+              {modalType === 'account' && (
+                <div>
+                  <label className="block text-[11px] font-bold mb-1">Currency</label>
+                  <select value={formInput.currency} onChange={(e) => setFormInput({...formInput, currency: e.target.value})} className={`w-full px-3.5 py-2.5 rounded-2xl text-xs border outline-none font-medium ${darkMode ? 'bg-zinc-950 border-zinc-800 text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-900'}`}>
+                    <option value="AED">AED</option>
+                    <option value="USD">USD</option>
+                    <option value="PKR">PKR</option>
+                  </select>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-[11px] font-bold mb-1">Date</label>
+                <input type="date" value={formInput.date} onChange={(e) => setFormInput({...formInput, date: e.target.value})} className={`w-full px-3.5 py-2.5 rounded-2xl text-xs border outline-none font-medium ${darkMode ? 'bg-zinc-950 border-zinc-800 text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-900'}`} />
+              </div>
+
+              <div className="pt-2 flex justify-end space-x-2">
+                <button type="button" onClick={() => setModalOpen(false)} className={`px-3.5 py-2 rounded-xl text-xs font-semibold border ${darkMode ? 'border-zinc-800 hover:bg-zinc-800' : 'border-zinc-200 hover:bg-zinc-100'}`}>Cancel</button>
+                <button type="submit" className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-600/20">Save Entry</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
