@@ -4,8 +4,8 @@
 
   function Accounts(props) {
     const { accounts, askDeleteAccount, darkMode, dateFmt, describeAccountMovement, getLastInflow, getLastOutflow, numFmt, openAddModal, openEditModal, selectionKey, settings, convertToBaseCurrency, transactions = [] } = props;
+    const [expandedAccountId, setExpandedAccountId] = React.useState(null);
     const baseCurrency = settings?.defaultCurrency || "AED";
-    const [expandedAccounts, setExpandedAccounts] = React.useState({});
     const accountColor = acc => {
       const name = String(acc.name || "").toLowerCase();
       if (name.includes("fiverr")) return "#3B82F6";
@@ -37,31 +37,33 @@
         const outflow = getLastOutflow(acc.id);
         const inflowInfo = inflow ? describeAccountMovement(inflow, acc) : null;
         const outflowInfo = outflow ? describeAccountMovement(outflow, acc) : null;
-        const accountTransactions = transactions.filter(t => {
-          if (!t) return false;
-          return String(t.accountId || "") === String(acc.id) ||
-            String(t.fromAccountId || "") === String(acc.id) ||
-            String(t.toAccountId || "") === String(acc.id);
-        }).sort((a, b) => String(b.date || "").localeCompare(String(a.date || ""))).slice(0, 5);
-        const isExpanded = !!expandedAccounts[acc.id];
+        const isExpanded = expandedAccountId === acc.id;
+        const recentTransactions = (Array.isArray(transactions) ? transactions : [])
+          .filter(tx => String(tx.accountId ?? tx.account ?? tx.fromAccountId ?? "") === String(acc.id))
+          .sort((a,b) => String(b.date || "").localeCompare(String(a.date || "")))
+          .slice(0, 4);
+        const iconType = String(acc.type || "").toLowerCase();
+        const AccountIcon = iconType.includes("cash") ? Icons.IconWallet : iconType.includes("wallet") ? Icons.IconWallet : Icons.IconAccounts;
         return h(window.SwipeRow, {
           key: acc.id,
           onEdit: () => openEditModal("account", acc),
           onDelete: () => askDeleteAccount(acc),
           selectionKey: selectionKey("account", acc.id)
         }, h("div", {
-          className: `account-native-card ${darkMode ? "account-native-dark" : ""} ${isExpanded ? "is-expanded" : ""}`, style: { "--af-account-color": accountColor(acc) },
-          role: "button",
-          tabIndex: 0,
-          onClick: () => setExpandedAccounts(prev => ({ ...prev, [acc.id]: !prev[acc.id] })),
-          onKeyDown: e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setExpandedAccounts(prev => ({ ...prev, [acc.id]: !prev[acc.id] })); } }
+          className: `account-native-card account-gradient-card ${darkMode ? "account-native-dark" : ""} ${isExpanded ? "is-expanded" : ""}`,
+          style: { "--account-color": accountColor(acc) }
         },
-          h("div", { className: "account-card-head" },
+          h("button", {
+            type: "button",
+            className: "account-card-main",
+            onClick: () => setExpandedAccountId(isExpanded ? null : acc.id),
+            "aria-expanded": isExpanded
+          }, h("div", { className: "account-card-head" },
             h("div", { className: "account-identity" },
               h("div", { className: "account-heading" },
                 h("span", { className: "account-type" }, acc.type || "Bank Account"),
                 h("div", { className: "account-title-row" },
-                  h("span", { className: "account-icon", "aria-hidden": "true" }, String(acc.type || "").toLowerCase().indexOf("cash") >= 0 || String(acc.type || "").toLowerCase().indexOf("wallet") >= 0 ? h(Icons.IconWallet, { className: "w-4 h-4" }) : h(Icons.IconAccounts, { className: "w-4 h-4" })),
+                  h("span", { className: "account-icon account-icon-colored", "aria-hidden": "true" }, h(AccountIcon, { className: "w-5 h-5" })),
                   h("h3", { className: "account-name" }, acc.name)
                 )
               )
@@ -69,12 +71,25 @@
             h("div", { className: "account-balance-block" },
               h("span", { className: "account-currency" }, acc.currency),
               h("strong", { className: "account-balance" }, numFmt(acc.balance))
-            ),
-            h("span", { className: `account-expand-chevron ${isExpanded ? "is-open" : ""}`, "aria-hidden": "true" }, "⌄")
+            )
           ),
           h("div", { className: "account-card-meta" },
             h("span", null, acc.currency),
-            h("span", null, acc.type || "Account")
+            h("span", null, acc.type || "Account"),
+            h("span", { className: "account-expand-chevron", "aria-hidden": "true" }, "⌄")
+          )),
+          isExpanded && h("div", { className: "account-expanded-transactions" },
+            recentTransactions.length ? recentTransactions.map((tx, i) => {
+              const amount = Number(tx.amount ?? tx.value ?? 0);
+              const positive = String(tx.type || "").toLowerCase().includes("income") || String(tx.type || "").toLowerCase().includes("salary") || String(tx.kind || "").toLowerCase() === "income";
+              return h("div", { className: "account-recent-row", key: tx.id || i },
+                h("div", { className: "account-recent-copy" },
+                  h("span", null, tx.description || tx.note || tx.category || tx.title || "Transaction"),
+                  h("small", null, tx.date ? dateFmt(tx.date) : "")
+                ),
+                h("strong", { className: positive ? "is-positive" : "" }, positive ? "+" : "-", acc.currency, " ", numFmt(Math.abs(amount)))
+              );
+            }) : h("div", { className: "account-no-transactions" }, "No recent transactions for this account.")
           ),
           (inflowInfo || outflowInfo) && h("div", { className: "account-flow-list" },
             inflowInfo && h("div", { className: "account-flow-row account-flow-income" },
@@ -87,21 +102,6 @@
               h("div", { className: "min-w-0" }, h("span", null, "Last outflow"), h("small", null, `${dateFmt(outflow.date)}${outflowInfo.note || ""}`)),
               h("strong", null, "-", outflowInfo.cur, " ", numFmt(outflowInfo.amt))
             )
-          ),
-          isExpanded && h("div", { className: "account-transactions-panel" },
-            h("div", { className: "account-transactions-heading" }, h("span", null, "LATEST TRANSACTIONS"), h("span", null, accountTransactions.length ? `${accountTransactions.length}` : "None")),
-            accountTransactions.length ? accountTransactions.map(t => {
-              const isOut = String(t.type || "").toLowerCase() === "expense" || String(t.type || "").toLowerCase() === "transfer" && String(t.fromAccountId || "") === String(acc.id);
-              const amount = Number(t.amount || 0);
-              return h("div", { key: t.id, className: "account-transaction-row" },
-                h("div", { className: "account-transaction-icon" }, isOut ? "−" : "+"),
-                h("div", { className: "account-transaction-main" },
-                  h("strong", null, t.category || t.description || t.type || "Transaction"),
-                  h("small", null, `${dateFmt(t.date)}${t.note ? " · " + t.note : ""}`)
-                ),
-                h("span", { className: isOut ? "account-transaction-out" : "account-transaction-in" }, `${isOut ? "−" : "+"}${t.currency || acc.currency} ${numFmt(amount)}`)
-              );
-            }) : h("div", { className: "account-transactions-empty" }, "No transactions recorded for this account yet.")
           )
         ));
       }))

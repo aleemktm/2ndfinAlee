@@ -120,33 +120,45 @@
     className: `text-sm font-bold uppercase tracking-wider ${accent.textStrong}`
   }, "Settings"), h("p", {
     className: "text-xs text-zinc-400 mt-1"
-  }, "Preferences and data stored on this device.")), appearanceOpen ? h("section", { className: "settings-detail-view" },
-      h("button", { type: "button", className: "settings-back-row", onClick: () => setAppearanceOpen(false) },
-        h("span", { className: "settings-back-chevron" }, "‹"), h("span", null, "Settings")
-      ),
-      h("div", { className: "settings-detail-title" }, "Appearance"),
-      h("div", { className: "settings-detail-card" },
-        h(SettingsRow, { icon: Icons.IconTune, title: "Theme", detail: "Light, dark or follow the system." },
-          h("select", { value: settings.theme, onChange: e => updateSettings({ theme: e.target.value }), className: `${inputCls} w-auto py-2 text-xs font-bold` },
-            h("option", { value: "light" }, "Light"), h("option", { value: "dark" }, "Dark"), h("option", { value: "auto" }, "System")
-          )
+  }, "Preferences and data stored on this device.")), h("section", { className: "settings-section settings-appearance-section space-y-2" },
+      h("h3", { className: "text-[10px] font-bold uppercase tracking-wider px-1 text-zinc-500" }, "Appearance"),
+      h("button", {
+        type: "button",
+        className: `settings-drill-row ${subCardCls}`,
+        onClick: () => setAppearanceOpen(true)
+      },
+        h("div", { className: `settings-drill-icon ${accent.activeBg10} ${accent.textStrong}` }, h(Icons.IconTune, { className: "w-4 h-4" })),
+        h("div", { className: "settings-drill-copy" },
+          h("span", null, "Appearance"),
+          h("small", null, `${settings.theme === "dark" ? "Dark" : settings.theme === "light" ? "Light" : "System"} · ${settings.accentColor || "emerald"}`)
         ),
-        h("div", { className: "settings-accent-detail" },
-          h("div", { className: "settings-detail-label" }, "Accent color"),
-          h("div", { className: "settings-accent-picker", role: "radiogroup", "aria-label": "Accent color" },
-            [
-              ["emerald", "#10B981", "Original"], ["teal", "#14B8A6", "Teal"], ["blue", "#3B82F6", "Blue"], ["violet", "#8B5CF6", "Violet"], ["amber", "#F59E0B", "Amber"]
-            ].map(([id, color, label]) => h("button", { key: id, type: "button", role: "radio", "aria-checked": settings.accentColor === id, "aria-label": label, title: label, onClick: () => updateSettings({ accentColor: id }), className: `settings-accent-option ${settings.accentColor === id ? "is-selected" : ""}` },
-              h("span", { className: "settings-accent-swatch", style: { backgroundColor: color } }), h("span", { className: "settings-accent-label" }, label)
-            ))
+        h("span", { className: "settings-chevron", "aria-hidden": "true" }, "›")
+      )
+    ),
+    appearanceOpen && h("div", { className: `settings-appearance-sheet ${darkMode ? "settings-sheet-dark" : ""}` },
+      h("div", { className: "settings-sheet-header" },
+        h("button", { type: "button", className: "settings-back-button", onClick: () => setAppearanceOpen(false) }, "‹"),
+        h("div", null, h("h2", null, "Appearance"), h("p", null, "Theme and accent color"))
+      ),
+      h("div", { className: "settings-sheet-group" },
+        h("h3", null, "Theme"),
+        h("div", { className: "settings-choice-list" },
+          [["light","Light"],["dark","Dark"],["auto","System"]].map(([id,label]) =>
+            h("button", { key:id, type:"button", className:`settings-choice-row ${settings.theme === id ? "is-selected" : ""}`, onClick:()=>updateSettings({theme:id}) },
+              h("span", null, label), h("span", { className:"settings-choice-check" }, settings.theme === id ? "✓" : "")
+            )
           )
         )
-      )
-    ) : h(SettingsSection, { title: "Appearance" },
-      h("button", { type: "button", className: `settings-navigation-row ${subCardCls}`, onClick: () => setAppearanceOpen(true) },
-        h("div", { className: "settings-navigation-icon" }, h(Icons.IconTune, { className: "w-4 h-4" })),
-        h("div", { className: "min-w-0 flex-1" }, h("p", { className: "text-xs font-bold" }, "Appearance"), h("p", { className: "text-[10px] text-zinc-400 mt-0.5" }, `${settings.theme === "auto" ? "System" : settings.theme === "dark" ? "Dark" : "Light"} · ${String(settings.accentColor || "emerald").replace(/^./, c => c.toUpperCase())}`)),
-        h("span", { className: "settings-chevron" }, "›")
+      ),
+      h("div", { className: "settings-sheet-group" },
+        h("h3", null, "Accent color"),
+        h("div", { className: "settings-accent-grid", role:"radiogroup", "aria-label":"Accent color" },
+          [["emerald","#10B981","Original"],["teal","#14B8A6","Teal"],["blue","#3B82F6","Blue"],["violet","#8B5CF6","Violet"],["amber","#F59E0B","Amber"]].map(([id,color,label]) =>
+            h("button", { key:id, type:"button", role:"radio", "aria-checked":settings.accentColor===id, className:`settings-accent-choice ${settings.accentColor===id ? "is-selected" : ""}`, onClick:()=>updateSettings({accentColor:id}) },
+              h("span", { className:"settings-accent-swatch", style:{backgroundColor:color} }), h("span", null, label), settings.accentColor===id && h("span",{className:"settings-choice-check"},"✓")
+            )
+          )
+        )
       )
     ), h(SettingsSection, {
     title: "Home dashboard"
