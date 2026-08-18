@@ -1725,3 +1725,29 @@ html.dark .settings-section { background: var(--bank-dark-surface); border-color
 @media (prefers-color-scheme: light) {
   html:not(.dark):not(.light) body { background: var(--bank-light-canvas) !important; }
 }
+
+/* ---- Ledger: transaction rows as compact bank statement lines ---- */
+.swipe-content-card.ledger-card-compact {
+  border-radius: var(--bank-radius-md) !important; border-color: var(--bank-light-border) !important;
+  background: var(--bank-light-surface) !important; box-shadow: 0 4px 14px rgba(15,23,42,.035);
+}
+html.dark .swipe-content-card.ledger-card-compact { background: var(--bank-dark-surface) !important; border-color: var(--bank-dark-border) !important; }
+.tx-category-icon { width: 30px !important; height: 30px !important; border-radius: 10px !important; background: rgba(118,118,128,.08) !important; }
+.tx-category-icon.tx-category-income { background: color-mix(in srgb, var(--af-green) 14%, transparent) !important; }
+.tx-category-icon.tx-category-expense { background: color-mix(in srgb, var(--af-red) 14%, transparent) !important; }
+.tx-category-icon.tx-category-transfer { background: color-mix(in srgb, var(--af-blue) 14%, transparent) !important; }
+.ledger-account-chip {
+  font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 999px;
+  background: rgba(118,118,128,.08); color: var(--bank-light-ink-soft);
+}
+html.dark .ledger-account-chip { background: rgba(255,255,255,.06); color: var(--bank-dark-ink-soft); }
+
+/* ---- Ledger: search bar + filter/sort selects + header buttons ---- */
+.max-w-2xl.mx-auto.w-full > div.flex.gap-2 > div.flex-1 {
+  border-radius: var(--bank-radius-sm) !important; border-color: var(--bank-light-border) !important;
+  background: var(--bank-light-surface) !important;
+}
+html.dark .max-w-2xl.mx-auto.w-full > div.flex.gap-2 > div.flex-1 { background: var(--bank-dark-surface) !important; border-color: var(--bank-dark-border) !important; }
+.icon-select { border-radius: var(--bank-radius-sm) !important; }
+button[class*="rounded-xl"], button[class*="rounded-2xl"] { border-radius: var(--bank-radius-sm) !important; }
+.ledger-statement-sheet { border-radius: 26px 26px 0 0 !important; }
