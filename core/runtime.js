@@ -50,8 +50,8 @@ if (!window.__aleemFinHapticsInstalled) {
 }
 window.__aleemSelection = window.__aleemSelection || new Set();
 var selectionEvent = "aleem-selection-updated";
-var SwipeRow = ({ children, onEdit, onDelete, editLabel = "Edit", deleteLabel = "Delete", selectionKey }) => {
-  const [open, setOpen] = useState(false);
+var SwipeRow = ({ children, onEdit, onDelete, onLeftAction, onLeftAction2, editLabel = "Edit", deleteLabel = "Delete", leftActionLabel = "Record payment", leftAction2Label = "Add more", selectionKey }) => {
+  const [side, setSide] = useState(0); // -1 = left-side actions, 1 = right-side actions
   const startX = useRef(0);
   const startY = useRef(0);
   const dragging = useRef(false);
@@ -60,52 +60,48 @@ var SwipeRow = ({ children, onEdit, onDelete, editLabel = "Edit", deleteLabel = 
   const contentRef = useRef(null);
   const key = selectionKey || null;
   const isSelected = key ? !!(window.__aleemSelection && window.__aleemSelection.has(key)) : false;
+  const hasLeftActions = !!(onLeftAction || onLeftAction2);
+  const RIGHT_ACTION_WIDTH = 144;
+  const LEFT_ACTION_WIDTH = hasLeftActions ? 184 : 0;
+
   const clearLongPress = () => { if (longPress.current) { clearTimeout(longPress.current); longPress.current = null; } };
-  const close = () => {
-    setOpen(false);
-    if (contentRef.current) contentRef.current.style.transform = "";
-  };
-  const ACTION_WIDTH = 144;
-  const setOffset = value => {
-    if (contentRef.current) contentRef.current.style.transform = `translate3d(${value}px,0,0)`;
-  };
+  const widthForSide = s => s === -1 ? LEFT_ACTION_WIDTH : RIGHT_ACTION_WIDTH;
+  const close = () => { setSide(0); if (contentRef.current) contentRef.current.style.transform = ""; };
+  const setOffset = value => { if (contentRef.current) contentRef.current.style.transform = `translate3d(${value}px,0,0)`; };
+
   const onPointerDown = e => {
     if (e.pointerType === "mouse" && e.button !== 0) return;
     const selectionMode = key && window.__aleemSelection && window.__aleemSelection.size > 0;
-    startX.current = e.clientX;
-    startY.current = e.clientY;
-    dragging.current = true;
-    moved.current = false;
-    clearLongPress();
+    startX.current = e.clientX; startY.current = e.clientY;
+    dragging.current = true; moved.current = false; clearLongPress();
     if (key && !selectionMode) {
       longPress.current = setTimeout(() => {
         if (!dragging.current || moved.current) return;
-        dragging.current = false;
-        clearLongPress();
-        close();
-        hapticFeedback(18);
+        dragging.current = false; clearLongPress(); close(); hapticFeedback(18);
         window.dispatchEvent(new CustomEvent("aleem-select", { detail: { key } }));
       }, 520);
     }
     if (e.currentTarget.setPointerCapture) e.currentTarget.setPointerCapture(e.pointerId);
   };
+
   const onPointerMove = e => {
     if (!dragging.current) return;
     const dx = e.clientX - startX.current;
     const dy = e.clientY - startY.current;
     if (!moved.current && Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
-    if (!moved.current && Math.abs(dy) > Math.abs(dx)) {
-      clearLongPress();
-      dragging.current = false;
-      return;
-    }
-    moved.current = true;
-    clearLongPress();
-    const base = open ? -ACTION_WIDTH : 0;
+    if (!moved.current && Math.abs(dy) > Math.abs(dx)) { clearLongPress(); dragging.current = false; return; }
+    moved.current = true; clearLongPress();
+
+    const base = side === -1 ? LEFT_ACTION_WIDTH : side === 1 ? -RIGHT_ACTION_WIDTH : 0;
     const raw = base + dx;
-    const resisted = raw < -ACTION_WIDTH ? -ACTION_WIDTH - (Math.abs(raw + ACTION_WIDTH) * 0.18) : raw > 0 ? raw * 0.18 : raw;
-    setOffset(Math.max(-ACTION_WIDTH - 12, Math.min(8, resisted)));
+    const min = hasLeftActions ? -8 : 0;
+    const max = RIGHT_ACTION_WIDTH + 12;
+    let resisted = raw;
+    if (raw < -LEFT_ACTION_WIDTH) resisted = -LEFT_ACTION_WIDTH - (Math.abs(raw + LEFT_ACTION_WIDTH) * 0.18);
+    else if (raw > RIGHT_ACTION_WIDTH) resisted = RIGHT_ACTION_WIDTH + (Math.abs(raw - RIGHT_ACTION_WIDTH) * 0.18);
+    setOffset(Math.max(-LEFT_ACTION_WIDTH - 12, Math.min(RIGHT_ACTION_WIDTH + 12, resisted)));
   };
+
   const onPointerUp = e => {
     clearLongPress();
     if (!dragging.current) return;
@@ -113,51 +109,58 @@ var SwipeRow = ({ children, onEdit, onDelete, editLabel = "Edit", deleteLabel = 
     const dx = e.clientX - startX.current;
     if (!moved.current && key && window.__aleemSelection && window.__aleemSelection.size > 0) {
       window.dispatchEvent(new CustomEvent("aleem-select", { detail: { key } }));
-      dragging.current = false;
-      moved.current = true;
-      return;
+      moved.current = true; return;
     }
-    if (dx < (open ? -35 : -55)) {
-      hapticFeedback(16);
-      setOpen(true);
-      setOffset(-ACTION_WIDTH);
-    } else if (open && dx > 35) {
-      hapticFeedback(9);
-      close();
+
+    if (side === 0) {
+      if (dx > 55 && hasLeftActions) {
+        hapticFeedback(16); setSide(-1); setOffset(LEFT_ACTION_WIDTH);
+      } else if (dx < -55) {
+        hapticFeedback(16); setSide(1); setOffset(-RIGHT_ACTION_WIDTH);
+      } else setOffset(0);
+    } else if (side === -1) {
+      if (dx < -35) {
+        hapticFeedback(16); setSide(1); setOffset(-RIGHT_ACTION_WIDTH);
+      } else if (dx < 35) {
+        close();
+      } else setOffset(LEFT_ACTION_WIDTH);
     } else {
-      setOffset(open ? -ACTION_WIDTH : 0);
+      if (dx > 35) {
+        if (hasLeftActions) { hapticFeedback(16); setSide(-1); setOffset(LEFT_ACTION_WIDTH); }
+        else close();
+      } else if (dx < -35) {
+        setSide(1); setOffset(-RIGHT_ACTION_WIDTH);
+      } else setOffset(-RIGHT_ACTION_WIDTH);
     }
   };
+
   useEffect(() => {
-    if (!open) return;
-    const onDoc = e => {
-      if (contentRef.current && !contentRef.current.parentElement?.contains(e.target)) close();
-    };
+    if (!side) return;
+    const onDoc = e => { if (contentRef.current && !contentRef.current.parentElement?.contains(e.target)) close(); };
     document.addEventListener("pointerdown", onDoc);
     return () => document.removeEventListener("pointerdown", onDoc);
-  }, [open]);
-  const action = fn => {
-    close();
-    if (typeof fn === "function") fn();
-  };
+  }, [side]);
+
+  const action = fn => { close(); if (typeof fn === "function") fn(); };
+
   return React.createElement("div", { className: `swipe-row${isSelected ? " is-selected" : ""}`, "data-selection-key": key || undefined },
-    React.createElement("div", { className: `swipe-actions${open ? " is-open" : ""}`, "aria-hidden": !open },
-      React.createElement("button", { type: "button", className: "swipe-action swipe-action-edit", onClick: () => action(onEdit), tabIndex: open ? 0 : -1, "aria-label": editLabel, disabled: !onEdit },
-        React.createElement(Icons.IconEdit, { className: "w-[14px] h-[14px]" })),
-      React.createElement("button", { type: "button", className: "swipe-action swipe-action-delete", onClick: () => action(onDelete), tabIndex: open ? 0 : -1, "aria-label": deleteLabel, disabled: !onDelete },
-        React.createElement(Icons.IconTrash, { className: "w-[14px] h-[14px]" }))
+    hasLeftActions && React.createElement("div", { className: `swipe-actions swipe-actions-left${side === -1 ? " is-open" : ""}`, "aria-hidden": side !== -1 },
+      React.createElement("button", { type: "button", className: "swipe-action swipe-action-record", onClick: () => action(onLeftAction), tabIndex: side === -1 ? 0 : -1, "aria-label": leftActionLabel, disabled: !onLeftAction }, "+", React.createElement("span", null, leftActionLabel)),
+      React.createElement("button", { type: "button", className: "swipe-action swipe-action-add-more", onClick: () => action(onLeftAction2), tabIndex: side === -1 ? 0 : -1, "aria-label": leftAction2Label, disabled: !onLeftAction2 }, "+", React.createElement("span", null, leftAction2Label))
+    ),
+    React.createElement("div", { className: `swipe-actions swipe-actions-right${side === 1 ? " is-open" : ""}`, "aria-hidden": side !== 1 },
+      React.createElement("button", { type: "button", className: "swipe-action swipe-action-edit", onClick: () => action(onEdit), tabIndex: side === 1 ? 0 : -1, "aria-label": editLabel, disabled: !onEdit }, React.createElement(Icons.IconEdit, { className: "w-[14px] h-[14px]" })),
+      React.createElement("button", { type: "button", className: "swipe-action swipe-action-delete", onClick: () => action(onDelete), tabIndex: side === 1 ? 0 : -1, "aria-label": deleteLabel, disabled: !onDelete }, React.createElement(Icons.IconTrash, { className: "w-[14px] h-[14px]" }))
     ),
     React.createElement("div", {
-      ref: contentRef,
-      className: `swipe-content${open ? " is-swiped" : ""}`,
+      ref: contentRef, className: `swipe-content${side ? " is-swiped" : ""}`,
       onPointerDown, onPointerMove, onPointerUp,
-      onPointerCancel: () => { clearLongPress(); dragging.current = false; setOffset(open ? -ACTION_WIDTH : 0); },
+      onPointerCancel: () => { clearLongPress(); dragging.current = false; setOffset(side === -1 ? LEFT_ACTION_WIDTH : side === 1 ? -RIGHT_ACTION_WIDTH : 0); },
       onClick: e => {
         if (key && window.__aleemSelection && window.__aleemSelection.size > 0) {
           e.preventDefault(); e.stopPropagation();
           if (moved.current) { moved.current = false; return; }
-          window.dispatchEvent(new CustomEvent("aleem-select", { detail: { key } }));
-          return;
+          window.dispatchEvent(new CustomEvent("aleem-select", { detail: { key } })); return;
         }
         if (moved.current) { e.preventDefault(); e.stopPropagation(); moved.current = false; }
       }
