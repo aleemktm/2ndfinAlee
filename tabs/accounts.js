@@ -7,6 +7,7 @@
     const { accounts, askDeleteAccount, darkMode, dateFmt, describeAccountMovement, getLastInflow, getLastOutflow, numFmt, openAddModal, openEditModal, selectionKey, settings, convertToBaseCurrency, transactions = [] } = props;
     const baseCurrency = settings?.defaultCurrency || "AED";
     const [expandedId, setExpandedId] = React.useState(null);
+    const [stackOpen, setStackOpen] = React.useState(false);
     const accountColor = acc => {
       const name = String(acc.name || "").toLowerCase();
       if (name.includes("fiverr")) return "#3B82F6";
@@ -49,10 +50,10 @@
         const outflowInfo = outflow ? describeAccountMovement(outflow, acc) : null;
         const color = accountColor(acc);
         const isExpanded = expandedId === acc.id;
-        const history = isExpanded ? accountTransactions(acc.id) : [];
+        const history = isExpanded ? accountTransactions(acc.id).slice(0, 3) : [];
         return h(window.SwipeRow, {
           key: acc.id,
-          className: `account-swipe-row ${expandedId !== null ? "accounts-stack-open" : ""}`,
+          className: `account-swipe-row ${stackOpen ? "accounts-stack-open" : ""} ${isExpanded ? "account-row-expanded" : ""}`,
           onEdit: () => openEditModal("account", acc),
           onDelete: () => askDeleteAccount(acc),
           selectionKey: selectionKey("account", acc.id)
@@ -63,7 +64,14 @@
               "--account-color": color,
               "--stack-index": accounts.indexOf(acc)
             },
-            onClick: () => setExpandedId(isExpanded ? null : acc.id),
+            onClick: () => {
+              if (!stackOpen) {
+                setStackOpen(true);
+                setExpandedId(null);
+                return;
+              }
+              setExpandedId(isExpanded ? null : acc.id);
+            },
             role: "button",
             tabIndex: 0,
             "aria-expanded": isExpanded,
