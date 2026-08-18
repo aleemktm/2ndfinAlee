@@ -2044,3 +2044,51 @@ html.dark .account-activity-row { background: rgba(255,255,255,.045); }
 .account-stack-inner { display: flex; flex-direction: column; }
 .account-wallet-card { order: 1; z-index: 2; }
 .account-activity-card { order: 2; }
+
+/* Loan card refinement: clean front card + stacked history + bidirectional actions */
+.loan-card-stack{position:relative;transition:padding .24s cubic-bezier(.22,1,.36,1)}
+.loan-card-stack.is-expanded{padding-top:14px}
+.loan-native-front{position:relative;z-index:2;cursor:pointer;transition:box-shadow .24s ease,transform .24s ease}
+.loan-card-stack.is-expanded .loan-native-front{box-shadow:0 18px 38px rgba(15,23,42,.11)}
+html.dark .loan-card-stack.is-expanded .loan-native-front{box-shadow:0 18px 38px rgba(0,0,0,.28)}
+.loan-history-card{position:relative;z-index:1;margin:0 7px -2px;padding:12px 12px 13px;border:1px solid rgba(60,60,67,.10);border-radius:18px 18px 14px 14px;background:rgba(250,250,250,.96);box-shadow:0 5px 16px rgba(15,23,42,.055)}
+.loan-history-card-dark{background:rgba(31,31,34,.96);border-color:rgba(255,255,255,.08);box-shadow:0 7px 20px rgba(0,0,0,.20)}
+.loan-history-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+.loan-history-card-head>div:first-child span{display:block;font-size:7px;font-weight:900;letter-spacing:.13em;color:#8e8e93}
+.loan-history-card-head>div:first-child strong{display:block;margin-top:2px;font-size:9px;letter-spacing:-.01em}
+.loan-history-actions{display:flex;gap:5px;flex:none}
+.loan-history-action{min-height:29px;padding:0 8px;border-radius:9px;border:1px solid rgba(60,60,67,.10);background:rgba(118,118,128,.07);color:#3a3a3c;font-size:8px;font-weight:850;white-space:nowrap}
+.loan-history-action-primary{background:color-mix(in srgb,var(--af-accent) 11%,transparent);border-color:color-mix(in srgb,var(--af-accent) 20%,transparent);color:var(--af-accent)}
+html.dark .loan-history-action{color:#f2f2f7;border-color:rgba(255,255,255,.08);background:rgba(255,255,255,.055)}
+html.dark .loan-history-action-primary{color:#73ddb0;background:color-mix(in srgb,var(--af-accent) 15%,transparent)}
+.loan-history-list{display:flex;flex-direction:column;gap:5px;max-height:230px;overflow:auto;padding-right:1px}
+.loan-history-row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:7px 8px;border-radius:10px;background:rgba(118,118,128,.055);font-size:8px}
+.loan-history-main{min-width:0}.loan-history-main strong{display:block;font-size:9px;font-weight:850;color:#3a3a3c}.loan-history-main span{display:block;margin-top:2px;font-size:8px;color:#8e8e93}
+.loan-history-value{display:flex;align-items:center;gap:6px;flex:none}.loan-history-value>strong{font-size:9px;white-space:nowrap}
+.loan-history-undo{width:24px;height:24px;display:grid;place-items:center;border:0;border-radius:8px;background:rgba(118,118,128,.09);color:#8e8e93}
+.loan-history-undo:active{transform:scale(.94)}
+.loan-history-empty{text-align:center;font-size:8px;color:#8e8e93;padding:8px 4px 4px}
+.loan-date-line{display:flex;align-items:center;gap:14px;margin-top:12px;padding-top:10px;border-top:1px solid rgba(60,60,67,.08);font-size:8px;color:#8e8e93}
+.loan-date-line span{display:inline-flex;align-items:center;gap:4px}.loan-date-line span:first-child:before{content:"";width:5px;height:5px;border-radius:50%;background:var(--af-accent)}
+.loan-date-line .is-overdue{color:#e5484d;font-weight:800}
+.loan-tap-hint{display:flex;justify-content:center;align-items:center;gap:5px;margin-top:11px;padding-top:9px;border-top:1px dashed rgba(118,118,128,.16);font-size:8px;font-weight:750;color:#8e8e93;letter-spacing:.01em}
+.loan-tap-hint svg{opacity:.75}
+html.dark .loan-date-line{border-color:rgba(255,255,255,.07)}
+html.dark .loan-tap-hint{border-color:rgba(255,255,255,.10)}
+html.dark .loan-history-main strong{color:#f2f2f7}
+html.dark .loan-history-row{background:rgba(255,255,255,.045)}
+
+/* Bidirectional swipe actions. Existing right-to-left Edit/Delete remains unchanged visually. */
+.swipe-actions-left{left:0;right:auto;width:184px;display:grid;grid-template-columns:1fr 1fr}
+.swipe-actions-right{right:0;left:auto;width:144px;display:grid;grid-template-columns:1fr 1fr}
+.swipe-action-record,.swipe-action-add-more{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:17px}
+.swipe-action-record span,.swipe-action-add-more span{font-size:7px;font-weight:850;line-height:1.1;letter-spacing:-.01em}
+.swipe-action-record{background:color-mix(in srgb,var(--af-accent) 13%,transparent);color:var(--af-accent)}
+.swipe-action-add-more{background:rgba(118,118,128,.11);color:#3a3a3c}
+html.dark .swipe-action-add-more{color:#f2f2f7;background:rgba(255,255,255,.07)}
+@media(max-width:520px){
+  .loan-history-card{margin-left:5px;margin-right:5px}
+  .loan-history-actions{gap:4px}
+  .loan-history-action{padding:0 7px;font-size:7.5px}
+  .loan-tap-hint{font-size:7.5px}
+}
