@@ -1604,11 +1604,22 @@ html.dark header nav.hidden.md\:flex { border-color: var(--bank-dark-border) !im
 
 /* ---- Generic surfaces used across tabs pick up the bank palette ---- */
 .accounts-header-card, .assets-hero, .assets-summary-card, .assets-gold-card, .asset-row-card,
-.loans-header, .loan-native-summary-card, .loan-native-card, .home-actions-section, .home-panel, .home-stat,
-.home-action, .settings-section, .recurring-card, .recurring-next {
+.loans-header, .loan-native-summary-card, .home-actions-section, .home-panel, .home-stat,
+.home-action, .settings-section, .recurring-card, .recurring-next, .recurring-hero, .recurring-stat,
+.recurring-editor, .recurring-empty, .insight-panel, .planning-card, .planning-editor, .planning-empty,
+.ledger-card, .ledger-list-card, .vault-card {
   border-radius: var(--bank-radius-md) !important;
+  border-color: var(--bank-light-border) !important;
 }
-.accounts-header-card, .assets-hero { border-radius: var(--bank-radius-lg) !important; }
+html.dark .accounts-header-card, html.dark .assets-hero, html.dark .assets-summary-card, html.dark .assets-gold-card,
+html.dark .asset-row-card, html.dark .loans-header, html.dark .loan-native-summary-card, html.dark .home-actions-section,
+html.dark .home-panel, html.dark .home-stat, html.dark .home-action, html.dark .settings-section, html.dark .recurring-card,
+html.dark .recurring-next, html.dark .recurring-hero, html.dark .recurring-stat, html.dark .recurring-editor,
+html.dark .recurring-empty, html.dark .insight-panel, html.dark .planning-card, html.dark .planning-editor,
+html.dark .planning-empty, html.dark .ledger-card, html.dark .ledger-list-card, html.dark .vault-card {
+  border-color: var(--bank-dark-border) !important;
+}
+.accounts-header-card, .assets-hero, .insight-hero, .recurring-hero { border-radius: var(--bank-radius-lg) !important; }
 
 /* ============================================================
    WALLET CARD — the signature bank-card tile used for accounts.
@@ -1645,27 +1656,70 @@ html.dark header nav.hidden.md\:flex { border-color: var(--bank-dark-border) !im
 /* ---- Flow rows below a wallet card (kept for accounts tab detail) ---- */
 .account-native-card { padding: 0 !important; background: transparent !important; border: 0 !important; box-shadow: none !important; }
 .account-card-meta { display: none !important; } /* redundant under the new card face */
-.account-flow-list { margin-top: 8px; border-radius: var(--bank-radius-sm); background: var(--bank-light-surface); border: 1px solid var(--bank-light-border); padding: 4px 10px; }
-html.dark .account-flow-list { background: var(--bank-dark-surface); border-color: var(--bank-dark-border); }
+.wallet-card { border-radius: 22px 22px 0 0; margin-bottom: 0; }
+.wallet-card:has(+ .account-flow-list) { border-radius: 22px 22px 0 0; }
+.account-flow-list {
+  margin-top: 0; border-radius: 0 0 18px 18px; padding: 8px 14px 10px;
+  background: color-mix(in srgb, var(--af-accent) 5%, var(--bank-light-surface));
+  border: 1px solid var(--bank-light-border); border-top: 0;
+}
+html.dark .account-flow-list { background: color-mix(in srgb, var(--af-accent) 8%, var(--bank-dark-surface)); border-color: var(--bank-dark-border); }
+.account-flow-row { padding: 5px 0; }
 .accounts-list { display: flex; flex-direction: column; gap: 14px; }
+.accounts-list > div > div:not(.account-flow-list) { border-radius: 22px; }
+.accounts-list .account-native-card:has(.account-flow-list) .wallet-card { border-radius: 22px 22px 0 0; }
+.accounts-list .account-native-card:not(:has(.account-flow-list)) .wallet-card { border-radius: 22px; }
 
-/* ---- Loan cards: colored left rail instead of full-bleed gradient (kept legible for detail data) ---- */
-.loan-native-card { border-left: 4px solid var(--card-a, var(--af-accent)) !important; }
-.loan-card-lent { --card-a: var(--af-green); }
-.loan-card-borrowed { --card-a: #E5484D; }
+/* ---- Loan cards: gradient identity band (wallet-style) + attached detail body ---- */
+.loan-native-card { border: 1px solid var(--bank-light-border) !important; border-left: 0 !important; border-radius: var(--bank-radius-md) !important; overflow: hidden; padding: 0 !important; }
+html.dark .loan-native-card { border-color: var(--bank-dark-border) !important; }
+.loan-card-lent { --card-a: #0F9D68; --card-b: #0B7550; }
+.loan-card-borrowed { --card-a: #D8434B; --card-b: #A82E35; }
+.loan-card-topline {
+  padding: 14px 16px; margin: 0; color: #fff;
+  background: linear-gradient(135deg, var(--card-a) 0%, var(--card-b) 100%);
+}
+.loan-card-topline .loan-kind { color: rgba(255,255,255,.82) !important; }
+.loan-card-topline h3 { color: #fff !important; }
+.loan-card-topline .loan-outstanding span { color: rgba(255,255,255,.75) !important; }
+.loan-card-topline .loan-outstanding strong { color: #fff !important; }
+.loan-direction-icon { background: rgba(255,255,255,.18) !important; color: #fff !important; }
+.loan-card-details, .loan-progress-wrap, .loan-card-actions, .loan-history-panel { padding-left: 16px; padding-right: 16px; }
+.loan-card-details { padding-top: 12px; }
+.loan-card-actions { padding-bottom: 12px; }
 .loan-native-summary-card.loan-native-lent { background: linear-gradient(135deg, color-mix(in srgb, var(--af-green) 16%, transparent), transparent) !important; }
-.loan-native-summary-card.loan-native-borrowed { background: linear-gradient(135deg, color-mix(in srgb, #E5484D 16%, transparent), transparent) !important; }
+.loan-native-summary-card.loan-native-borrowed { background: linear-gradient(135deg, color-mix(in srgb, #D8434B 16%, transparent), transparent) !important; }
 
 /* ---- Asset rows: colored icon rail by category ---- */
 .asset-row-card { border-left: 4px solid var(--card-a, var(--af-accent)) !important; }
 .asset-row-icon { background: color-mix(in srgb, var(--card-a, var(--af-accent)) 16%, transparent) !important; color: var(--card-a, var(--af-accent)) !important; }
 
 /* ---- Settings rows: grouped banking-app list style with chevron affordance ---- */
-.settings-section { background: var(--bank-light-surface); border: 1px solid var(--bank-light-border); box-shadow: 0 6px 18px rgba(15,23,42,.04); }
+.settings-section { background: var(--bank-light-surface); border: 1px solid var(--bank-light-border); box-shadow: 0 6px 18px rgba(15,23,42,.04); overflow: hidden; border-radius: var(--bank-radius-md) !important; }
 html.dark .settings-section { background: var(--bank-dark-surface); border-color: var(--bank-dark-border); }
+.settings-section > h3 { padding-left: 13px !important; padding-right: 13px !important; }
+.settings-row { min-width: 0; }
+.settings-row .min-w-0 { min-width: 0; overflow: hidden; }
+.settings-row p { overflow-wrap: anywhere; word-break: break-word; }
+.settings-row select, .settings-row input, .ios-settings-switch { max-width: 100%; box-sizing: border-box; }
+.settings-row > div.shrink-0 { max-width: 46%; text-align: right; }
+.settings-row > div.shrink-0 select { max-width: 100%; }
 .ios-settings-switch.is-on { background: var(--af-accent) !important; }
 
-/* ---- Buttons: slightly denser corner radius, consistent press feedback ---- */
+/* ---- Overview hero: aligned to the same wallet-card gradient language ---- */
+.home-hero {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--af-accent) 92%, #0B0C10) 0%, color-mix(in srgb, var(--af-accent) 55%, #0B0C10) 100%) !important;
+  border: 1px solid rgba(255,255,255,.10) !important; box-shadow: 0 20px 44px -10px color-mix(in srgb, var(--af-accent) 45%, transparent), inset 0 1px 0 rgba(255,255,255,.14) !important;
+  border-radius: var(--bank-radius-lg) !important;
+}
+.home-hero-dark { background: linear-gradient(135deg, color-mix(in srgb, var(--af-accent) 70%, #0B0C10) 0%, #0B0C10 100%) !important; }
+.home-hero .home-eyebrow, .home-hero .home-month-pill, .home-hero .home-subtitle, .home-hero .home-metric-label,
+.home-hero .home-secondary-metric, .home-hero .home-rate-strip, .home-hero .home-rate-strip span { color: rgba(255,255,255,.78) !important; }
+.home-hero .home-title, .home-hero .home-metric, .home-ring-inner strong { color: #fff !important; }
+.home-hero .home-month-pill, .home-hero .home-currency select, .home-hero .home-rate-button { background: rgba(255,255,255,.14) !important; border-color: rgba(255,255,255,.18) !important; color: #fff !important; }
+.home-hero .home-rate-strip { border-top-color: rgba(255,255,255,.16) !important; }
+.home-hero .home-rate-icon-button { color: rgba(255,255,255,.85) !important; }
+.home-ring-inner { background: rgba(11,12,16,.55) !important; }
 .accounts-add-button, .assets-add, button[class*="rounded-2xl"], button[class*="rounded-xl"] { border-radius: var(--bank-radius-sm); }
 
 @media (prefers-color-scheme: light) {
