@@ -652,6 +652,8 @@
 
   function MainFormModal(props) {
     const { accent, accounts, closeMainFormModal, darkMode, editingId, formInput, handleFormSubmit, inputCls, modalType, modalClosing, numFmt, setFormInput, settings } = props;
+    const CURRENCY_OPTIONS = ["AED", "USD", "EUR", "GBP", "SAR", "INR", "PKR", "CAD", "AUD"];
+    const selectedAccountForForm = accounts.find(acc => acc.id === formInput.accountId);
     const [offsetY, setOffsetY] = React.useState(0);
     const [dragging, setDragging] = React.useState(false);
     const sheetRef = React.useRef(null);
@@ -974,10 +976,17 @@
     className: "block text-[11px] font-medium mb-1"
   }, "Account"), /* @__PURE__ */React.createElement("select", {
     value: formInput.accountId,
-    onChange: e => setFormInput({
-      ...formInput,
-      accountId: e.target.value
-    }),
+    onChange: e => {
+      const nextAccount = accounts.find(acc => acc.id === e.target.value);
+      setFormInput({
+        ...formInput,
+        accountId: e.target.value,
+        // Keep the transaction currency locked to whichever account is
+        // selected so amounts are never silently misread in the wrong
+        // currency (see: currency mismatch bug).
+        currency: nextAccount ? nextAccount.currency : formInput.currency
+      });
+    },
     className: inputCls
   }, accounts.map(acc => /* @__PURE__ */React.createElement("option", {
     key: acc.id,
@@ -1006,13 +1015,12 @@
       currency: e.target.value
     }),
     className: inputCls
-  }, /* @__PURE__ */React.createElement("option", {
-    value: "AED"
-  }, "AED"), /* @__PURE__ */React.createElement("option", {
-    value: "USD"
-  }, "USD"), /* @__PURE__ */React.createElement("option", {
-    value: "PKR"
-  }, "PKR"))), modalType === "loan" && /* @__PURE__ */React.createElement("div", null, /* @__PURE__ */React.createElement("label", {
+  }, CURRENCY_OPTIONS.map(code => /* @__PURE__ */React.createElement("option", {
+    key: code,
+    value: code
+  }, code))), ["income", "expense"].includes(modalType) && selectedAccountForForm && /* @__PURE__ */React.createElement("p", {
+    className: `mt-1 text-[10px] ${formInput.currency === selectedAccountForForm.currency ? (darkMode ? "text-zinc-500" : "text-zinc-400") : "text-amber-500 font-medium"}`
+  }, formInput.currency === selectedAccountForForm.currency ? `Matches ${selectedAccountForForm.name}'s currency.` : `Heads up: this differs from ${selectedAccountForForm.name}'s currency (${selectedAccountForForm.currency}) \u2014 the amount will be converted.`)), modalType === "loan" && /* @__PURE__ */React.createElement("div", null, /* @__PURE__ */React.createElement("label", {
     className: "block text-[11px] font-medium mb-1"
   }, "Currency"), /* @__PURE__ */React.createElement("select", {
     value: formInput.currency,
@@ -1021,13 +1029,10 @@
       currency: e.target.value
     }),
     className: inputCls
-  }, /* @__PURE__ */React.createElement("option", {
-    value: "AED"
-  }, "AED"), /* @__PURE__ */React.createElement("option", {
-    value: "USD"
-  }, "USD"), /* @__PURE__ */React.createElement("option", {
-    value: "PKR"
-  }, "PKR"))), ["income", "expense", "transfer"].includes(modalType) && /* @__PURE__ */React.createElement("div", null, /* @__PURE__ */React.createElement("label", {
+  }, CURRENCY_OPTIONS.map(code => /* @__PURE__ */React.createElement("option", {
+    key: code,
+    value: code
+  }, code)))), ["income", "expense", "transfer"].includes(modalType) && /* @__PURE__ */React.createElement("div", null, /* @__PURE__ */React.createElement("label", {
     className: "block text-[11px] font-medium mb-1"
   }, "Date"), /* @__PURE__ */React.createElement("input", {
     type: "date",
