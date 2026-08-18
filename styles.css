@@ -767,7 +767,7 @@ main button:active, main a:active { transform: scale(.985); }
 .tx-category-expense-text{color:var(--af-red)}
 .tx-category-transfer{color:var(--af-blue)}
 .tx-category-transfer-text{color:var(--af-blue)}
-@media (hover:hover){.tx-category-icon:hover{transform:scale(1.08)}}}
+@media (hover:hover){.tx-category-icon:hover{transform:scale(1.08)}}
 
 /* AleemFin brand green — exact var(--af-accent) across semantic success/income UI. */
 :root{--af-green:var(--af-accent) !important}
@@ -1701,44 +1701,48 @@ html.dark .loan-native-summary-card.loan-native-borrowed {
 .rates-result span, .rates-result small { color: rgba(255,255,255,.82) !important; }
 .rates-result strong { color: #fff !important; }
 
-/* v40 UI refinements: mobile floating navigation */
+/* Final UI refinement: floating mobile navigation */
 .af-floating-tabbar-wrap {
   background: transparent !important;
-  padding-bottom: 0 !important;
-  transform: translateY(13px);
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  transform: translateY(5%);
 }
 .af-floating-tabbar {
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  height: 64px !important;
-  overflow: visible !important;
+  background: rgba(255,255,255,.72) !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+  box-shadow: 0 14px 34px rgba(15,23,42,.14), inset 0 1px 0 rgba(255,255,255,.55) !important;
 }
-.af-floating-tabbar .mobile-nav-swipe {
+html.dark .af-floating-tabbar {
+  background: rgba(28,28,30,.72) !important;
+  box-shadow: 0 16px 38px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+.mobile-bottom-bar,
+.mobile-nav-swipe,
+.mobile-settings-fixed {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.mobile-nav-swipe {
   position: relative;
   isolation: isolate;
 }
-.af-floating-tabbar .mobile-nav-active-pill {
+.mobile-nav-active-pill {
   position: absolute;
-  z-index: 0;
   left: 0;
   top: 50%;
-  width: var(--mobile-pill-w, 0px);
-  height: 50px;
-  border-radius: 999px;
-  transform: translate3d(var(--mobile-pill-x, 0px), -50%, 0);
-  background: color-mix(in srgb, var(--af-accent) 13%, rgba(255,255,255,.72));
-  border: 1px solid color-mix(in srgb, var(--af-accent) 24%, transparent);
-  box-shadow: 0 5px 16px color-mix(in srgb, var(--af-accent) 12%, transparent), inset 0 1px 0 rgba(255,255,255,.58);
+  z-index: 0;
   pointer-events: none;
-  transition: transform .42s cubic-bezier(.22,1,.36,1), width .3s ease;
-  will-change: transform;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--af-accent) 15%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--af-accent) 10%, transparent), 0 2px 10px color-mix(in srgb, var(--af-accent) 9%, transparent);
+  transform: translate3d(0,-50%,0);
+  transition: transform .22s cubic-bezier(.22,1,.36,1), width .22s cubic-bezier(.22,1,.36,1), height .22s cubic-bezier(.22,1,.36,1);
+  will-change: transform, width, height;
 }
-html.dark .af-floating-tabbar .mobile-nav-active-pill {
-  background: color-mix(in srgb, var(--af-accent) 18%, rgba(30,30,32,.82));
-  border-color: color-mix(in srgb, var(--af-accent) 28%, transparent);
-  box-shadow: 0 6px 18px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.08);
+html.dark .mobile-nav-active-pill {
+  background: color-mix(in srgb, var(--af-accent) 19%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--af-accent) 12%, transparent), 0 2px 12px color-mix(in srgb, var(--af-accent) 12%, transparent);
 }
 .af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab,
 .af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab {
@@ -1747,263 +1751,296 @@ html.dark .af-floating-tabbar .mobile-nav-active-pill {
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
+  outline: none !important;
   color: #8e8e93 !important;
   -webkit-tap-highlight-color: transparent !important;
+  transition: color .16s ease, transform .16s ease !important;
 }
-.af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab.mobile-nav-tab-active {
-  color: var(--af-accent) !important;
-}
-.af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab:not(.mobile-nav-tab-active):hover,
-.af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab:not(.mobile-nav-tab-active):hover {
-  color: #8e8e93 !important;
-}
-.af-floating-tabbar .mobile-settings-fixed {
-  border-left: 0 !important;
-  background: transparent !important;
-}
+.af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab.mobile-nav-tab-active,
 .af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab.mobile-nav-tab-active {
-  color: var(--af-accent) !important;
-}
-
-/* v40 UI refinements: account cards */
-.accounts-native,
-.accounts-list,
-.accounts-list .swipe-row,
-.account-swipe-row {
-  overflow: visible !important;
-}
-.accounts-list {
-  position: relative;
-  gap: 0 !important;
-  padding-bottom: 10px;
-}
-.account-swipe-row {
-  position: relative;
-  border-radius: 20px !important;
-  isolation: isolate;
-  z-index: calc(100 - var(--stack-index, 0));
-  transition: transform .48s cubic-bezier(.22,1,.36,1), margin .48s cubic-bezier(.22,1,.36,1), z-index 0s linear .48s;
-}
-.account-swipe-row:not(.accounts-stack-open) {
-  margin-top: 0;
-  transform: translateY(calc(var(--stack-index, 0) * -12px));
-}
-.account-swipe-row.accounts-stack-open {
-  margin-top: 9px;
-  transform: translateY(0);
-  z-index: 100 !important;
-}
-.account-swipe-row .swipe-actions { border-radius: 20px; overflow: hidden; }
-.account-wallet-card {
-  display: block;
-  overflow: hidden;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--account-color) 88%, white) 0%, var(--account-color) 52%, color-mix(in srgb, var(--account-color) 72%, black) 100%) !important;
-  transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease, border-radius .35s ease;
-}
-.account-wallet-main {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  min-height: 82px;
-}
-.account-wallet-details { min-width: 0; flex: 1 1 auto; }
-.account-wallet-top { margin: 0 !important; }
-.account-wallet-name-block { min-width: 0; }
-.account-wallet-name {
-  font-size: 25px !important;
-  line-height: 1.05;
-  font-weight: 900 !important;
-  letter-spacing: -.035em;
-  color: #fff !important;
-}
-.account-wallet-type { margin-top: 4px; font-size: 9px !important; }
-.account-wallet-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 10px;
-  font-size: 9px;
-  font-weight: 750;
-  color: rgba(255,255,255,.72);
-}
-.account-wallet-meta span:last-child { opacity: .82; }
-.account-wallet-balance-side {
-  flex: 0 0 auto;
-  text-align: right;
-  min-width: 112px;
-}
-.account-wallet-balance-side .account-wallet-currency { font-size: 9px; }
-.account-wallet-balance {
-  font-size: 25px !important;
-  line-height: 1.05;
-  margin-top: 3px !important;
-}
-.account-wallet-expand {
-  margin: 12px -5px -7px;
-  padding: 0;
-  border-radius: 18px;
-  background: rgba(255,255,255,.82);
-  color: #1c1c1e;
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
-  backdrop-filter: blur(18px) saturate(150%);
-  box-shadow: 0 12px 24px rgba(15,23,42,.14), inset 0 1px 0 rgba(255,255,255,.8);
-  transform: translateY(-3px);
-  opacity: 0;
-  transition: grid-template-rows .42s cubic-bezier(.22,1,.36,1), opacity .25s ease, transform .42s cubic-bezier(.22,1,.36,1);
-}
-.account-wallet-card.is-expanded .account-wallet-expand {
-  opacity: 1;
-  transform: translateY(0);
-}
-.account-wallet-expand-head {
-  margin: 0 !important;
-  padding: 11px 12px 7px !important;
-  border-top: 0 !important;
-}
-.account-wallet-expand-head span { color: #6e6e73 !important; }
-.account-wallet-tx-list { padding: 0 8px 9px; margin-top: 0 !important; gap: 5px !important; }
-.account-wallet-tx-row {
-  background: rgba(245,245,247,.72) !important;
-  color: #1c1c1e;
-  border: 1px solid rgba(60,60,67,.08);
-}
-.account-wallet-tx-row span { color: #1c1c1e !important; }
-.account-wallet-tx-row small { color: #6e6e73 !important; }
-.account-wallet-tx-in { color: #1dbf73 !important; }
-.account-wallet-tx-out { color: #ff453a !important; }
-html.dark .account-wallet-expand {
-  background: rgba(39,39,42,.86);
-  color: #f5f5f7;
-  box-shadow: 0 12px 26px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.08);
-}
-html.dark .account-wallet-expand-head span,
-html.dark .account-wallet-tx-row small { color: #a1a1a6 !important; }
-html.dark .account-wallet-tx-row { background: rgba(58,58,60,.72) !important; border-color: rgba(255,255,255,.08); }
-html.dark .account-wallet-tx-row span { color: #f5f5f7 !important; }
-@media (max-width:520px) {
-  .account-wallet-name { font-size: 21px !important; }
-  .account-wallet-balance { font-size: 21px !important; }
-  .account-wallet-balance-side { min-width: 100px; }
-}
-
-
-/* v41.1 UI bug fixes — navigation capsule + wallet-style accounts */
-.af-floating-tabbar-wrap {
-  transform: translateY(16px) !important; /* ~5% lower than the 64px bar */
-  padding-bottom: 0 !important;
-  background: transparent !important;
-}
-.af-floating-tabbar {
-  position: relative !important;
-  border-radius: 999px !important;
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
-  overflow: hidden !important;
-  isolation: isolate;
+  color: var(--af-accent) !important;
 }
-.af-floating-tabbar .mobile-nav-swipe {
-  position: relative !important;
-  z-index: 1;
-  border-radius: 999px !important;
-  overflow-x: auto !important;
-  overflow-y: hidden !important;
-  background: transparent !important;
-}
-.af-floating-tabbar .mobile-nav-active-pill {
-  top: 50% !important;
-  height: 48px !important;
-  border-radius: 999px !important;
-  pointer-events: none !important;
-  transition: transform .28s cubic-bezier(.22,1,.36,1), width .2s ease !important;
-}
-.af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab,
-.af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab,
-.af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab:hover,
-.af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab:hover,
+.af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab:not(.mobile-nav-tab-active):hover,
+.af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab:not(.mobile-nav-tab-active):hover,
 .af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab:focus,
-.af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab:focus,
+.af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab:focus {
+  background: transparent !important;
+  color: #8e8e93 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
 .af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab:active,
 .af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab:active {
   background: transparent !important;
   box-shadow: none !important;
-  outline: none !important;
-  -webkit-tap-highlight-color: transparent !important;
+  transform: scale(.97) !important;
 }
-.af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab:not(.mobile-nav-tab-active),
-.af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab:not(.mobile-nav-tab-active) {
-  color: #8e8e93 !important;
-}
-.af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab.mobile-nav-tab-active,
-.af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab.mobile-nav-tab-active {
-  color: var(--af-accent) !important;
-}
-.af-floating-tabbar .mobile-nav-swipe .mobile-nav-icon-active,
-.af-floating-tabbar .mobile-settings-fixed .mobile-nav-icon-active {
+.af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab.mobile-nav-tab-active .mobile-nav-icon-active,
+.af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab.mobile-nav-tab-active .mobile-nav-icon-active {
   background: transparent !important;
+  color: inherit !important;
   box-shadow: none !important;
 }
 
-/* Keep the pill entirely inside the capsule while the nav itself scrolls. */
-.af-floating-tabbar .mobile-nav-swipe {
-  clip-path: inset(0 round 999px);
-}
-.af-floating-tabbar .mobile-nav-active-pill {
-  left: 1px !important;
-}
-
-/* Wallet-style account stack: preserve full scroll height and reveal every card. */
+/* Final UI refinement: Apple Wallet-style stacked bank cards */
 .accounts-list {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 0 !important;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   overflow: visible !important;
-  padding: 0 0 18px !important;
+  padding: 4px 0 8px;
 }
-.account-swipe-row {
-  margin-top: 0 !important;
-  transform: translateY(calc(var(--stack-index, 0) * -10px)) !important;
-  transition: transform .34s cubic-bezier(.22,1,.36,1), margin .34s cubic-bezier(.22,1,.36,1), z-index 0s linear .34s !important;
+.accounts-list > .swipe-row {
+  position: relative;
+  overflow: visible !important;
+  border-radius: 20px;
+  isolation: isolate;
+  transition: margin-top .46s cubic-bezier(.22,1,.36,1), height .46s cubic-bezier(.22,1,.36,1), transform .46s cubic-bezier(.22,1,.36,1);
 }
-.account-swipe-row.accounts-stack-open {
-  margin-top: 8px !important;
-  transform: translateY(0) !important;
+.accounts-list.is-stacked > .swipe-row:not(:first-child) {
+  margin-top: -82px;
 }
-.account-swipe-row:first-child {
-  margin-top: 0 !important;
+.accounts-list.is-stacked > .swipe-row:nth-child(1) { z-index: 1; }
+.accounts-list.is-stacked > .swipe-row:nth-child(2) { z-index: 2; }
+.accounts-list.is-stacked > .swipe-row:nth-child(3) { z-index: 3; }
+.accounts-list.is-stacked > .swipe-row:nth-child(4) { z-index: 4; }
+.accounts-list.is-stacked > .swipe-row:nth-child(5) { z-index: 5; }
+.accounts-list.is-stacked > .swipe-row:nth-child(n+6) { z-index: 6; }
+.accounts-list.is-expanded > .swipe-row { margin-top: 0; z-index: auto; }
+.accounts-list .swipe-content {
+  overflow: visible !important;
+  background: transparent !important;
+}
+.account-stack-inner {
+  position: relative;
+  overflow: visible;
+  padding-bottom: 0;
 }
 .account-wallet-card {
-  position: relative !important;
-  overflow: visible !important;
+  min-height: 104px;
+  height: 104px;
+  padding: 14px 16px !important;
   border-radius: 20px !important;
-  z-index: 2;
+  overflow: hidden;
+  box-shadow: 0 16px 34px -9px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.24) !important;
+  transition: transform .46s cubic-bezier(.22,1,.36,1), box-shadow .34s ease, height .46s cubic-bezier(.22,1,.36,1);
 }
-.account-wallet-main {
+.accounts-list.is-stacked .account-wallet-card {
+  cursor: pointer;
+}
+.accounts-list.is-stacked .account-wallet-card:active {
+  transform: scale(.985);
+}
+.account-wallet-layout {
   position: relative;
   z-index: 2;
-  border-radius: 20px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 58px;
 }
-.account-wallet-expand {
+.account-wallet-left,
+.account-wallet-right {
+  min-width: 0;
+}
+.account-wallet-left { flex: 1 1 auto; }
+.account-wallet-right {
+  flex: 0 0 auto;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.account-wallet-top { margin: 0 !important; }
+.account-wallet-identity { gap: 9px; }
+.account-wallet-bank-meta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.account-wallet-name {
+  display: block;
+  font-size: 16px !important;
+  line-height: 1.05;
+  font-weight: 850 !important;
+  letter-spacing: -.025em;
+  color: #fff !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.account-wallet-details {
+  display: block;
+  font-size: 9px;
+  line-height: 1.2;
+  font-weight: 650;
+  color: rgba(255,255,255,.72);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.account-wallet-currency {
+  font-size: 9px !important;
+  color: rgba(255,255,255,.76) !important;
+  margin-bottom: 2px;
+}
+.account-wallet-balance {
+  font-size: 16px !important;
+  line-height: 1.05;
+  font-weight: 850 !important;
+  letter-spacing: -.025em;
+  text-shadow: 0 1px 3px rgba(0,0,0,.18);
+}
+.account-wallet-footer {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 10px;
+  z-index: 2;
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: none;
+}
+.account-wallet-hint {
+  font-size: 7px !important;
+  font-weight: 750;
+  color: rgba(255,255,255,.62) !important;
+}
+.account-wallet-sheen { z-index: 1; }
+
+/* Activity deliberately sits behind the bank card, like a frosted glass layer emerging from underneath it. */
+.account-activity-card {
   position: relative;
   z-index: 1;
-  margin: -2px 10px 0 !important;
-  border-radius: 18px !important;
-  background: rgba(255,255,255,.58) !important;
-  border: 1px solid rgba(255,255,255,.32);
-  -webkit-backdrop-filter: blur(22px) saturate(160%) !important;
-  backdrop-filter: blur(22px) saturate(160%) !important;
-  box-shadow: 0 14px 30px rgba(15,23,42,.16), inset 0 1px 0 rgba(255,255,255,.65) !important;
+  margin: -10px 9px 0;
+  padding: 18px 12px 11px;
+  border-radius: 0 0 18px 18px;
+  color: #1c1c1e;
+  background: rgba(255,255,255,.60);
+  border: 1px solid rgba(255,255,255,.58);
+  border-top: 0;
+  -webkit-backdrop-filter: blur(20px) saturate(155%);
+  backdrop-filter: blur(20px) saturate(155%);
+  box-shadow: 0 12px 26px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.50);
+  animation: accountActivityReveal .34s cubic-bezier(.22,1,.36,1) both;
 }
-html.dark .account-wallet-expand {
-  background: rgba(34,34,37,.62) !important;
-  border-color: rgba(255,255,255,.10) !important;
-  box-shadow: 0 14px 30px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.08) !important;
+.account-activity-card-dark {
+  color: #f2f2f7;
+  background: rgba(39,39,42,.62);
+  border-color: rgba(255,255,255,.10);
+  box-shadow: 0 14px 30px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.06);
 }
-.account-wallet-tx-list {
-  padding-bottom: 10px !important;
+@keyframes accountActivityReveal {
+  from { opacity: 0; transform: translateY(-8px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
-.account-wallet-tx-row {
-  min-height: 38px;
+.account-activity-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
+.account-activity-head > div { min-width: 0; }
+.account-activity-eyebrow {
+  display: block;
+  font-size: 7px;
+  font-weight: 850;
+  letter-spacing: .12em;
+  color: #8e8e93;
+}
+.account-activity-head strong {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.account-activity-count {
+  flex: none;
+  font-size: 7px;
+  font-weight: 750;
+  color: #8e8e93;
+}
+.account-activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 8px;
+}
+.account-activity-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 5px 7px;
+  border-radius: 11px;
+  background: rgba(118,118,128,.07);
+}
+.account-activity-direction {
+  width: 23px;
+  height: 23px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+}
+.account-activity-direction.is-inflow { color: #1dbf73; background: rgba(29,191,115,.12); }
+.account-activity-direction.is-outflow { color: #e5484d; background: rgba(229,72,77,.10); }
+.account-activity-row > div { min-width: 0; }
+.account-activity-row span:not(.account-activity-direction) {
+  display: block;
+  font-size: 8px;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.account-activity-row small {
+  display: block;
+  margin-top: 1px;
+  font-size: 7px;
+  color: #8e8e93;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.account-activity-row strong {
+  flex: none;
+  font-size: 8px;
+  white-space: nowrap;
+}
+.account-activity-in { color: #1dbf73; }
+.account-activity-out { color: #e5484d; }
+.account-activity-empty {
+  margin-top: 7px;
+  font-size: 8px;
+  color: #8e8e93;
+}
+html.dark .account-activity-row { background: rgba(255,255,255,.045); }
+
+@media (max-width: 520px) {
+  .account-wallet-card { min-height: 100px; height: 100px; padding: 13px 14px !important; }
+  .accounts-list.is-stacked > .swipe-row:not(:first-child) { margin-top: -79px; }
+  .account-wallet-name { font-size: 15px !important; }
+  .account-wallet-balance { font-size: 15px !important; }
+  .account-wallet-footer { left: 14px; right: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-nav-active-pill,
+  .accounts-list > .swipe-row,
+  .account-wallet-card,
+  .account-activity-card { transition: none !important; animation: none !important; }
+}
+
+.account-stack-inner { display: flex; flex-direction: column; }
+.account-wallet-card { order: 1; z-index: 2; }
+.account-activity-card { order: 2; }
