@@ -795,18 +795,7 @@
       amount: e.target.value
     }),
     className: inputCls
-  }))), modalType === "account" && editingId && /* @__PURE__ */React.createElement("div", { className: "account-color-field" }, /* @__PURE__ */React.createElement("label", {
-    className: "block text-[11px] font-medium mb-1"
-  }, "Bank Card Color"), /* @__PURE__ */React.createElement("div", { className: "account-color-picker-row" }, /* @__PURE__ */React.createElement("input", {
-    type: "color",
-    value: formInput.color || "#1DBF73",
-    onChange: e => setFormInput({
-      ...formInput,
-      color: e.target.value
-    }),
-    className: "account-color-picker",
-    "aria-label": "Choose bank card color"
-  }), /* @__PURE__ */React.createElement("span", { className: "account-color-value" }, formInput.color || "#1DBF73"))), modalType === "transfer" && /* @__PURE__ */React.createElement(React.Fragment, null, /* @__PURE__ */React.createElement("div", null, /* @__PURE__ */React.createElement("label", {
+  }))), modalType === "transfer" && /* @__PURE__ */React.createElement(React.Fragment, null, /* @__PURE__ */React.createElement("div", null, /* @__PURE__ */React.createElement("label", {
     className: "block text-[11px] font-medium mb-1"
   }, "From Account"), /* @__PURE__ */React.createElement("select", {
     value: formInput.accountId,
