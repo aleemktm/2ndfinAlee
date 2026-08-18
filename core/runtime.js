@@ -50,7 +50,7 @@ if (!window.__aleemFinHapticsInstalled) {
 }
 window.__aleemSelection = window.__aleemSelection || new Set();
 var selectionEvent = "aleem-selection-updated";
-var SwipeRow = ({ children, onEdit, onDelete, editLabel = "Edit", deleteLabel = "Delete", selectionKey, className = "" }) => {
+var SwipeRow = ({ children, onEdit, onDelete, editLabel = "Edit", deleteLabel = "Delete", selectionKey }) => {
   const [open, setOpen] = useState(false);
   const startX = useRef(0);
   const startY = useRef(0);
@@ -140,7 +140,7 @@ var SwipeRow = ({ children, onEdit, onDelete, editLabel = "Edit", deleteLabel = 
     close();
     if (typeof fn === "function") fn();
   };
-  return React.createElement("div", { className: `swipe-row${isSelected ? " is-selected" : ""}${className ? " " + className : ""}`, "data-selection-key": key || undefined },
+  return React.createElement("div", { className: `swipe-row${isSelected ? " is-selected" : ""}`, "data-selection-key": key || undefined },
     React.createElement("div", { className: `swipe-actions${open ? " is-open" : ""}`, "aria-hidden": !open },
       React.createElement("button", { type: "button", className: "swipe-action swipe-action-edit", onClick: () => action(onEdit), tabIndex: open ? 0 : -1, "aria-label": editLabel, disabled: !onEdit },
         React.createElement(Icons.IconEdit, { className: "w-[14px] h-[14px]" })),
