@@ -1653,22 +1653,16 @@ html.dark .planning-empty, html.dark .ledger-card, html.dark .ledger-list-card, 
 .wallet-card-currency { font-size: 9px; font-weight: 700; letter-spacing: .08em; color: rgba(255,255,255,.75); text-transform: uppercase; }
 .wallet-card-balance { font-size: 21px; font-weight: 900; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
 
-/* ---- Flow rows below a wallet card (kept for accounts tab detail) ---- */
+/* ---- Recent activity: embedded directly in the wallet card, not a separate panel ---- */
 .account-native-card { padding: 0 !important; background: transparent !important; border: 0 !important; box-shadow: none !important; }
-.account-card-meta { display: none !important; } /* redundant under the new card face */
-.wallet-card { border-radius: 22px 22px 0 0; margin-bottom: 0; }
-.wallet-card:has(+ .account-flow-list) { border-radius: 22px 22px 0 0; }
-.account-flow-list {
-  margin-top: 0; border-radius: 0 0 18px 18px; padding: 8px 14px 10px;
-  background: color-mix(in srgb, var(--af-accent) 5%, var(--bank-light-surface));
-  border: 1px solid var(--bank-light-border); border-top: 0;
-}
-html.dark .account-flow-list { background: color-mix(in srgb, var(--af-accent) 8%, var(--bank-dark-surface)); border-color: var(--bank-dark-border); }
-.account-flow-row { padding: 5px 0; }
+.account-card-meta { display: none !important; }
+.wallet-card-activity { margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.18); display: flex; flex-direction: column; gap: 7px; }
+.wallet-card-activity-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; font-size: 10px; }
+.wallet-card-activity-row > div span { display: block; font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: rgba(255,255,255,.7); }
+.wallet-card-activity-row > div small { display: block; font-size: 9px; color: rgba(255,255,255,.85); margin-top: 1px; }
+.wallet-card-activity-row > strong { font-size: 10px; font-weight: 800; color: #fff; white-space: nowrap; }
+.wallet-card-activity-in, .wallet-card-activity-out { color: rgba(255,255,255,.85); }
 .accounts-list { display: flex; flex-direction: column; gap: 14px; }
-.accounts-list > div > div:not(.account-flow-list) { border-radius: 22px; }
-.accounts-list .account-native-card:has(.account-flow-list) .wallet-card { border-radius: 22px 22px 0 0; }
-.accounts-list .account-native-card:not(:has(.account-flow-list)) .wallet-card { border-radius: 22px; }
 
 /* ---- Loan cards: gradient identity band (wallet-style) + attached detail body ---- */
 .loan-native-card { border: 1px solid var(--bank-light-border) !important; border-left: 0 !important; border-radius: var(--bank-radius-md) !important; overflow: hidden; padding: 0 !important; }
@@ -1751,3 +1745,37 @@ html.dark .max-w-2xl.mx-auto.w-full > div.flex.gap-2 > div.flex-1 { background: 
 .icon-select { border-radius: var(--bank-radius-sm) !important; }
 button[class*="rounded-xl"], button[class*="rounded-2xl"] { border-radius: var(--bank-radius-sm) !important; }
 .ledger-statement-sheet { border-radius: 26px 26px 0 0 !important; }
+
+/* ---- Planning: budgets/goals cards + progress bars in the bank palette ---- */
+.planning-summary-card, .planning-item, .planning-goal-card, .planning-editor, .planning-empty {
+  border-radius: var(--bank-radius-md) !important; border-color: var(--bank-light-border) !important;
+  background: var(--bank-light-surface) !important;
+}
+html.dark .planning-summary-card, html.dark .planning-item, html.dark .planning-goal-card,
+html.dark .planning-editor, html.dark .planning-empty { background: var(--bank-dark-surface) !important; border-color: var(--bank-dark-border) !important; }
+.planning-summary-budget { background: linear-gradient(135deg, color-mix(in srgb, var(--af-accent) 14%, transparent), var(--bank-light-surface)) !important; }
+.planning-summary-goal { background: linear-gradient(135deg, color-mix(in srgb, #6E4FDE 14%, transparent), var(--bank-light-surface)) !important; }
+.planning-progress { border-radius: 999px !important; overflow: hidden; }
+.planning-progress > div { background: var(--af-accent) !important; }
+.planning-item.danger .planning-progress > div { background: var(--af-red, #D8434B) !important; }
+.planning-item.warning .planning-progress > div { background: #C4791C !important; }
+.planning-add-button, .planning-primary { border-radius: var(--bank-radius-sm) !important; }
+.planning-goal-icon { background: color-mix(in srgb, #6E4FDE 14%, transparent) !important; color: #6E4FDE !important; }
+
+/* ---- Rates: converter + reference-rate cards; result strip gets the wallet gradient ---- */
+.rates-hero, .rates-card { border-radius: var(--bank-radius-lg) !important; border-color: var(--bank-light-border) !important; background: var(--bank-light-surface) !important; }
+.rates-hero.is-dark, .rates-card.is-dark, html.dark .rates-hero, html.dark .rates-card { background: var(--bank-dark-surface) !important; border-color: var(--bank-dark-border) !important; }
+.rates-result {
+  border-radius: var(--bank-radius-md) !important; border: 0 !important; color: #fff;
+  background: linear-gradient(135deg, var(--af-accent) 0%, color-mix(in srgb, var(--af-accent) 55%, #0B0C10) 100%) !important;
+}
+.rates-result span, .rates-result small { color: rgba(255,255,255,.78) !important; }
+.rates-result strong { color: #fff !important; }
+.rates-sync { border-radius: var(--bank-radius-sm) !important; }
+.rates-base-pill { border-radius: 999px !important; }
+
+/* ---- Recurring + nav: icon chips consistent with Ledger/Vault treatment ---- */
+.recurring-next-icon, .recurring-card-icon { border-radius: 10px !important; }
+.recurring-next-icon.is-income, .recurring-card-icon.is-income { background: color-mix(in srgb, var(--af-green) 14%, transparent) !important; }
+.recurring-next-icon.is-expense, .recurring-card-icon.is-expense { background: color-mix(in srgb, var(--af-red, #D8434B) 14%, transparent) !important; }
+nav.fixed.bottom-0 button[class*="font-bold"] svg, header nav.hidden.md\:flex button[class*="font-bold"] svg { color: var(--af-accent) !important; }
