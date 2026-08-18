@@ -2274,6 +2274,27 @@ useEffect(() => {
 }, [activeTab]);
 
 useEffect(() => {
+  if (window.innerWidth > 767) return;
+  const scroller = document.querySelector("[data-mobile-nav-scroll]");
+  if (!scroller) return;
+  const updatePill = () => {
+    const activeButton = scroller.querySelector(`[data-mobile-nav-tab="${activeTab}"]`);
+    if (!activeButton) return;
+    const x = activeButton.offsetLeft - scroller.scrollLeft;
+    scroller.style.setProperty("--mobile-pill-x", `${x}px`);
+    scroller.style.setProperty("--mobile-pill-w", `${activeButton.offsetWidth}px`);
+  };
+  const frame = requestAnimationFrame(updatePill);
+  scroller.addEventListener("scroll", updatePill, { passive: true });
+  window.addEventListener("resize", updatePill);
+  return () => {
+    cancelAnimationFrame(frame);
+    scroller.removeEventListener("scroll", updatePill);
+    window.removeEventListener("resize", updatePill);
+  };
+}, [activeTab]);
+
+useEffect(() => {
   if (activeTab !== "settings") {
     if (activeTab) lastNonSettingsTabRef.current = activeTab;
     return;
@@ -2429,7 +2450,7 @@ const tabProps = { selectionToolbar, selectionVersion, selectionKey, selectedKey
     }, /* @__PURE__ */React.createElement("div", {
       className: "mobile-nav-swipe",
       "data-mobile-nav-scroll": "true"
-    }, MOBILE_NAV_ITEMS.filter(tab => tab.id !== "settings").map(tab => {
+    }, /* @__PURE__ */React.createElement("div", { className: "mobile-nav-active-pill", "aria-hidden": "true" }), MOBILE_NAV_ITEMS.filter(tab => tab.id !== "settings").map(tab => {
       const Icon = tab.icon;
       const isActive = activeTab === tab.id;
       return /* @__PURE__ */React.createElement("button", {
