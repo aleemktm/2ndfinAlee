@@ -119,17 +119,21 @@ var SwipeRow = ({ children, onEdit, onDelete, onLeftAction, onLeftAction2, editL
         hapticFeedback(16); setSide(1); setOffset(-RIGHT_ACTION_WIDTH);
       } else setOffset(0);
     } else if (side === -1) {
+      // When the left-side actions are open, an opposite swipe closes them.
+      // Do not jump directly to the other action side; this prevents the two
+      // action panels from fighting each other when the user swipes back.
       if (dx < -35) {
-        hapticFeedback(16); setSide(1); setOffset(-RIGHT_ACTION_WIDTH);
+        hapticFeedback(16); close();
       } else if (dx < 35) {
         close();
       } else setOffset(LEFT_ACTION_WIDTH);
     } else {
+      // When the right-side actions are open, an opposite swipe closes them
+      // instead of switching straight to the left-side actions.
       if (dx > 35) {
-        if (hasLeftActions) { hapticFeedback(16); setSide(-1); setOffset(LEFT_ACTION_WIDTH); }
-        else close();
+        hapticFeedback(16); close();
       } else if (dx < -35) {
-        setSide(1); setOffset(-RIGHT_ACTION_WIDTH);
+        setOffset(-RIGHT_ACTION_WIDTH);
       } else setOffset(-RIGHT_ACTION_WIDTH);
     }
   };
