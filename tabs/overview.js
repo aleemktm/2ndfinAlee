@@ -75,7 +75,7 @@
           ),
           h("div", { className: "home-currency" },
             h("select", { value: currency, onChange: e => setCurrency(e.target.value), "aria-label": "Display currency" },
-              h("option", { value: "AED" }, "AED"), h("option", { value: "USD" }, "USD"), h("option", { value: "PKR" }, "PKR")
+              ["AED","USD","EUR","GBP","SAR","INR","PKR","CAD","AUD"].map(code => h("option", { key: code, value: code }, code))
             ),
             h("button", { type: "button", onClick: openRatesModal, title: "Edit exchange rates", className: "home-rate-button" }, h(Icons.IconRates, { className: "w-3.5 h-3.5" }), "Rates")
           )
