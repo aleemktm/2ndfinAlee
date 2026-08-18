@@ -1700,3 +1700,190 @@ html.dark .loan-native-summary-card.loan-native-borrowed {
 }
 .rates-result span, .rates-result small { color: rgba(255,255,255,.82) !important; }
 .rates-result strong { color: #fff !important; }
+
+/* v40 UI refinements: mobile floating navigation */
+.af-floating-tabbar-wrap {
+  background: transparent !important;
+  padding-bottom: 0 !important;
+  transform: translateY(13px);
+}
+.af-floating-tabbar {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  height: 64px !important;
+  overflow: visible !important;
+}
+.af-floating-tabbar .mobile-nav-swipe {
+  position: relative;
+  isolation: isolate;
+}
+.af-floating-tabbar .mobile-nav-active-pill {
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  top: 50%;
+  width: var(--mobile-pill-w, 0px);
+  height: 50px;
+  border-radius: 999px;
+  transform: translate3d(var(--mobile-pill-x, 0px), -50%, 0);
+  background: color-mix(in srgb, var(--af-accent) 13%, rgba(255,255,255,.72));
+  border: 1px solid color-mix(in srgb, var(--af-accent) 24%, transparent);
+  box-shadow: 0 5px 16px color-mix(in srgb, var(--af-accent) 12%, transparent), inset 0 1px 0 rgba(255,255,255,.58);
+  pointer-events: none;
+  transition: transform .42s cubic-bezier(.22,1,.36,1), width .3s ease;
+  will-change: transform;
+}
+html.dark .af-floating-tabbar .mobile-nav-active-pill {
+  background: color-mix(in srgb, var(--af-accent) 18%, rgba(30,30,32,.82));
+  border-color: color-mix(in srgb, var(--af-accent) 28%, transparent);
+  box-shadow: 0 6px 18px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.08);
+}
+.af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab,
+.af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab {
+  position: relative;
+  z-index: 1;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: #8e8e93 !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+.af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab.mobile-nav-tab-active {
+  color: var(--af-accent) !important;
+}
+.af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab:not(.mobile-nav-tab-active):hover,
+.af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab:not(.mobile-nav-tab-active):hover {
+  color: #8e8e93 !important;
+}
+.af-floating-tabbar .mobile-settings-fixed {
+  border-left: 0 !important;
+  background: transparent !important;
+}
+.af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab.mobile-nav-tab-active {
+  color: var(--af-accent) !important;
+}
+
+/* v40 UI refinements: account cards */
+.accounts-native,
+.accounts-list,
+.accounts-list .swipe-row,
+.account-swipe-row {
+  overflow: visible !important;
+}
+.accounts-list {
+  position: relative;
+  gap: 0 !important;
+  padding-bottom: 10px;
+}
+.account-swipe-row {
+  position: relative;
+  border-radius: 20px !important;
+  isolation: isolate;
+  z-index: calc(100 - var(--stack-index, 0));
+  transition: transform .48s cubic-bezier(.22,1,.36,1), margin .48s cubic-bezier(.22,1,.36,1), z-index 0s linear .48s;
+}
+.account-swipe-row:not(.accounts-stack-open) {
+  margin-top: 0;
+  transform: translateY(calc(var(--stack-index, 0) * -12px));
+}
+.account-swipe-row.accounts-stack-open {
+  margin-top: 9px;
+  transform: translateY(0);
+  z-index: 100 !important;
+}
+.account-swipe-row .swipe-actions { border-radius: 20px; overflow: hidden; }
+.account-wallet-card {
+  display: block;
+  overflow: hidden;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--account-color) 88%, white) 0%, var(--account-color) 52%, color-mix(in srgb, var(--account-color) 72%, black) 100%) !important;
+  transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease, border-radius .35s ease;
+}
+.account-wallet-main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 82px;
+}
+.account-wallet-details { min-width: 0; flex: 1 1 auto; }
+.account-wallet-top { margin: 0 !important; }
+.account-wallet-name-block { min-width: 0; }
+.account-wallet-name {
+  font-size: 25px !important;
+  line-height: 1.05;
+  font-weight: 900 !important;
+  letter-spacing: -.035em;
+  color: #fff !important;
+}
+.account-wallet-type { margin-top: 4px; font-size: 9px !important; }
+.account-wallet-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 9px;
+  font-weight: 750;
+  color: rgba(255,255,255,.72);
+}
+.account-wallet-meta span:last-child { opacity: .82; }
+.account-wallet-balance-side {
+  flex: 0 0 auto;
+  text-align: right;
+  min-width: 112px;
+}
+.account-wallet-balance-side .account-wallet-currency { font-size: 9px; }
+.account-wallet-balance {
+  font-size: 25px !important;
+  line-height: 1.05;
+  margin-top: 3px !important;
+}
+.account-wallet-expand {
+  margin: 12px -5px -7px;
+  padding: 0;
+  border-radius: 18px;
+  background: rgba(255,255,255,.82);
+  color: #1c1c1e;
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+  box-shadow: 0 12px 24px rgba(15,23,42,.14), inset 0 1px 0 rgba(255,255,255,.8);
+  transform: translateY(-3px);
+  opacity: 0;
+  transition: grid-template-rows .42s cubic-bezier(.22,1,.36,1), opacity .25s ease, transform .42s cubic-bezier(.22,1,.36,1);
+}
+.account-wallet-card.is-expanded .account-wallet-expand {
+  opacity: 1;
+  transform: translateY(0);
+}
+.account-wallet-expand-head {
+  margin: 0 !important;
+  padding: 11px 12px 7px !important;
+  border-top: 0 !important;
+}
+.account-wallet-expand-head span { color: #6e6e73 !important; }
+.account-wallet-tx-list { padding: 0 8px 9px; margin-top: 0 !important; gap: 5px !important; }
+.account-wallet-tx-row {
+  background: rgba(245,245,247,.72) !important;
+  color: #1c1c1e;
+  border: 1px solid rgba(60,60,67,.08);
+}
+.account-wallet-tx-row span { color: #1c1c1e !important; }
+.account-wallet-tx-row small { color: #6e6e73 !important; }
+.account-wallet-tx-in { color: #1dbf73 !important; }
+.account-wallet-tx-out { color: #ff453a !important; }
+html.dark .account-wallet-expand {
+  background: rgba(39,39,42,.86);
+  color: #f5f5f7;
+  box-shadow: 0 12px 26px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.08);
+}
+html.dark .account-wallet-expand-head span,
+html.dark .account-wallet-tx-row small { color: #a1a1a6 !important; }
+html.dark .account-wallet-tx-row { background: rgba(58,58,60,.72) !important; border-color: rgba(255,255,255,.08); }
+html.dark .account-wallet-tx-row span { color: #f5f5f7 !important; }
+@media (max-width:520px) {
+  .account-wallet-name { font-size: 21px !important; }
+  .account-wallet-balance { font-size: 21px !important; }
+  .account-wallet-balance-side { min-width: 100px; }
+}
