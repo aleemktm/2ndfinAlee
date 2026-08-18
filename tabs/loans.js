@@ -35,66 +35,49 @@
         const isFullyPaid = outstanding <= 0;
         const isOverdue = !isFullyPaid && loan.dueDate && loan.dueDate < todayStr;
         const typeClass = loan.type === "lent" ? "loan-card-lent" : "loan-card-borrowed";
-        const movements = Array.isArray(loan.movements) ? [...loan.movements] : [];
-        const movementTxIds = new Set(movements.map(m => m.id));
-        const legacyRepayments = transactions.filter(t => t && t.loanId === loan.id && t.type && t.category === "Loan Repayment" && !movementTxIds.has(t.movementId));
-        const history = movements.concat(legacyRepayments.map(t => ({ id: "legacy:" + t.id, legacyTransactionId: t.id, kind: "repayment", amount: Number(t.accountAmount != null ? t.accountAmount : t.amount) || 0, date: t.date, accountId: t.accountId })));
-        history.sort((a,b) => (b.date || "").localeCompare(a.date || ""));
-        const historyRows = history.slice(0, 3);
-        const historyCard = h("div", { className: `loan-history-card ${expandedLoanHistory[loan.id] ? "is-visible" : ""}`, "aria-hidden": !expandedLoanHistory[loan.id] },
-          h("div", { className: "account-activity-head" },
-            h("span", null, "Recent activity"),
-            h("small", null, history.length ? `Latest ${Math.min(3, history.length)}` : "No activity")
-          ),
-          historyRows.length === 0
-            ? h("p", { className: "account-activity-empty" }, "No dated movements logged yet for this entry.")
-            : h("div", { className: "account-activity-list" }, historyRows.map(mv => {
-                const isIn = mv.kind === "principal" ? loan.type === "borrowed" : loan.type === "borrowed" ? false : true;
-                const FlowIcon = isIn ? Icons.IconArrowDown45 : Icons.IconArrowUp45;
-                const label = mv.kind === "principal" ? (loan.type === "lent" ? "Given" : "Received") : "Repaid";
-                return h("div", { key: mv.id, className: "account-activity-row loan-history-activity-row" },
-                  h("span", { className: `account-activity-flow ${isIn ? "is-in" : "is-out"}` }, h(FlowIcon, { className: "w-4 h-4" })),
-                  h("div", { className: "account-activity-copy" },
-                    h("span", null, label),
-                    h("small", null, dateFmt(mv.date), " · ", loan.name)
-                  ),
-                  h("div", { className: "loan-history-amount-wrap" },
-                    h("strong", { className: `account-activity-amount ${isIn ? "is-in" : "is-out"}` }, isIn ? "+" : "-", loan.currency, " ", numFmt(mv.amount)),
-                    h("button", { type: "button", className: "loan-history-undo", onClick: e => { e.stopPropagation(); undoLoanMovement(loan.id, mv.id, mv.legacyTransactionId); }, title: "Undo this record", "aria-label": "Undo this record" }, h(Icons.IconUndo, { className: "w-3 h-3" }))
-                  )
-                );
-              }))
-        );
         return h(window.SwipeRow, {
           key: loan.id,
           onEdit: () => openEditModal("loan", loan),
           onDelete: () => setDeleteTarget({ type: "loan", id: loan.id, name: loan.name }),
           selectionKey: selectionKey("loan", loan.id)
-        }, h("div", { className: "loan-card-stack-item" },
-          historyCard,
-          h("div", { className: `loan-native-card ${darkMode ? "loan-native-dark" : ""} ${typeClass}` },
-            h("div", { className: "loan-card-topline" },
-              h("div", { className: "loan-person" },
-                h("span", { className: "loan-direction-icon" }, loan.type === "lent" ? h(Icons.IconArrowUp45, { className: "w-4 h-4" }) : h(Icons.IconArrowDown45, { className: "w-4 h-4" })),
-                h("div", { className: "min-w-0" }, h("span", { className: "loan-kind" }, loan.type === "lent" ? "Lent out" : "Borrowed"), h("h3", null, loan.name))
-              ),
-              h("div", { className: "loan-outstanding" }, h("span", null, "Outstanding"), h("strong", null, loan.currency, " ", numFmt(outstanding)))
+        }, h("div", { className: `loan-native-card ${darkMode ? "loan-native-dark" : ""} ${typeClass}` },
+          h("div", { className: "loan-card-topline" },
+            h("div", { className: "loan-person" },
+              h("span", { className: "loan-direction-icon" }, loan.type === "lent" ? h(Icons.IconArrowUp45, { className: "w-4 h-4" }) : h(Icons.IconArrowDown45, { className: "w-4 h-4" })),
+              h("div", { className: "min-w-0" }, h("span", { className: "loan-kind" }, loan.type === "lent" ? "Lent out" : "Borrowed"), h("h3", null, loan.name))
             ),
-            h("div", { className: "loan-card-details" },
-              h("div", null, h("span", null, "Original"), h("strong", null, loan.currency, " ", numFmt(loan.amount))),
-              h("div", null, h("span", null, "Repaid"), h("strong", null, loan.currency, " ", numFmt(repaid))),
-              h("div", null, h("span", null, "Due"), h("strong", null, loan.dueDate ? dateFmt(loan.dueDate) : "—"))
-            ),
-            h("div", { className: "loan-progress-wrap" },
-              h("div", { className: "loan-progress-label" }, h("span", null, `${percentPaid}% repaid`), h("span", null, isFullyPaid ? "Settled" : isOverdue ? "Overdue" : `${loan.currency} ${numFmt(outstanding)} left`)),
-              h("div", { className: "loan-progress-track" }, h("div", { className: "loan-progress-fill", style: { width: `${percentPaid}%` } }))
-            ),
-            loan.whatsapp && !isFullyPaid && h("a", { href: `https://wa.me/${loan.whatsapp.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Hi ${loan.name}, reminder regarding the outstanding balance of ${loan.currency} ${numFmt(outstanding)}`)}`, target: "_blank", rel: "noreferrer", className: "loan-reminder" }, "WhatsApp Reminder →"),
-            h("div", { className: "loan-card-actions" },
-              !isFullyPaid && h("button", { onClick: () => { setRepaymentModalLoan(loan); setRepayAmount(outstanding.toString()); setRepayAccountId((accounts[0] ? accounts[0].id : "") || ""); setRepayDate(todayISO()); }, className: "loan-text-action loan-text-action-repay", title: "Record repayment", "aria-label": "Record repayment" }, "+ Record payment"),
-              h("button", { onClick: () => { setLoanAddMoreTarget(loan); setAddMoreAmount(""); setAddMoreAccountId((accounts[0] ? accounts[0].id : "") || ""); setAddMoreDate(todayISO()); }, className: "loan-text-action loan-text-action-add", title: "Add more to loan", "aria-label": "Add more to loan" }, "+Add more"),
-              h("button", { onClick: e => { e.stopPropagation(); setExpandedLoanHistory(prev => ({ ...prev, [loan.id]: !prev[loan.id] })); }, className: "loan-icon-action loan-icon-action-history", title: expandedLoanHistory[loan.id] ? "Hide history" : "Show history", "aria-label": expandedLoanHistory[loan.id] ? "Hide history" : "Show history" }, h(Icons.IconHistory, { className: "w-4 h-4" }))
-            )
+            h("div", { className: "loan-outstanding" }, h("span", null, "Outstanding"), h("strong", null, loan.currency, " ", numFmt(outstanding)))
+          ),
+          h("div", { className: "loan-card-details" },
+            h("div", null, h("span", null, "Original"), h("strong", null, loan.currency, " ", numFmt(loan.amount))),
+            h("div", null, h("span", null, "Repaid"), h("strong", null, loan.currency, " ", numFmt(repaid))),
+            h("div", null, h("span", null, "Due"), h("strong", null, loan.dueDate ? dateFmt(loan.dueDate) : "—"))
+          ),
+          h("div", { className: "loan-progress-wrap" },
+            h("div", { className: "loan-progress-label" }, h("span", null, `${percentPaid}% repaid`), h("span", null, isFullyPaid ? "Settled" : isOverdue ? "Overdue" : `${loan.currency} ${numFmt(outstanding)} left`)),
+            h("div", { className: "loan-progress-track" }, h("div", { className: "loan-progress-fill", style: { width: `${percentPaid}%` } }))
+          ),
+          loan.whatsapp && !isFullyPaid && h("a", { href: `https://wa.me/${loan.whatsapp.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Hi ${loan.name}, reminder regarding the outstanding balance of ${loan.currency} ${numFmt(outstanding)}`)}`, target: "_blank", rel: "noreferrer", className: "loan-reminder" }, "WhatsApp Reminder →"),
+          h("div", { className: "loan-card-actions" },
+            !isFullyPaid && h("button", { onClick: () => { setRepaymentModalLoan(loan); setRepayAmount(outstanding.toString()); setRepayAccountId((accounts[0] ? accounts[0].id : "") || ""); setRepayDate(todayISO()); }, className: "loan-text-action loan-text-action-repay", title: "Record repayment", "aria-label": "Record repayment" }, "+ Record payment"),
+            h("button", { onClick: () => { setLoanAddMoreTarget(loan); setAddMoreAmount(""); setAddMoreAccountId((accounts[0] ? accounts[0].id : "") || ""); setAddMoreDate(todayISO()); }, className: "loan-text-action loan-text-action-add", title: "Add more to loan", "aria-label": "Add more to loan" }, "+Add more"),
+            h("button", { onClick: () => setExpandedLoanHistory(prev => ({ ...prev, [loan.id]: !prev[loan.id] })), className: "loan-icon-action loan-icon-action-history", title: expandedLoanHistory[loan.id] ? "Hide history" : "Show history", "aria-label": expandedLoanHistory[loan.id] ? "Hide history" : "Show history" }, h(Icons.IconHistory, { className: "w-4 h-4" }))
+          ),
+          expandedLoanHistory[loan.id] && h("div", { className: "loan-history-panel" },
+            (() => {
+              const movements = Array.isArray(loan.movements) ? [...loan.movements] : [];
+              const movementTxIds = new Set(movements.map(m => m.id));
+              const legacyRepayments = transactions.filter(t => t && t.loanId === loan.id && t.type && t.category === "Loan Repayment" && !movementTxIds.has(t.movementId));
+              const history = movements.concat(legacyRepayments.map(t => ({ id: "legacy:" + t.id, legacyTransactionId: t.id, kind: "repayment", amount: Number(t.accountAmount != null ? t.accountAmount : t.amount) || 0, date: t.date, accountId: t.accountId })));
+              return history.sort((a,b) => (b.date || "").localeCompare(a.date || "")).map(mv => h("div", { key: mv.id, className: "loan-history-row" },
+                h("span", null, dateFmt(mv.date), " · ", mv.kind === "principal" ? loan.type === "lent" ? "Given" : "Received" : "Repaid"),
+                h("div", { className: "flex items-center gap-2" },
+                  h("strong", { className: mv.kind === "principal" ? loan.type === "lent" ? "loan-history-out" : "loan-history-in" : loan.type === "repayment" ? loan.type === "lent" ? "loan-history-in" : "loan-history-out" : "" }, mv.kind === "principal" ? "+" : "-", loan.currency, " ", numFmt(mv.amount)),
+                  h("button", { type: "button", className: "loan-icon-action loan-icon-action-history loan-history-undo", onClick: () => undoLoanMovement(loan.id, mv.id, mv.legacyTransactionId), title: "Undo this record", "aria-label": "Undo this record" }, h(Icons.IconUndo, { className: "w-3 h-3" }))
+                )
+              ));
+            })(),
+            (!loan.movements || loan.movements.length === 0) && !transactions.some(t => t && t.loanId === loan.id && t.category === "Loan Repayment") && h("p", { className: "loan-history-empty" }, "No dated movements logged yet for this entry.")
           )
         ));
       }))
