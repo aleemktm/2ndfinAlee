@@ -62,7 +62,12 @@
                 h("span", { className: "account-type" }, acc.type || "Bank Account"),
                 h("div", { className: "account-title-row" },
                   h("span", { className: "account-color-dot", style: { backgroundColor: accountColor(acc), boxShadow: `0 0 0 3px ${accountColor(acc)}22` }, title: `${acc.name} color identity` }),
-                  h("span", { className: "account-icon", "aria-hidden": "true" }, acc.type === "Bank" ? h(Icons.IconAccounts, { className: "w-4 h-4" }) : h(Icons.IconWallet, { className: "w-4 h-4" })),
+                  h("span", { className: "account-icon", "aria-hidden": "true" }, (() => {
+                    const type = String(acc.type || "").toLowerCase();
+                    if (type.includes("cash")) return h(Icons.IconWallet, { className: "w-4 h-4" });
+                    if (type.includes("wallet")) return h(Icons.IconWallet, { className: "w-4 h-4" });
+                    return h(Icons.IconAccounts, { className: "w-4 h-4" });
+                  })()),
                   h("h3", { className: "account-name" }, acc.name)
                 )
               )
@@ -70,7 +75,8 @@
             h("div", { className: "account-balance-block" },
               h("span", { className: "account-currency" }, acc.currency),
               h("strong", { className: "account-balance" }, numFmt(acc.balance))
-            )
+            ),
+            h("span", { className: `account-expand-chevron ${isExpanded ? "is-open" : ""}`, "aria-hidden": "true" }, "⌄")
           ),
           h("div", { className: "account-card-meta" },
             h("span", null, acc.currency),
