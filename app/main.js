@@ -187,6 +187,45 @@ useEffect(() => {
   }
 }, [settings.theme]);
 const [activeTab, setActiveTab] = useState(() => { try { return localStorage.getItem("aleemfin_active_tab") === "recurring" ? "planning" : "overview"; } catch (_) { return "overview"; } });
+React.useEffect(() => {
+  const nav = document.querySelector('[data-mobile-nav-scroll="true"]');
+  if (!nav) return;
+  const active = nav.querySelector(`[data-mobile-nav-tab="${activeTab}"]`);
+  if (!active) return;
+
+  let pill = nav.querySelector(".mobile-nav-active-pill");
+  if (!pill) {
+    pill = document.createElement("div");
+    pill.className = "mobile-nav-active-pill";
+    nav.prepend(pill);
+  }
+
+  const syncPill = () => {
+    const x = active.offsetLeft;
+    pill.style.width = `${active.offsetWidth}px`;
+    pill.style.height = `${active.offsetHeight}px`;
+    pill.style.transform = `translate3d(${x}px,-50%,0)`;
+  };
+
+  const scrollActiveIntoView = () => {
+    const navRect = nav.getBoundingClientRect();
+    const activeRect = active.getBoundingClientRect();
+    const isOutside = activeRect.left < navRect.left + 4 || activeRect.right > navRect.right - 4;
+    if (isOutside) active.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  };
+
+  scrollActiveIntoView();
+  requestAnimationFrame(() => {
+    syncPill();
+    requestAnimationFrame(syncPill);
+  });
+  nav.addEventListener("scroll", syncPill, { passive: true });
+  window.addEventListener("resize", syncPill);
+  return () => {
+    nav.removeEventListener("scroll", syncPill);
+    window.removeEventListener("resize", syncPill);
+  };
+}, [activeTab]);
 const lastNonSettingsTabRef = useRef("overview");
 useEffect(() => { try { localStorage.setItem("aleemfin_active_tab", activeTab); } catch (_) {} }, [activeTab]);
 useEffect(() => { if (selectedKeys.size) { selectedKeys.clear(); setSelectionVersion(v => v + 1); } }, [activeTab]);
@@ -2274,27 +2313,6 @@ useEffect(() => {
 }, [activeTab]);
 
 useEffect(() => {
-  if (window.innerWidth > 767) return;
-  const scroller = document.querySelector("[data-mobile-nav-scroll]");
-  if (!scroller) return;
-  const updatePill = () => {
-    const activeButton = scroller.querySelector(`[data-mobile-nav-tab="${activeTab}"]`);
-    if (!activeButton) return;
-    const x = activeButton.offsetLeft - scroller.scrollLeft;
-    scroller.style.setProperty("--mobile-pill-x", `${x}px`);
-    scroller.style.setProperty("--mobile-pill-w", `${activeButton.offsetWidth}px`);
-  };
-  const frame = requestAnimationFrame(updatePill);
-  scroller.addEventListener("scroll", updatePill, { passive: true });
-  window.addEventListener("resize", updatePill);
-  return () => {
-    cancelAnimationFrame(frame);
-    scroller.removeEventListener("scroll", updatePill);
-    window.removeEventListener("resize", updatePill);
-  };
-}, [activeTab]);
-
-useEffect(() => {
   if (activeTab !== "settings") {
     if (activeTab) lastNonSettingsTabRef.current = activeTab;
     return;
@@ -2450,7 +2468,7 @@ const tabProps = { selectionToolbar, selectionVersion, selectionKey, selectedKey
     }, /* @__PURE__ */React.createElement("div", {
       className: "mobile-nav-swipe",
       "data-mobile-nav-scroll": "true"
-    }, /* @__PURE__ */React.createElement("div", { className: "mobile-nav-active-pill", "aria-hidden": "true" }), MOBILE_NAV_ITEMS.filter(tab => tab.id !== "settings").map(tab => {
+    }, MOBILE_NAV_ITEMS.filter(tab => tab.id !== "settings").map(tab => {
       const Icon = tab.icon;
       const isActive = activeTab === tab.id;
       return /* @__PURE__ */React.createElement("button", {
