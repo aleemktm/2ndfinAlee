@@ -2,10 +2,10 @@
 // Uses the existing finance data model but presents it as a calm, native-iOS-inspired intelligence dashboard.
 (function () {
   const h = React.createElement;
-  const GREEN = "#0F9D68";
-  const RED = "#D8434B";
-  const BLUE = "#2E63E7";
-  const PURPLE = "#6E4FDE";
+  const GREEN = "#1DBF73";
+  const RED = "#FF3B30";
+  const BLUE = "#007AFF";
+  const PURPLE = "#AF52DE";
   const GRAY = "#8E8E93";
 
   function moneyDelta(value, fmt) {

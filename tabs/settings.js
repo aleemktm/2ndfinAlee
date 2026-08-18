@@ -34,6 +34,7 @@
     className: "shrink-0"
   }, children));
     const h = React.createElement;
+    const [appearanceOpen, setAppearanceOpen] = React.useState(false);
     const IOSSwitch = ({ checked, onChange, label }) => h("button", { type: "button", role: "switch", "aria-checked": checked, "aria-label": label, onClick: onChange, className: `ios-settings-switch ${checked ? "is-on" : "is-off"}` }, h("span", { className: "ios-settings-switch-thumb" }));
     const enableNotifications = async () => {
       if (settings.notificationsEnabled === true) {
@@ -119,52 +120,35 @@
     className: `text-sm font-bold uppercase tracking-wider ${accent.textStrong}`
   }, "Settings"), h("p", {
     className: "text-xs text-zinc-400 mt-1"
-  }, "Preferences and data stored on this device.")), h(SettingsSection, {
-    title: "Appearance"
-  }, h(SettingsRow, {
-    icon: Icons.IconTune,
-    title: "Theme",
-    detail: "Choose how AleemFin looks on this device."
-  }, h("select", {
-    value: settings.theme,
-    onChange: e => updateSettings({
-      theme: e.target.value
-    }),
-    className: `${inputCls} w-auto py-2 text-xs font-bold`
-  }, h("option", {
-    value: "light"
-  }, "Light"), h("option", {
-    value: "dark"
-  }, "Dark"), h("option", {
-    value: "auto"
-  }, "System")))), h(SettingsSection, {
-    title: "Accent color"
-  }, h("div", {
-    className: "settings-accent-picker",
-    role: "radiogroup",
-    "aria-label": "Accent color"
-  }, [
-    ["emerald", "#0F9D68", "Emerald"],
-    ["teal", "#0E8F8C", "Ocean"],
-    ["blue", "#2E63E7", "Sapphire"],
-    ["violet", "#6E4FDE", "Plum"],
-    ["amber", "#C4791C", "Copper"]
-  ].map(([id, color, label]) => h("button", {
-    key: id,
-    type: "button",
-    role: "radio",
-    "aria-checked": settings.accentColor === id,
-    "aria-label": label,
-    title: label,
-    onClick: () => updateSettings({ accentColor: id }),
-    className: `settings-accent-option ${settings.accentColor === id ? "is-selected" : ""}`
-  }, h("span", {
-    className: "settings-accent-swatch",
-    style: { backgroundColor: color }
-  }), h("span", {
-    className: "settings-accent-label"
-  }, label)))
-  )), h(SettingsSection, {
+  }, "Preferences and data stored on this device.")), appearanceOpen ? h("section", { className: "settings-detail-view" },
+      h("button", { type: "button", className: "settings-back-row", onClick: () => setAppearanceOpen(false) },
+        h("span", { className: "settings-back-chevron" }, "‹"), h("span", null, "Settings")
+      ),
+      h("div", { className: "settings-detail-title" }, "Appearance"),
+      h("div", { className: "settings-detail-card" },
+        h(SettingsRow, { icon: Icons.IconTune, title: "Theme", detail: "Light, dark or follow the system." },
+          h("select", { value: settings.theme, onChange: e => updateSettings({ theme: e.target.value }), className: `${inputCls} w-auto py-2 text-xs font-bold` },
+            h("option", { value: "light" }, "Light"), h("option", { value: "dark" }, "Dark"), h("option", { value: "auto" }, "System")
+          )
+        ),
+        h("div", { className: "settings-accent-detail" },
+          h("div", { className: "settings-detail-label" }, "Accent color"),
+          h("div", { className: "settings-accent-picker", role: "radiogroup", "aria-label": "Accent color" },
+            [
+              ["emerald", "#10B981", "Original"], ["teal", "#14B8A6", "Teal"], ["blue", "#3B82F6", "Blue"], ["violet", "#8B5CF6", "Violet"], ["amber", "#F59E0B", "Amber"]
+            ].map(([id, color, label]) => h("button", { key: id, type: "button", role: "radio", "aria-checked": settings.accentColor === id, "aria-label": label, title: label, onClick: () => updateSettings({ accentColor: id }), className: `settings-accent-option ${settings.accentColor === id ? "is-selected" : ""}` },
+              h("span", { className: "settings-accent-swatch", style: { backgroundColor: color } }), h("span", { className: "settings-accent-label" }, label)
+            ))
+          )
+        )
+      )
+    ) : h(SettingsSection, { title: "Appearance" },
+      h("button", { type: "button", className: `settings-navigation-row ${subCardCls}`, onClick: () => setAppearanceOpen(true) },
+        h("div", { className: "settings-navigation-icon" }, h(Icons.IconTune, { className: "w-4 h-4" })),
+        h("div", { className: "min-w-0 flex-1" }, h("p", { className: "text-xs font-bold" }, "Appearance"), h("p", { className: "text-[10px] text-zinc-400 mt-0.5" }, `${settings.theme === "auto" ? "System" : settings.theme === "dark" ? "Dark" : "Light"} · ${String(settings.accentColor || "emerald").replace(/^./, c => c.toUpperCase())}`)),
+        h("span", { className: "settings-chevron" }, "›")
+      )
+    ), h(SettingsSection, {
     title: "Home dashboard"
   }, h("button", {
     type: "button",
