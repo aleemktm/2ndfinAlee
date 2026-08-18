@@ -2092,3 +2092,18 @@ html.dark .swipe-action-add-more{color:#f2f2f7;background:rgba(255,255,255,.07)}
   .loan-history-action{padding:0 7px;font-size:7.5px}
   .loan-tap-hint{font-size:7.5px}
 }
+
+/* v42.1 loan-card cleanup: history expands downward, no horizontal separators,
+   no accent side rail, and no action buttons inside the rear history card. */
+.loan-card-stack{display:flex;flex-direction:column;padding-top:0!important}
+.loan-card-stack.is-expanded{padding-bottom:0!important}
+.loan-native-front{order:1}
+.loan-history-card{order:2;margin:-8px 7px 0!important;padding-top:16px;border-radius:14px 14px 18px 18px;box-shadow:0 5px 16px rgba(15,23,42,.055)}
+.loan-date-line{border-top:0!important;padding-top:0!important;margin-top:10px!important}
+.loan-date-line span:first-child:before{display:none!important}
+.loan-tap-hint{border-top:0!important;padding-top:0!important;margin-top:8px!important;font-size:16px!important;line-height:1!important;font-weight:500!important;min-height:10px}
+.loan-tap-hint svg{display:none!important}
+.loan-native-card.loan-card-lent,.loan-native-card.loan-card-borrowed{border-left:0!important}
+.loan-history-actions{display:none!important}
+.loan-history-card-head{margin-bottom:9px}
+html.dark .loan-date-line,html.dark .loan-tap-hint{border-color:transparent!important}
