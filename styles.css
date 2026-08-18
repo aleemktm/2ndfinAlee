@@ -1887,3 +1887,123 @@ html.dark .account-wallet-tx-row span { color: #f5f5f7 !important; }
   .account-wallet-balance { font-size: 21px !important; }
   .account-wallet-balance-side { min-width: 100px; }
 }
+
+
+/* v41.1 UI bug fixes — navigation capsule + wallet-style accounts */
+.af-floating-tabbar-wrap {
+  transform: translateY(16px) !important; /* ~5% lower than the 64px bar */
+  padding-bottom: 0 !important;
+  background: transparent !important;
+}
+.af-floating-tabbar {
+  position: relative !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+  isolation: isolate;
+}
+.af-floating-tabbar .mobile-nav-swipe {
+  position: relative !important;
+  z-index: 1;
+  border-radius: 999px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  background: transparent !important;
+}
+.af-floating-tabbar .mobile-nav-active-pill {
+  top: 50% !important;
+  height: 48px !important;
+  border-radius: 999px !important;
+  pointer-events: none !important;
+  transition: transform .28s cubic-bezier(.22,1,.36,1), width .2s ease !important;
+}
+.af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab,
+.af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab,
+.af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab:hover,
+.af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab:hover,
+.af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab:focus,
+.af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab:focus,
+.af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab:active,
+.af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab:active {
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+.af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab:not(.mobile-nav-tab-active),
+.af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab:not(.mobile-nav-tab-active) {
+  color: #8e8e93 !important;
+}
+.af-floating-tabbar .mobile-nav-swipe .mobile-nav-tab.mobile-nav-tab-active,
+.af-floating-tabbar .mobile-settings-fixed .mobile-nav-tab.mobile-nav-tab-active {
+  color: var(--af-accent) !important;
+}
+.af-floating-tabbar .mobile-nav-swipe .mobile-nav-icon-active,
+.af-floating-tabbar .mobile-settings-fixed .mobile-nav-icon-active {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Keep the pill entirely inside the capsule while the nav itself scrolls. */
+.af-floating-tabbar .mobile-nav-swipe {
+  clip-path: inset(0 round 999px);
+}
+.af-floating-tabbar .mobile-nav-active-pill {
+  left: 1px !important;
+}
+
+/* Wallet-style account stack: preserve full scroll height and reveal every card. */
+.accounts-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  overflow: visible !important;
+  padding: 0 0 18px !important;
+}
+.account-swipe-row {
+  margin-top: 0 !important;
+  transform: translateY(calc(var(--stack-index, 0) * -10px)) !important;
+  transition: transform .34s cubic-bezier(.22,1,.36,1), margin .34s cubic-bezier(.22,1,.36,1), z-index 0s linear .34s !important;
+}
+.account-swipe-row.accounts-stack-open {
+  margin-top: 8px !important;
+  transform: translateY(0) !important;
+}
+.account-swipe-row:first-child {
+  margin-top: 0 !important;
+}
+.account-wallet-card {
+  position: relative !important;
+  overflow: visible !important;
+  border-radius: 20px !important;
+  z-index: 2;
+}
+.account-wallet-main {
+  position: relative;
+  z-index: 2;
+  border-radius: 20px !important;
+}
+.account-wallet-expand {
+  position: relative;
+  z-index: 1;
+  margin: -2px 10px 0 !important;
+  border-radius: 18px !important;
+  background: rgba(255,255,255,.58) !important;
+  border: 1px solid rgba(255,255,255,.32);
+  -webkit-backdrop-filter: blur(22px) saturate(160%) !important;
+  backdrop-filter: blur(22px) saturate(160%) !important;
+  box-shadow: 0 14px 30px rgba(15,23,42,.16), inset 0 1px 0 rgba(255,255,255,.65) !important;
+}
+html.dark .account-wallet-expand {
+  background: rgba(34,34,37,.62) !important;
+  border-color: rgba(255,255,255,.10) !important;
+  box-shadow: 0 14px 30px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+.account-wallet-tx-list {
+  padding-bottom: 10px !important;
+}
+.account-wallet-tx-row {
+  min-height: 38px;
+}
