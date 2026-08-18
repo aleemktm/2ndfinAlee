@@ -6,8 +6,9 @@
   function Accounts(props) {
     const { accounts, askDeleteAccount, darkMode, dateFmt, describeAccountMovement, getLastInflow, getLastOutflow, numFmt, openAddModal, openEditModal, selectionKey, settings, convertToBaseCurrency, transactions = [] } = props;
     const baseCurrency = settings?.defaultCurrency || "AED";
-    const [expandedId, setExpandedId] = React.useState(null);
-    const [stackOpen, setStackOpen] = React.useState(false);
+    const [expandedAll, setExpandedAll] = React.useState(false);
+    const [activityId, setActivityId] = React.useState(null);
+
     const accountColor = acc => {
       const name = String(acc.name || "").toLowerCase();
       if (name.includes("fiverr")) return "#3B82F6";
@@ -17,6 +18,7 @@
       if (name.includes("cash") || String(acc.type || "").toLowerCase() === "cash") return "#8E8E93";
       return acc.color || "#1DBF73";
     };
+
     const total = accounts.reduce((sum, a) => sum + convertToBaseCurrency(Number(a.balance || 0), a.currency), 0);
 
     const accountTransactions = accId => {
@@ -25,8 +27,21 @@
         .filter(t => t && (String(t.accountId) === key || String(t.toAccountId) === key))
         .slice()
         .sort((a, b) => (b.date || "").localeCompare(a.date || ""))
-        .slice(0, 8);
+        .slice(0, 3);
     };
+
+    const handleCardTap = accId => {
+      if (!expandedAll) {
+        setExpandedAll(true);
+        setActivityId(null);
+        return;
+      }
+      setActivityId(prev => prev === accId ? null : accId);
+    };
+
+    React.useEffect(() => {
+      if (!accounts.some(acc => String(acc.id) === String(activityId))) setActivityId(null);
+    }, [accounts, activityId]);
 
     return h("div", { className: "accounts-native space-y-4 max-w-2xl mx-auto w-full" },
       h("section", { className: `accounts-header-card ${darkMode ? "accounts-header-dark" : ""}` },
@@ -43,83 +58,96 @@
           h("strong", null, baseCurrency, " ", numFmt(total))
         )
       ),
-      h("div", { className: "accounts-list" }, accounts.map(acc => {
+      h("div", {
+        className: `accounts-list ${expandedAll ? "is-expanded" : "is-stacked"}`,
+        "data-accounts-stack": expandedAll ? "expanded" : "stacked"
+      }, accounts.map((acc, index) => {
         const inflow = getLastInflow(acc.id);
         const outflow = getLastOutflow(acc.id);
         const inflowInfo = inflow ? describeAccountMovement(inflow, acc) : null;
         const outflowInfo = outflow ? describeAccountMovement(outflow, acc) : null;
         const color = accountColor(acc);
-        const isExpanded = expandedId === acc.id;
-        const history = isExpanded ? accountTransactions(acc.id).slice(0, 3) : [];
+        const isActivityOpen = activityId === acc.id;
+        const history = isActivityOpen ? accountTransactions(acc.id) : [];
+        const bankDetails = `${acc.type || "Bank Account"} · ${acc.currency}`;
+
         return h(window.SwipeRow, {
           key: acc.id,
-          className: `account-swipe-row ${stackOpen ? "accounts-stack-open" : ""} ${isExpanded ? "account-row-expanded" : ""}`,
           onEdit: () => openEditModal("account", acc),
           onDelete: () => askDeleteAccount(acc),
           selectionKey: selectionKey("account", acc.id)
         },
-          h("div", {
-            className: `account-wallet-card ${isExpanded ? "is-expanded" : ""}`,
-            style: {
-              "--account-color": color,
-              "--stack-index": accounts.indexOf(acc)
+          h("div", { className: "account-stack-inner" },
+            isActivityOpen && h("div", {
+              className: `account-activity-card ${darkMode ? "account-activity-card-dark" : ""}`,
+              "aria-label": `Recent activity for ${acc.name}`
             },
-            onClick: () => {
-              if (!stackOpen) {
-                setStackOpen(true);
-                setExpandedId(null);
-                return;
-              }
-              setExpandedId(isExpanded ? null : acc.id);
+              h("div", { className: "account-activity-head" },
+                h("div", null,
+                  h("span", { className: "account-activity-eyebrow" }, "RECENT ACTIVITY"),
+                  h("strong", null, acc.name)
+                ),
+                h("span", { className: "account-activity-count" }, `${history.length} of 3`)
+              ),
+              history.length === 0
+                ? h("p", { className: "account-activity-empty" }, "No transactions recorded for this account yet.")
+                : h("div", { className: "account-activity-list" }, history.map(tx => {
+                    const isIn = (tx.type === "income" && String(tx.accountId) === String(acc.id)) ||
+                      (tx.type === "transfer" && String(tx.toAccountId) === String(acc.id));
+                    const info = describeAccountMovement(tx, acc);
+                    const MovementIcon = isIn ? Icons.IconArrowUp45 : Icons.IconArrowDown45;
+                    return h("div", { key: tx.id, className: "account-activity-row" },
+                      h("span", { className: `account-activity-direction ${isIn ? "is-inflow" : "is-outflow"}` },
+                        h(MovementIcon, { className: "w-4 h-4" })
+                      ),
+                      h("div", { className: "min-w-0 flex-1" },
+                        h("span", null, tx.category || (tx.type === "transfer" ? "Transfer" : tx.type)),
+                        h("small", null, dateFmt(tx.date), info.note || "")
+                      ),
+                      h("strong", { className: isIn ? "account-activity-in" : "account-activity-out" },
+                        isIn ? "+" : "-", info.cur, " ", numFmt(info.amt)
+                      )
+                    );
+                  }))
+            ),
+            h("div", {
+              className: `account-wallet-card ${expandedAll ? "is-expanded" : "is-stacked-card"}`,
+              style: {
+                background: `linear-gradient(135deg, color-mix(in srgb, ${color} 92%, white) 0%, ${color} 46%, color-mix(in srgb, ${color} 78%, black) 100%)`,
+                "--account-stack-index": index
+              },
+              onClick: () => handleCardTap(acc.id),
+              role: "button",
+              tabIndex: 0,
+              "aria-expanded": expandedAll,
+              "aria-label": `${acc.name} account card, tap to ${!expandedAll ? "expand all accounts" : isActivityOpen ? "hide recent activity" : "view recent activity"}`
             },
-            role: "button",
-            tabIndex: 0,
-            "aria-expanded": isExpanded,
-            "aria-label": `${acc.name} account card, tap to ${isExpanded ? "collapse" : "view recent transactions"}`
-          },
-            h("div", { className: "account-wallet-sheen" }),
-            h("div", { className: "account-wallet-main" },
-              h("div", { className: "account-wallet-details" },
-                h("div", { className: "account-wallet-top" },
-                  h("div", { className: "account-wallet-identity" },
-                    h("span", { className: "account-wallet-icon" }, acc.type === "Bank" ? h(Icons.IconAccounts, { className: "w-4 h-4" }) : h(Icons.IconWallet, { className: "w-4 h-4" })),
-                    h("div", { className: "account-wallet-name-block" },
-                      h("h3", { className: "account-wallet-name" }, acc.name),
-                      h("span", { className: "account-wallet-type" }, acc.type || "Bank Account")
+              h("div", { className: "account-wallet-sheen" }),
+              h("div", { className: "account-wallet-layout" },
+                h("div", { className: "account-wallet-left" },
+                  h("div", { className: "account-wallet-top" },
+                    h("div", { className: "account-wallet-identity" },
+                      h("span", { className: "account-wallet-icon" }, acc.type === "Bank" ? h(Icons.IconAccounts, { className: "w-4 h-4" }) : h(Icons.IconWallet, { className: "w-4 h-4" })),
+                      h("div", { className: "account-wallet-bank-meta" },
+                        h("span", { className: "account-wallet-name" }, acc.name),
+                        h("span", { className: "account-wallet-details" }, bankDetails)
+                      )
                     )
                   )
                 ),
-                h("div", { className: "account-wallet-meta" },
-                  h("span", null, acc.currency),
-                  h("span", null, isExpanded ? "Tap to collapse" : "Tap for activity")
+                h("div", { className: "account-wallet-right" },
+                  h("span", { className: "account-wallet-currency" }, acc.currency),
+                  h("strong", { className: "account-wallet-balance" }, numFmt(acc.balance))
                 )
               ),
-              h("div", { className: "account-wallet-balance-side" },
-                h("span", { className: "account-wallet-currency" }, acc.currency),
-                h("strong", { className: "account-wallet-balance" }, numFmt(acc.balance))
-              )
-            ),
-            h("div", { className: "account-wallet-expand", "aria-hidden": !isExpanded },
-              h("div", { className: "account-wallet-expand-inner" },
-                h("div", { className: "account-wallet-expand-head" }, h("span", null, "Recent activity")),
-                history.length === 0
-                  ? h("p", { className: "account-wallet-empty" }, "No transactions recorded for this account yet.")
-                  : h("div", { className: "account-wallet-tx-list" }, history.slice(0, 4).map(tx => {
-                      const isIn = (tx.type === "income" && String(tx.accountId) === String(acc.id)) || (tx.type === "transfer" && String(tx.toAccountId) === String(acc.id));
-                      const info = describeAccountMovement(tx, acc);
-                      return h("div", { key: tx.id, className: "account-wallet-tx-row" },
-                        isIn ? h(Icons.IconArrowUp45, { className: "w-4 h-4 account-wallet-tx-in" }) : h(Icons.IconArrowDown45, { className: "w-4 h-4 account-wallet-tx-out" }),
-                        h("div", { className: "min-w-0 flex-1" },
-                          h("span", null, tx.category || (tx.type === "transfer" ? "Transfer" : tx.type)),
-                          h("small", null, dateFmt(tx.date), info.note || "")
-                        ),
-                        h("strong", { className: isIn ? "account-wallet-tx-in" : "account-wallet-tx-out" }, isIn ? "+" : "-", info.cur, " ", numFmt(info.amt))
-                      );
-                    }))
+              (inflowInfo || outflowInfo) && h("div", { className: "account-wallet-footer" },
+                h("span", { className: "account-wallet-hint" },
+                  !expandedAll ? "Tap to expand" : isActivityOpen ? "Tap to close activity" : "Tap for activity"
+                )
               )
             )
           )
-        )
+        );
       }))
     );
   }
