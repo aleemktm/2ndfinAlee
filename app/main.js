@@ -2324,12 +2324,12 @@ const tabProps = { selectionToolbar, selectionVersion, selectionKey, selectedKey
     React.createElement("main", {
       className: "max-w-5xl mx-auto px-4 py-5 sm:py-6 space-y-5 sm:space-y-6 flex-1 w-full safe-x"
     }, activeTab === "overview" && Tabs.Overview(tabProps), activeTab === "transactions" && Tabs.Ledger(tabProps), activeTab === "accounts" && Tabs.Accounts(tabProps), activeTab === "vault" && Tabs.Vault(tabProps), activeTab === "loans" && Tabs.Loans(tabProps), activeTab === "analytics" && Tabs.Analytics(tabProps), activeTab === "analytics" && Tabs.AnalyticsSummary(tabProps), activeTab === "planning" && Tabs.Planning(tabProps), activeTab === "rates" && React.createElement(Tabs.Rates, tabProps), activeTab === "settings" && Tabs.Settings(tabProps)), /* @__PURE__ */React.createElement("nav", {
-      className: "md:hidden fixed bottom-0 left-0 right-0 z-40 backdrop-blur-xl border-t safe-bottom bg-zinc-900/95 border-zinc-800",
+      className: "af-floating-tabbar-wrap md:hidden fixed bottom-0 left-0 right-0 z-40 safe-bottom",
       style: {
         position: "fixed"
       }
     }, /* @__PURE__ */React.createElement("div", {
-      className: "mobile-bottom-bar max-w-5xl mx-auto px-2 py-1.5 h-[74px] safe-x"
+      className: "af-floating-tabbar mobile-bottom-bar max-w-5xl mx-auto px-2 py-1.5 h-[64px] safe-x"
     }, /* @__PURE__ */React.createElement("div", {
       className: "mobile-nav-swipe",
       "data-mobile-nav-scroll": "true"
