@@ -61,13 +61,7 @@
               h("div", { className: "account-heading" },
                 h("span", { className: "account-type" }, acc.type || "Bank Account"),
                 h("div", { className: "account-title-row" },
-                  h("span", { className: "account-color-dot", style: { backgroundColor: accountColor(acc), boxShadow: `0 0 0 3px ${accountColor(acc)}22` }, title: `${acc.name} color identity` }),
-                  h("span", { className: "account-icon", "aria-hidden": "true" }, (() => {
-                    const type = String(acc.type || "").toLowerCase();
-                    if (type.includes("cash")) return h(Icons.IconWallet, { className: "w-4 h-4" });
-                    if (type.includes("wallet")) return h(Icons.IconWallet, { className: "w-4 h-4" });
-                    return h(Icons.IconAccounts, { className: "w-4 h-4" });
-                  })()),
+                  h("span", { className: "account-icon", "aria-hidden": "true" }, String(acc.type || "").toLowerCase().indexOf("cash") >= 0 || String(acc.type || "").toLowerCase().indexOf("wallet") >= 0 ? h(Icons.IconWallet, { className: "w-4 h-4" }) : h(Icons.IconAccounts, { className: "w-4 h-4" })),
                   h("h3", { className: "account-name" }, acc.name)
                 )
               )
