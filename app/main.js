@@ -682,24 +682,31 @@ const refreshLiveRates = async () => {
 useEffect(() => {
   if (settings.liveRateSync !== false) refreshLiveRates();
 }, [settings.liveRateSync]);
-const getDefaultFormInput = (overrides = {}) => ({
-  title: "",
-  category: "Salary",
-  amount: "",
-  currency: "AED",
-  accountId: (accounts[0] ? accounts[0].id : "") || "",
-  toAccountId: (accounts[1] ? accounts[1].id : "") || (accounts[0] ? accounts[0].id : "") || "",
-  weightGrams: "",
-  purchasePriceAED: "",
-  currentPriceAED: "",
-  assetCategory: "Gold",
-  loanType: "lent",
-  whatsapp: "",
-  dueDate: "",
-  accType: "Bank",
-  date: todayISO(),
-  ...overrides
-});
+const getDefaultFormInput = (overrides = {}) => {
+  const defaultAccountId = (accounts[0] ? accounts[0].id : "") || "";
+  // Currency starts matched to whichever account will be pre-selected, so a
+  // fresh Income/Expense entry never silently defaults to AED against a
+  // non-AED account (see: currency mismatch bug).
+  const resolvedAccount = accounts.find(a => a.id === (overrides.accountId || defaultAccountId));
+  return {
+    title: "",
+    category: "Salary",
+    amount: "",
+    currency: (resolvedAccount && resolvedAccount.currency) || "AED",
+    accountId: defaultAccountId,
+    toAccountId: (accounts[1] ? accounts[1].id : "") || (accounts[0] ? accounts[0].id : "") || "",
+    weightGrams: "",
+    purchasePriceAED: "",
+    currentPriceAED: "",
+    assetCategory: "Gold",
+    loanType: "lent",
+    whatsapp: "",
+    dueDate: "",
+    accType: "Bank",
+    date: todayISO(),
+    ...overrides
+  };
+};
 const [formInput, setFormInput] = useState(() => getDefaultFormInput());
 const openAddModal = (type, overrides = {}) => {
   if (modalCloseTimerRef.current) clearTimeout(modalCloseTimerRef.current);
@@ -823,7 +830,13 @@ const tomorrow = new Date();
 tomorrow.setDate(tomorrow.getDate() + 1);
 const tomorrowStr = toLocalISO(tomorrow);
 const recurringReminders = recurringItems.filter(item => item.active && item.nextDate === tomorrowStr && !(item.reminderDoneDates || []).includes(tomorrowStr));
-const monthlyTransactions = transactions.filter(t => t.date && t.date.startsWith(currentMonthPrefix));
+// Loan movements and manual balance corrections are real ledger entries but
+// are not personal income/spending, so every income/expense analytic below
+// excludes them to avoid distorting savings rate, runway, category
+// breakdowns, and the monthly/yearly history charts.
+const ANALYTICS_EXCLUDED_CATEGORIES = ["Loan", "Loan Repayment", "Balance Adjustment"];
+const isAnalyticsTransaction = t => !ANALYTICS_EXCLUDED_CATEGORIES.includes(t.category);
+const monthlyTransactions = transactions.filter(t => t.date && t.date.startsWith(currentMonthPrefix) && isAnalyticsTransaction(t));
 const monthlyIncomeAED = monthlyTransactions.filter(t => t.type === "income").reduce((acc, t) => acc + convertTxToAED(t), 0);
 const monthlyExpenseAED = monthlyTransactions.filter(t => t.type === "expense").reduce((acc, t) => acc + convertTxToAED(t), 0);
 const monthlySavingsAED = monthlyIncomeAED - monthlyExpenseAED;
@@ -901,7 +914,7 @@ const monthlyHistory = useMemo(() => {
     const label = d.toLocaleString("en-US", {
       month: "short"
     });
-    const txns = transactions.filter(t => t.date && t.date.startsWith(prefix));
+    const txns = transactions.filter(t => t.date && t.date.startsWith(prefix) && isAnalyticsTransaction(t));
     const inc = txns.filter(t => t.type === "income").reduce((a, t) => a + convertTxToAED(t), 0);
     const exp = txns.filter(t => t.type === "expense").reduce((a, t) => a + convertTxToAED(t), 0);
     months.push({
@@ -920,7 +933,7 @@ const yearlyHistory = useMemo(() => {
   for (let i = 4; i >= 0; i--) {
     const year = now.getFullYear() - i;
     const prefix = `${year}-`;
-    const txns = transactions.filter(t => t.date && t.date.startsWith(prefix));
+    const txns = transactions.filter(t => t.date && t.date.startsWith(prefix) && isAnalyticsTransaction(t));
     const inc = txns.filter(t => t.type === "income").reduce((a, t) => a + convertTxToAED(t), 0);
     const exp = txns.filter(t => t.type === "expense").reduce((a, t) => a + convertTxToAED(t), 0);
     years.push({
@@ -1108,6 +1121,40 @@ const handleFormSubmit = e => {
     alert("Please select a valid account.");
     return;
   }
+  // Warn before an expense/transfer would drive an account negative, rather
+  // than silently overdrawing it (see: no insufficient-funds warning bug).
+  if (modalType === "expense") {
+    const targetAcc = accounts.find(a => a.id === formInput.accountId);
+    if (targetAcc) {
+      const accountAmt = convertFromAED(convertToAED(amt, formInput.currency), targetAcc.currency);
+      let projectedBalance = targetAcc.balance;
+      if (editingId) {
+        const oldTx = transactions.find(t => t.id === editingId);
+        if (oldTx && oldTx.accountId === targetAcc.id) {
+          const oldAccAmt = oldTx.accountAmount != null ? oldTx.accountAmount : oldTx.amount;
+          projectedBalance += oldTx.type === "income" ? -oldAccAmt : oldAccAmt;
+        }
+      }
+      projectedBalance -= accountAmt;
+      if (projectedBalance < 0 && !window.confirm(`This will take ${targetAcc.name} to a negative balance (${numFmt(projectedBalance)} ${targetAcc.currency}). Continue anyway?`)) {
+        return;
+      }
+    }
+  }
+  if (modalType === "transfer") {
+    const fromAcc = accounts.find(a => a.id === formInput.accountId);
+    if (fromAcc) {
+      let projectedBalance = fromAcc.balance;
+      if (editingId) {
+        const oldTx = transactions.find(t => t.id === editingId);
+        if (oldTx && oldTx.accountId === fromAcc.id) projectedBalance += oldTx.amount;
+      }
+      projectedBalance -= amt;
+      if (projectedBalance < 0 && !window.confirm(`This will take ${fromAcc.name} to a negative balance (${numFmt(projectedBalance)} ${fromAcc.currency}). Continue anyway?`)) {
+        return;
+      }
+    }
+  }
   saveStateToHistory();
   let updatedAccs = [...accounts];
   let updatedAsts = [...assets];
@@ -1124,8 +1171,13 @@ const handleFormSubmit = e => {
         balance: amt,
         currency: formInput.currency
       } : acc);
-      if (prevAcc && prevAcc.currency === formInput.currency && Math.abs(amt - prevAcc.balance) > 1e-9) {
-        const delta = amt - prevAcc.balance;
+      // Compare the previous balance in the *new* currency (a no-op
+      // conversion when currency is unchanged) so an adjustment record is
+      // still logged when someone edits currency and balance in the same
+      // save (see: dropped adjustment record bug).
+      const prevBalanceInNewCurrency = prevAcc ? convertFromAED(convertToAED(prevAcc.balance, prevAcc.currency), formInput.currency) : amt;
+      if (prevAcc && Math.abs(amt - prevBalanceInNewCurrency) > 1e-9) {
+        const delta = amt - prevBalanceInNewCurrency;
         const adjTx = {
           id: makeId(),
           title: `Balance adjustment: ${formInput.title}`,
@@ -1221,7 +1273,11 @@ const handleFormSubmit = e => {
           accountId: loanAcc.id,
           date: formInput.date,
           recordedAt: new Date().toISOString(),
-          loanId: newLoanId
+          loanId: newLoanId,
+          // Link back to the principal movement so deleting this
+          // transaction later can keep the loan record in sync
+          // (see: loan delete desync bug).
+          movementId: movements[0].id
         };
         updatedTxns = [loanTx, ...transactions];
         setTransactions(updatedTxns);
@@ -1497,6 +1553,46 @@ const confirmDelete = () => {
           }
           return acc;
         });
+      }
+      // Loan-linked transactions (principal or repayment) also need the
+      // linked loan record's amount/repaid/movements rolled back, or the
+      // Loans tab desyncs from the Ledger (see: loan delete desync bug).
+      if (tx.loanId) {
+        const linkedLoan = loans.find(l => l.id === tx.loanId);
+        if (linkedLoan) {
+          const inferredKind = tx.category === "Loan Repayment" ? "repayment" : "principal";
+          // Prefer matching by movementId (always present on transactions
+          // created after this fix). For older data saved before movementId
+          // was recorded on the initial loan transaction, fall back to
+          // matching the one movement with the same kind/account/date/amount
+          // so legacy loans still get cleaned up correctly.
+          const linkedMovement = (linkedLoan.movements || []).find(m => m.id === tx.movementId)
+            || (linkedLoan.movements || []).find(m => m.kind === inferredKind && m.accountId === tx.accountId && m.date === tx.date && Math.abs(Number(m.amount || 0) - Number(tx.accountAmount != null ? tx.accountAmount : tx.amount)) < 1e-9)
+            || {
+              id: tx.movementId || tx.id,
+              kind: inferredKind,
+              amount: Number(tx.accountAmount != null ? tx.accountAmount : tx.amount) || 0
+            };
+          const movementAmount = Number(linkedMovement.amount || 0);
+          updatedLoans = loans.map(l => {
+            if (l.id !== tx.loanId) return l;
+            if (linkedMovement.kind === "repayment") {
+              return {
+                ...l,
+                repaid: Math.max(0, (l.repaid || 0) - movementAmount),
+                movements: (l.movements || []).filter(m => m.id !== linkedMovement.id)
+              };
+            }
+            const nextAmount = Math.max(0, (l.amount || 0) - movementAmount);
+            return {
+              ...l,
+              amount: nextAmount,
+              repaid: Math.min(l.repaid || 0, nextAmount),
+              movements: (l.movements || []).filter(m => m.id !== linkedMovement.id)
+            };
+          });
+          setLoans(updatedLoans);
+        }
       }
       setAccounts(updatedAccs);
     }
