@@ -187,44 +187,21 @@ useEffect(() => {
   }
 }, [settings.theme]);
 const [activeTab, setActiveTab] = useState(() => { try { return localStorage.getItem("aleemfin_active_tab") === "recurring" ? "planning" : "overview"; } catch (_) { return "overview"; } });
-React.useEffect(() => {
-  const nav = document.querySelector('[data-mobile-nav-scroll="true"]');
-  if (!nav) return;
-  const active = nav.querySelector(`[data-mobile-nav-tab="${activeTab}"]`);
-  if (!active) return;
-
-  let pill = nav.querySelector(".mobile-nav-active-pill");
-  if (!pill) {
-    pill = document.createElement("div");
-    pill.className = "mobile-nav-active-pill";
-    nav.prepend(pill);
-  }
-
-  const syncPill = () => {
-    const x = active.offsetLeft;
-    pill.style.width = `${active.offsetWidth}px`;
-    pill.style.height = `${active.offsetHeight}px`;
-    pill.style.transform = `translate3d(${x}px,-50%,0)`;
-  };
-
-  const scrollActiveIntoView = () => {
-    const navRect = nav.getBoundingClientRect();
-    const activeRect = active.getBoundingClientRect();
-    const isOutside = activeRect.left < navRect.left + 4 || activeRect.right > navRect.right - 4;
-    if (isOutside) active.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-  };
-
-  scrollActiveIntoView();
-  requestAnimationFrame(() => {
-    syncPill();
-    requestAnimationFrame(syncPill);
+useEffect(() => {
+  const frame = requestAnimationFrame(() => {
+    const nav = document.querySelector("[data-mobile-nav-scroll]");
+    const pill = nav && nav.querySelector("[data-mobile-nav-pill]");
+    const active = nav && nav.querySelector(`[data-mobile-nav-tab="${activeTab}"]`);
+    if (!nav || !pill || !active) return;
+    const left = active.offsetLeft;
+    const width = active.offsetWidth;
+    pill.style.transform = `translate3d(${left}px,0,0)`;
+    pill.style.width = `${width}px`;
+    if (active.scrollIntoView && !nav.contains(document.activeElement)) {
+      active.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }
   });
-  nav.addEventListener("scroll", syncPill, { passive: true });
-  window.addEventListener("resize", syncPill);
-  return () => {
-    nav.removeEventListener("scroll", syncPill);
-    window.removeEventListener("resize", syncPill);
-  };
+  return () => cancelAnimationFrame(frame);
 }, [activeTab]);
 const lastNonSettingsTabRef = useRef("overview");
 useEffect(() => { try { localStorage.setItem("aleemfin_active_tab", activeTab); } catch (_) {} }, [activeTab]);
@@ -777,7 +754,8 @@ const openEditModal = (type, item) => {
       title: item.name,
       amount: String(item.balance),
       currency: item.currency,
-      accType: item.type || "Bank"
+      accType: item.type || "Bank",
+      color: item.color || ""
     });
   } else if (type === "asset") {
     setFormInput({
@@ -1206,7 +1184,7 @@ const handleFormSubmit = e => {
         ...acc,
         name: formInput.title,
         type: formInput.accType,
-        color: prevAcc.color || ACCOUNT_COLORS[accounts.findIndex(a => a.id === editingId) % ACCOUNT_COLORS.length],
+        color: formInput.color || prevAcc.color || ACCOUNT_COLORS[accounts.findIndex(a => a.id === editingId) % ACCOUNT_COLORS.length],
         balance: amt,
         currency: formInput.currency
       } : acc);
@@ -1240,7 +1218,7 @@ const handleFormSubmit = e => {
         type: formInput.accType,
         balance: amt,
         currency: formInput.currency,
-        color: ACCOUNT_COLORS[accounts.length % ACCOUNT_COLORS.length]
+        color: formInput.color || ACCOUNT_COLORS[accounts.length % ACCOUNT_COLORS.length]
       });
     }
     setAccounts(updatedAccs);
@@ -2462,13 +2440,18 @@ const tabProps = { selectionToolbar, selectionVersion, selectionKey, selectedKey
       className: "af-floating-tabbar-wrap md:hidden fixed bottom-0 left-0 right-0 z-40 safe-bottom",
       style: {
         position: "fixed"
-      }
+      },
+      "aria-label": "Primary navigation"
     }, /* @__PURE__ */React.createElement("div", {
       className: "af-floating-tabbar mobile-bottom-bar max-w-5xl mx-auto px-2 py-1.5 h-[64px] safe-x"
     }, /* @__PURE__ */React.createElement("div", {
       className: "mobile-nav-swipe",
       "data-mobile-nav-scroll": "true"
-    }, MOBILE_NAV_ITEMS.filter(tab => tab.id !== "settings").map(tab => {
+    }, /* @__PURE__ */React.createElement("span", {
+      className: "af-tabbar-active-pill",
+      "data-mobile-nav-pill": "true",
+      "aria-hidden": "true"
+    }), MOBILE_NAV_ITEMS.filter(tab => tab.id !== "settings").map(tab => {
       const Icon = tab.icon;
       const isActive = activeTab === tab.id;
       return /* @__PURE__ */React.createElement("button", {
