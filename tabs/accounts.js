@@ -64,18 +64,18 @@
             h("div", { className: "wallet-card-bottom" },
               h("span", { className: "wallet-card-currency" }, acc.currency),
               h("strong", { className: "wallet-card-balance" }, numFmt(acc.balance))
-            )
-          ),
-          (inflowInfo || outflowInfo) && h("div", { className: "account-flow-list" },
-            inflowInfo && h("div", { className: "account-flow-row account-flow-income" },
-              h(Icons.IconInflow, { className: "w-4 h-4 account-flow-in" }),
-              h("div", { className: "min-w-0" }, h("span", null, "Last inflow"), h("small", null, `${dateFmt(inflow.date)}${inflowInfo.note || ""}`)),
-              h("strong", null, "+", inflowInfo.cur, " ", numFmt(inflowInfo.amt))
             ),
-            outflowInfo && h("div", { className: "account-flow-row account-flow-expense" },
-              h(Icons.IconInflow, { className: "w-4 h-4 account-flow-out" }),
-              h("div", { className: "min-w-0" }, h("span", null, "Last outflow"), h("small", null, `${dateFmt(outflow.date)}${outflowInfo.note || ""}`)),
-              h("strong", null, "-", outflowInfo.cur, " ", numFmt(outflowInfo.amt))
+            (inflowInfo || outflowInfo) && h("div", { className: "wallet-card-activity" },
+              inflowInfo && h("div", { className: "wallet-card-activity-row" },
+                h(Icons.IconInflow, { className: "w-3.5 h-3.5 wallet-card-activity-in" }),
+                h("div", { className: "min-w-0" }, h("span", null, "Last in"), h("small", null, `${dateFmt(inflow.date)}${inflowInfo.note || ""}`)),
+                h("strong", null, "+", inflowInfo.cur, " ", numFmt(inflowInfo.amt))
+              ),
+              outflowInfo && h("div", { className: "wallet-card-activity-row" },
+                h(Icons.IconInflow, { className: "w-3.5 h-3.5 wallet-card-activity-out" }),
+                h("div", { className: "min-w-0" }, h("span", null, "Last out"), h("small", null, `${dateFmt(outflow.date)}${outflowInfo.note || ""}`)),
+                h("strong", null, "-", outflowInfo.cur, " ", numFmt(outflowInfo.amt))
+              )
             )
           )
         ));
