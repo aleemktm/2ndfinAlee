@@ -85,7 +85,6 @@
               const outstanding = Math.max(0, principal - repaid);
               const percentPaid = Math.min(100, Math.round(repaid / (principal || 1) * 100) || 0);
               const isFullyPaid = outstanding <= 0;
-              const isOverdue = !isFullyPaid && loan.dueDate && loan.dueDate < todayStr;
               const typeClass = loan.type === "lent" ? "loan-card-lent" : "loan-card-borrowed";
               const expanded = !!expandedLoanHistory[loan.id];
 
@@ -103,6 +102,8 @@
                 accountId: t.accountId
               }))).sort((a, b) => (b.date || "").localeCompare(a.date || ""));
 
+              // The front card always shows the latest transaction/entry date.
+              const latestEntryDate = history[0]?.date || loan.date;
               const firstPrincipalId = movements.find(m => m.kind === "principal")?.id;
 
               const historyRows = history.map(mv => {
@@ -154,13 +155,12 @@
                   )
                 ),
                 h("div", { className: "loan-date-line" },
-                  h("span", null, "Lent out", " ", dateFmt(loan.date)),
-                  loan.dueDate && h("span", { className: isOverdue ? "is-overdue" : "" }, "Due ", dateFmt(loan.dueDate))
+                  h("span", null, dateFmt(latestEntryDate))
                 ),
                 h("div", { className: "loan-progress-wrap" },
                   h("div", { className: "loan-progress-label" },
                     h("span", null, `${percentPaid}% repaid`),
-                    h("span", null, isFullyPaid ? "Settled" : isOverdue ? "Overdue" : `${loan.currency} ${numFmt(outstanding)} left`)
+                    h("span", null, isFullyPaid ? "Settled" : `${loan.currency} ${numFmt(outstanding)} left`)
                   ),
                   h("div", { className: "loan-progress-track" },
                     h("div", { className: "loan-progress-fill", style: { width: `${percentPaid}%` } }))
@@ -170,10 +170,7 @@
                   target: "_blank", rel: "noreferrer", className: "loan-reminder",
                   onClick: e => e.stopPropagation()
                 }, "WhatsApp Reminder →"),
-                h("div", { className: "loan-tap-hint" },
-                  h(Icons.IconHistory, { className: "w-3 h-3" }),
-                  expanded ? "Tap to hide history" : "Tap to view payment history"
-                )
+                h("div", { className: "loan-tap-hint", "aria-hidden": "true" }, "⌄")
               );
 
               const historyCard = h("div", {
@@ -183,16 +180,6 @@
                   h("div", null,
                     h("span", null, "LOAN HISTORY"),
                     h("strong", null, `${history.length} ${history.length === 1 ? "record" : "records"}`)
-                  ),
-                  h("div", { className: "loan-history-actions" },
-                    !isFullyPaid && h("button", {
-                      type: "button", className: "loan-history-action loan-history-action-primary",
-                      onClick: e => { e.stopPropagation(); openRepayment(loan); }, "aria-label": "Record payment"
-                    }, "+ Record payment"),
-                    h("button", {
-                      type: "button", className: "loan-history-action",
-                      onClick: e => { e.stopPropagation(); openAddMore(loan); }, "aria-label": "Add more"
-                    }, "+ Add more")
                   )
                 ),
                 history.length
@@ -210,8 +197,8 @@
                 leftAction2Label: "Add more",
                 selectionKey: selectionKey("loan", loan.id)
               }, h("div", { className: `loan-card-stack ${expanded ? "is-expanded" : ""}` },
-                expanded && historyCard,
-                frontCard
+                frontCard,
+                expanded && historyCard
               ));
             })
       )
