@@ -7,6 +7,14 @@
     const gain = assets.reduce((s,a)=>s+convertToBaseCurrency(Number(a.currentPriceAED||0)-Number(a.purchasePriceAED||0), a.currency||"AED"),0);
     const baseCurrency = settings?.defaultCurrency || "AED";
     const goldCount = assets.filter(a=>a.category === "Gold").length;
+    const categoryBorderColor = category => {
+      switch (category) {
+        case "Gold": return "#D4AF37";
+        case "Property": return "#8B5CF6";
+        case "Vehicle": return "#3B82F6";
+        default: return "#8E8E93";
+      }
+    };
     return h("div", { className: `assets-native ${darkMode ? "is-dark" : ""}` },
       h("section", { className: "assets-hero" },
         h("div", { className:"assets-hero-copy" },
@@ -32,7 +40,7 @@
       h("section", { className:"assets-list-section" },
         h("div",{className:"assets-section-head"},h("div",null,h("span",null,"YOUR ASSETS"),h("strong",null,assets.length?"Portfolio":"Get started"))),
         assets.length===0 ? h("div",{className:"assets-empty"},h(Icons.IconWallet,{className:"w-7 h-7"}),h("strong",null,"No assets yet"),h("span",null,"Add gold, property, vehicles or other fixed assets to track your net worth."),h("button",{onClick:()=>openAddModal("asset"),className:"assets-add"},h(Icons.IconPlus,{className:"w-4 h-4"}),"Add asset")) :
-        h("div",{className:"assets-list"},assets.map(ast=>{const g=Number(ast.currentPriceAED||0)-Number(ast.purchasePriceAED||0);const pct=Number(ast.purchasePriceAED||0)>0?(g/Number(ast.purchasePriceAED))*100:0;return h(window.SwipeRow,{key:ast.id,onEdit:()=>openEditModal("asset",ast),onDelete:()=>setDeleteTarget({type:"asset",id:ast.id,name:ast.name}),selectionKey:selectionKey("asset",ast.id)},h("article",{className:"asset-row-card"},h("div",{className:"asset-row-icon"}, ast.category==="Gold"?h(Icons.IconSparkles,{className:"w-5 h-5"}):ast.category==="Vehicle"?h(Icons.IconCar,{className:"w-5 h-5"}):ast.category==="Property"?h(Icons.IconHome,{className:"w-5 h-5"}):h(Icons.IconWallet,{className:"w-5 h-5"})),h("div",{className:"asset-row-main"},h("div",{className:"asset-row-title"},h("h3",null,ast.name),h("span",null,ast.category)),h("p",null,ast.weightGrams?`${ast.weightGrams}g · `:"",ast.currency||"AED"," · Purchased ",numFmt(ast.purchasePriceAED||0)),h("div",{className:"asset-row-progress"},h("span",{style:{width:`${Math.max(0,Math.min(100,Math.abs(pct)))}%`}}))),h("div",{className:"asset-row-value"},h("strong",null,ast.currency||"AED"," ",numFmt(ast.currentPriceAED||0)),h("small",{className:g>=0?"is-positive":"is-negative"},(g>=0?"+":"-")+numFmt(Math.abs(g))+` · ${Math.abs(pct).toFixed(1)}%`))));}))
+        h("div",{className:"assets-list"},assets.map(ast=>{const g=Number(ast.currentPriceAED||0)-Number(ast.purchasePriceAED||0);const pct=Number(ast.purchasePriceAED||0)>0?(g/Number(ast.purchasePriceAED))*100:0;const borderColor=categoryBorderColor(ast.category);return h(window.SwipeRow,{key:ast.id,onEdit:()=>openEditModal("asset",ast),onDelete:()=>setDeleteTarget({type:"asset",id:ast.id,name:ast.name}),selectionKey:selectionKey("asset",ast.id)},h("article",{className:"asset-row-card",style:{borderLeftWidth:"3px",borderLeftStyle:"solid",borderLeftColor:borderColor}},h("div",{className:"asset-row-icon"}, ast.category==="Gold"?h(Icons.IconSparkles,{className:"w-5 h-5"}):ast.category==="Vehicle"?h(Icons.IconCar,{className:"w-5 h-5"}):ast.category==="Property"?h(Icons.IconHome,{className:"w-5 h-5"}):h(Icons.IconWallet,{className:"w-5 h-5"})),h("div",{className:"asset-row-main"},h("div",{className:"asset-row-title"},h("h3",null,ast.name),h("span",null,ast.category)),h("p",null,ast.weightGrams?`${ast.weightGrams}g · `:"",ast.currency||"AED"," · Purchased ",numFmt(ast.purchasePriceAED||0)),h("div",{className:"asset-row-progress"},h("span",{style:{width:`${Math.max(0,Math.min(100,Math.abs(pct)))}%`}}))),h("div",{className:"asset-row-value"},h("strong",null,ast.currency||"AED"," ",numFmt(ast.currentPriceAED||0)),h("small",{className:g>=0?"is-positive":"is-negative"},(g>=0?"+":"-")+numFmt(Math.abs(g))+` · ${Math.abs(pct).toFixed(1)}%`))));}))
       )
     );
   }
