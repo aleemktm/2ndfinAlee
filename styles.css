@@ -2069,8 +2069,7 @@ html.dark .loan-history-action-primary{color:#73ddb0;background:color-mix(in srg
 .loan-history-undo:active{transform:scale(.94)}
 .loan-history-empty{text-align:center;font-size:8px;color:#8e8e93;padding:8px 4px 4px}
 .loan-date-line{display:flex;align-items:center;gap:14px;margin-top:12px;padding-top:10px;border-top:1px solid rgba(60,60,67,.08);font-size:8px;color:#8e8e93}
-.loan-date-line span{display:inline-flex;align-items:center;gap:4px}.loan-date-line span:first-child:before{content:"";width:5px;height:5px;border-radius:50%;background:var(--af-accent)}
-.loan-date-line .is-overdue{color:#e5484d;font-weight:800}
+.loan-date-line span{display:inline-flex;align-items:center;gap:4px}.loan-date-line .is-overdue{color:#e5484d;font-weight:800}
 .loan-tap-hint{display:flex;justify-content:center;align-items:center;gap:5px;margin-top:11px;padding-top:9px;border-top:1px dashed rgba(118,118,128,.16);font-size:8px;font-weight:750;color:#8e8e93;letter-spacing:.01em}
 .loan-tap-hint svg{opacity:.75}
 html.dark .loan-date-line{border-color:rgba(255,255,255,.07)}
@@ -2100,10 +2099,10 @@ html.dark .swipe-action-add-more{color:#f2f2f7;background:rgba(255,255,255,.07)}
 .loan-native-front{order:1}
 .loan-history-card{order:2;margin:-8px 7px 0!important;padding-top:16px;border-radius:14px 14px 18px 18px;box-shadow:0 5px 16px rgba(15,23,42,.055)}
 .loan-date-line{border-top:0!important;padding-top:0!important;margin-top:10px!important}
-.loan-date-line span:first-child:before{display:none!important}
 .loan-tap-hint{border-top:0!important;padding-top:0!important;margin-top:8px!important;font-size:16px!important;line-height:1!important;font-weight:500!important;min-height:10px}
 .loan-tap-hint svg{display:none!important}
 .loan-native-card.loan-card-lent,.loan-native-card.loan-card-borrowed{border-left:0!important}
 .loan-history-actions{display:none!important}
 .loan-history-card-head{margin-bottom:9px}
 html.dark .loan-date-line,html.dark .loan-tap-hint{border-color:transparent!important}
+html.dark .loan-due-date{color:#a7a7ad}
