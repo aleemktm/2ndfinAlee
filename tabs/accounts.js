@@ -95,7 +95,7 @@
                     const isIn = (tx.type === "income" && String(tx.accountId) === String(acc.id)) ||
                       (tx.type === "transfer" && String(tx.toAccountId) === String(acc.id));
                     const info = describeAccountMovement(tx, acc);
-                    const MovementIcon = isIn ? Icons.IconArrowUp45 : Icons.IconArrowDown45;
+                    const MovementIcon = isIn ? Icons.IconArrowDown45 : Icons.IconArrowUp45;
                     return h("div", { key: tx.id, className: "account-activity-row" },
                       h("span", { className: `account-activity-direction ${isIn ? "is-inflow" : "is-outflow"}` },
                         h(MovementIcon, { className: "w-4 h-4" })

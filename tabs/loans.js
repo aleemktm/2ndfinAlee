@@ -155,7 +155,8 @@
                   )
                 ),
                 h("div", { className: "loan-date-line" },
-                  h("span", null, dateFmt(latestEntryDate))
+                  h("span", null, dateFmt(latestEntryDate)),
+                  loan.dueDate && h("span", { className: "loan-due-date" }, "Due ", dateFmt(loan.dueDate))
                 ),
                 h("div", { className: "loan-progress-wrap" },
                   h("div", { className: "loan-progress-label" },
@@ -170,7 +171,6 @@
                   target: "_blank", rel: "noreferrer", className: "loan-reminder",
                   onClick: e => e.stopPropagation()
                 }, "WhatsApp Reminder →"),
-                h("div", { className: "loan-tap-hint", "aria-hidden": "true" }, "⌄")
               );
 
               const historyCard = h("div", {
