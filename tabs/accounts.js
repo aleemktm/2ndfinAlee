@@ -27,7 +27,7 @@
         .filter(t => t && (String(t.accountId) === key || String(t.toAccountId) === key))
         .slice()
         .sort((a, b) => (b.date || "").localeCompare(a.date || ""))
-        .slice(0, 3);
+        .slice();
     };
 
     const handleCardTap = accId => {
@@ -87,7 +87,7 @@
                   h("span", { className: "account-activity-eyebrow" }, "RECENT ACTIVITY"),
                   h("strong", null, acc.name)
                 ),
-                h("span", { className: "account-activity-count" }, `${history.length} of 3`)
+                h("span", { className: "account-activity-count" }, `${history.length} activit${history.length === 1 ? "y" : "ies"}`)
               ),
               history.length === 0
                 ? h("p", { className: "account-activity-empty" }, "No transactions recorded for this account yet.")
