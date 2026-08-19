@@ -27,7 +27,7 @@
         .filter(t => t && (String(t.accountId) === key || String(t.toAccountId) === key))
         .slice()
         .sort((a, b) => (b.date || "").localeCompare(a.date || ""))
-        .slice();
+        .slice(0, 30);
     };
 
     const handleCardTap = accId => {
