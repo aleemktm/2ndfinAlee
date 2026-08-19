@@ -1974,7 +1974,18 @@ html.dark .mobile-nav-active-pill {
   flex-direction: column;
   gap: 5px;
   margin-top: 8px;
+  max-height: 151px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  padding-right: 2px;
 }
+.account-activity-list::-webkit-scrollbar { width: 4px; }
+.account-activity-list::-webkit-scrollbar-track { background: transparent; }
+.account-activity-list::-webkit-scrollbar-thumb { background: rgba(118,118,128,.28); border-radius: 999px; }
+html.dark .account-activity-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.18); }
 .account-activity-row {
   display: flex;
   align-items: center;
