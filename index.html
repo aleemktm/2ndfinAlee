@@ -235,7 +235,7 @@
   }
   .lang-btn:hover{ background:rgba(28,36,48,.55); transform:translateY(-1px); }
   .music-btn{
-    position:fixed; top:66px; right:18px; z-index:50;
+    position:fixed; top:66px; left:18px; z-index:50;
     width:40px; height:40px; border-radius:50%; border:1px solid rgba(255,255,255,.55);
     background:rgba(28,36,48,.35); backdrop-filter:blur(6px);
     display:flex; align-items:center; justify-content:center; cursor:pointer;
@@ -310,8 +310,8 @@ body.urdu-mode .urdu, body.urdu-mode .urdu *{ font-style:normal !important; }
 </div>
 
 <button class="lang-btn" id="langBtn" aria-label="Switch language">اردو</button>
-<button class="music-btn" id="musicBtn" aria-label="Play background music">
-  <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.2v13.6c0 .7.8 1.1 1.4.7l10-6.8c.6-.4.6-1.2 0-1.6l-10-6.8C8.8 4.1 8 4.5 8 5.2Z"/></svg>
+<button class="music-btn" id="musicBtn" aria-label="Toggle background music">
+  <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M13 5v9.18A3.5 3.5 0 1 0 15 17V9.17l5 1.67V8.75L13 5Zm-3 15a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z"/></svg>
   <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h3v14H7zM14 5h3v14h-3z"/></svg>
 </button>
 <audio id="bgMusic" src="wedding-ambient.mp3" loop preload="auto" autoplay></audio>
