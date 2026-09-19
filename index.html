@@ -63,18 +63,6 @@
   }
 
   /* ---------- sound toggle ---------- */
-  .sound-btn{
-    position:fixed; top:18px; right:18px; z-index:50;
-    width:40px; height:40px; border-radius:50%; border:1px solid rgba(255,255,255,.55);
-    background:rgba(28,36,48,.35); backdrop-filter:blur(6px);
-    display:flex; align-items:center; justify-content:center; cursor:pointer;
-    color:#fff; transition:background .25s ease;
-  }
-  .sound-btn:hover{ background:rgba(28,36,48,.55); }
-  .sound-btn svg{ width:17px; height:17px; }
-  .sound-btn .icon-off{ display:none; }
-  .sound-btn.unmuted .icon-on{ display:none; }
-  .sound-btn.unmuted .icon-off{ display:block; }
 
   /* ---------- scroll progress rail ---------- */
   .progress-rail{
@@ -321,17 +309,12 @@ body.urdu-mode .urdu, body.urdu-mode .urdu *{ font-style:normal !important; }
   <div class="video-scrim"></div>
 </div>
 
-<button class="sound-btn" id="soundBtn" aria-label="Toggle sound">
-  <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path d="M17 8a5 5 0 0 1 0 8"/></svg>
-  <svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path d="M16 9l5 6M21 9l-5 6"/></svg>
-</button>
-
 <button class="lang-btn" id="langBtn" aria-label="Switch language">اردو</button>
 <button class="music-btn" id="musicBtn" aria-label="Play background music">
   <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.2v13.6c0 .7.8 1.1 1.4.7l10-6.8c.6-.4.6-1.2 0-1.6l-10-6.8C8.8 4.1 8 4.5 8 5.2Z"/></svg>
   <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h3v14H7zM14 5h3v14h-3z"/></svg>
 </button>
-<audio id="bgMusic" src="wedding-ambient.mp3" loop preload="auto"></audio>
+<audio id="bgMusic" src="wedding-ambient.mp3" loop preload="auto" autoplay></audio>
 
 <div class="atmosphere" id="atmosphere" aria-hidden="true"></div>
 
@@ -442,8 +425,6 @@ body.urdu-mode .urdu, body.urdu-mode .urdu *{ font-style:normal !important; }
         <p class="family-line english-only">Son of <span>Mr. Mukhtar Ahmed &amp; Mrs. Ansa Mukhtar</span></p>
         <p class="family-line urdu-only urdu">جناب مختار احمد اور محترمہ انسا مختار کے صاحبزادے</p>
       </div>
-      <p class="invitation-intro english-only" style="margin-top:.65rem;">joyfully request the honour of your presence at the wedding celebration of their children.</p>
-      <p class="invitation-intro urdu-only urdu" style="margin-top:.65rem;">اپنے بچوں کی شادی کی خوشی میں آپ کی پُرخلوص شرکت کے خواستگار ہیں۔</p>
     </div>
   </section>
 
@@ -477,7 +458,6 @@ body.urdu-mode .urdu, body.urdu-mode .urdu *{ font-style:normal !important; }
         <div class="day-number" id="dayNumber">24</div>
         <div class="month-year" id="monthYear">December, 2026</div>
       </div>
-      <div class="save-date-note" id="saveDateNote"><span class="english-only">9 November 2026</span><span class="urdu-only urdu">9 نومبر 2026</span></div>
       <div class="time-pill" id="timePill">
         <svg width="16" height="16" viewBox="0 0 100 100" style="color:var(--slate-deep)"><use href="#motif-clock"/></svg>
         <span id="timeText">8:00 PM · Mehndi</span>
@@ -718,16 +698,6 @@ bgVideo.addEventListener('timeupdate', () => {
 setTimeout(unlockPage, 6500);
 bgVideo.play().catch(unlockPage);
 
-/* ---- sound toggle ---- */
-const soundBtn = document.getElementById('soundBtn');
-soundBtn.addEventListener('click', async () => {
-  bgVideo.muted = !bgVideo.muted;
-  soundBtn.classList.toggle('unmuted', !bgVideo.muted);
-  if(bgVideo.muted && !bgMusic.paused){ bgMusic.pause(); }
-  else if(!bgVideo.muted && bgMusic.paused){ try{ await bgMusic.play(); }catch(e){} }
-  syncMusicButton();
-});
-
 /* ====================================================================
    GSAP ScrollTrigger — every section uses the exact same reveal
    language as the names scene: each line rises 30px from below while
@@ -773,10 +743,18 @@ const bgMusic=document.getElementById('bgMusic');
 const musicBtn=document.getElementById('musicBtn');
 bgMusic.volume=.14;
 function syncMusicButton(){ musicBtn.classList.toggle('playing', !bgMusic.paused); }
-musicBtn.addEventListener('click', async()=>{
-  if(bgMusic.paused){ try{ await bgMusic.play(); }catch(e){} }
-  else bgMusic.pause();
+async function startMusic(){
+  try{ await bgMusic.play(); }catch(e){}
   syncMusicButton();
+}
+startMusic();
+// If the browser blocks audio autoplay, begin it at the first guest interaction.
+['pointerdown','touchstart','keydown','wheel'].forEach(evt=>{
+  window.addEventListener(evt, startMusic, { once:true, passive:true });
+});
+musicBtn.addEventListener('click', async()=>{
+  if(bgMusic.paused){ await startMusic(); }
+  else { bgMusic.pause(); syncMusicButton(); }
 });
 bgMusic.addEventListener('play',syncMusicButton);
 bgMusic.addEventListener('pause',syncMusicButton);
@@ -869,10 +847,9 @@ if(reduceMotion){
     .to('#dayNumber', { opacity:1, y:0, duration:.6 }, '-=.25')
     .to('#monthYear', { opacity:1, y:0, duration:.5 }, '-=.3')
     .to('#timePill', { opacity:1, y:0, duration:.6 }, '-=.2')
-    .to('#saveDateNote', { opacity:1, y:0, duration:.5 }, '-=.15')
     .to('#clockMin', { rotation:180, transformOrigin:'50px 50px', duration:.8 }, '<')
     .to('#s-date', { duration:.4 })
-    .to(['#s-date .eyebrow','#calSvg','#weekday','#dayNumber','#monthYear','#timePill','#saveDateNote'],
+    .to(['#s-date .eyebrow','#calSvg','#weekday','#dayNumber','#monthYear','#timePill'],
         { opacity:0, y:-34, duration:.8 }, '+=.2');
 
   /* --- countdown --- */
