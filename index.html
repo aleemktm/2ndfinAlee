@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ruqqiya & Nouman — Wedding Invitation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Allura&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!--
+====================================================================
+  EDIT ME FIRST — every piece of invitation text lives in the
+  CONFIG object near the bottom of this file, inside <script>.
+  This file must stay next to "wedding-envelope.mp4" in the same
+  folder — it is loaded as a relative background video.
+====================================================================
+-->
+
+<style>
+  :root{
+    --ivory:#FBF6EC;
+    --cream:#F3E9D8;
+    --cream-deep:#E9DBC2;
+    --slate:#5F7690;
+    --slate-deep:#455A75;
+    --gold:#B98A3E;
+    --gold-light:#E3C077;
+    --ink:#392F27;
+    --ink-soft:#6d6154;
+    --serif:'Cormorant Garamond', serif;
+    --script:'Allura', cursive;
+    --sans:'Jost', sans-serif;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  html.intro-lock, body.intro-lock{ overflow:hidden; height:100%; }
+
+  body{
+    font-family:var(--sans);
+    color:var(--ink);
+    background:#1c2430;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--gold-light); color:var(--ink); }
+
+  /* ---------- fixed 9:16 video stage (sized precisely by JS to letterbox on wide screens) ---------- */
+  .video-wrap{
+    position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+    z-index:0; overflow:hidden; background:#0d1119;
+    width:100vw; height:100vh; /* JS overwrites these to an exact 9:16 box */
+  }
+  .video-wrap video{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; pointer-events:none;
+  }
+  /* soft, edge-to-edge contrast wash behind the lower text zone — no box, no border */
+  .video-scrim{
+    position:absolute; inset:0; z-index:1; pointer-events:none;
+    background:linear-gradient(to bottom, rgba(20,24,20,0) 46%, rgba(20,18,14,.4) 78%, rgba(15,13,10,.52) 100%);
+  }
+
+  /* ---------- sound toggle ---------- */
+  .sound-btn{
+    position:fixed; top:18px; right:18px; z-index:50;
+    width:40px; height:40px; border-radius:50%; border:1px solid rgba(255,255,255,.55);
+    background:rgba(28,36,48,.35); backdrop-filter:blur(6px);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    color:#fff; transition:background .25s ease;
+  }
+  .sound-btn:hover{ background:rgba(28,36,48,.55); }
+  .sound-btn svg{ width:17px; height:17px; }
+  .sound-btn .icon-off{ display:none; }
+  .sound-btn.unmuted .icon-on{ display:none; }
+  .sound-btn.unmuted .icon-off{ display:block; }
+
+  /* ---------- scroll progress rail ---------- */
+  .progress-rail{
+    position:fixed; right:16px; top:12vh; bottom:12vh; width:2px; z-index:50;
+    background:rgba(255,255,255,.3);
+  }
+  .progress-fill{
+    position:absolute; left:0; top:0; width:100%; height:0%;
+    background:linear-gradient(var(--gold-light), var(--gold));
+  }
+  .progress-marker{
+    position:absolute; left:50%; top:0%; width:8px; height:8px; border-radius:50%;
+    background:var(--gold-light); transform:translate(-50%,-50%);
+    box-shadow:0 0 8px rgba(227,192,119,.9);
+  }
+  @media (max-width:720px){ .progress-rail{ right:7px; } }
+
+  /* ---------- layout scaffolding ---------- */
+  main{ position:relative; z-index:2; }
+
+  /* ----------------------------------------------------------------
+     FIXED CONTENT SAFE ZONE
+     The butterfly occupies ~14–36% of the 9:16 frame. Every scene
+     uses the exact same top anchor below it. This anchor is independent
+     of content height, so tall content can never climb into the butterfly.
+  ----------------------------------------------------------------- */
+  .panel{
+    min-height:100vh;
+    position:relative;
+    padding:0 7vw;
+    text-align:center;
+  }
+
+  .card{
+    position:absolute;
+    top:42%;
+    left:7vw;
+    right:7vw;
+    width:auto;
+    max-width:440px; /* JS syncs this to the stage's exact width */
+    margin:0 auto;
+    background:none;
+    padding:0 .4rem;
+  }
+
+  /* Common entrance state. GSAP owns the actual choreography. */
+  .reveal-line{ opacity:0; transform:translateY(30px); }
+  .card, .card *{
+    text-shadow:0 1px 2px rgba(255,255,255,.55), 0 8px 24px rgba(40,30,18,.28);
+  }
+
+  .eyebrow{
+    font-family:var(--sans); font-weight:400; font-size:.7rem;
+    letter-spacing:.3em; color:var(--slate-deep); opacity:.9;
+    text-transform:uppercase; transform:translateY(30px);
+  }
+
+  /* ---------- SECTION 1 : cover ---------- */
+  #coverCard{ opacity:0; }
+  #coverCard.revealed{ opacity:1; }
+  .bismillah{ font-family:var(--serif); font-size:1rem; color:var(--slate-deep); letter-spacing:.03em; }
+  .cover-title{
+    font-family:var(--serif); font-weight:500; font-size:clamp(2rem,7vw,3rem);
+    color:var(--ink); margin:.9rem 0 .35rem; letter-spacing:.01em;
+  }
+  .cover-sub{ font-family:var(--sans); font-weight:300; font-size:.85rem; color:var(--ink-soft); letter-spacing:.07em; }
+  .cover-monogram{ font-family:var(--script); font-size:clamp(1.8rem,6vw,2.4rem); color:var(--gold); margin-top:1.1rem; }
+  .scroll-cue{
+    margin-top:1.4rem; display:flex; flex-direction:column; align-items:center; gap:.35rem;
+    color:var(--slate-deep); opacity:0; transition:none;
+  }
+  #coverCard.revealed .scroll-cue{ opacity:.85; }
+  .scroll-cue span{ font-size:.62rem; letter-spacing:.22em; text-transform:uppercase; }
+  .scroll-cue svg{ width:12px; height:19px; animation:cue-bob 1.8s ease-in-out infinite; }
+  @keyframes cue-bob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(6px);} }
+
+  /* ---------- SECTION 2 : names ---------- */
+  .together{ font-family:var(--serif); font-style:italic; font-size:.95rem; color:var(--ink-soft); opacity:0; }
+  .name-row{ margin:1.3rem 0; }
+  .name-line{ font-family:var(--serif); font-weight:600; font-size:clamp(1.9rem,7vw,2.7rem); color:var(--ink); line-height:1.15; }
+  .name-line .ch{ display:inline-block; opacity:0; transform:translateY(30px); }
+  .amp{ font-family:var(--script); font-size:clamp(1.5rem,5vw,2rem); color:var(--gold); display:block; margin:.15rem 0; opacity:0; transform:translateY(30px); }
+  .bride-family{
+    font-family:var(--sans); font-weight:300; font-size:.82rem; color:var(--ink-soft);
+    letter-spacing:.04em; margin-top:1rem; opacity:0; line-height:1.6;
+  }
+  .bride-family b{ font-weight:500; color:var(--slate-deep); }
+
+  /* ---------- SECTION 3 : date & time ---------- */
+  .date-block{ opacity:0; transform:translateY(30px); }
+  .weekday{ font-family:var(--sans); font-weight:400; letter-spacing:.26em; font-size:.7rem; color:var(--slate-deep); text-transform:uppercase; }
+  .day-number{ font-family:var(--serif); font-weight:500; font-size:clamp(3.6rem,16vw,5.5rem); line-height:1; color:var(--ink); margin:.2rem 0; }
+  .month-year{ font-family:var(--serif); font-size:clamp(1.1rem,4vw,1.5rem); color:var(--ink); letter-spacing:.03em; }
+  .time-pill{
+    display:inline-flex; align-items:center; gap:.5rem; margin-top:1.3rem;
+    padding:.5rem 1.3rem; border:1px solid var(--gold-light); border-radius:999px;
+    font-family:var(--sans); font-size:.8rem; letter-spacing:.05em; color:var(--slate-deep);
+    opacity:0; transform:translateY(30px);
+  }
+
+  /* ---------- SECTION 3B : countdown ---------- */
+  .countdown{ display:flex; align-items:center; justify-content:center; gap:.6rem; margin-top:1.3rem; flex-wrap:wrap; }
+  .cd-unit{
+    display:flex; flex-direction:column; align-items:center; gap:.25rem;
+    min-width:56px; padding:.2rem;
+    opacity:0; transform:translateY(30px);
+  }
+  .cd-num{ font-family:var(--serif); font-weight:600; font-size:clamp(1.5rem,5vw,2rem); color:var(--slate-deep); line-height:1; font-variant-numeric:tabular-nums; }
+  .cd-label{ font-family:var(--sans); font-weight:300; font-size:.58rem; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-soft); }
+  .cd-sep{ font-family:var(--serif); font-size:1.5rem; color:var(--gold); opacity:0; align-self:flex-start; margin-top:.6rem; }
+  .countdown-note{ margin-top:1.1rem; font-family:var(--serif); font-style:italic; font-size:.85rem; color:var(--ink-soft); opacity:0; }
+
+  /* ---------- SECTION 4 : venue ---------- */
+  .venue-name{ font-family:var(--serif); font-weight:600; font-size:clamp(1.6rem,5.5vw,2.2rem); color:var(--ink); opacity:0; transform:translateY(30px); }
+  .venue-address{ font-family:var(--sans); font-weight:300; font-size:.9rem; color:var(--ink-soft); margin-top:.6rem; opacity:0; transform:translateY(30px); letter-spacing:.02em; }
+  .venue-note{ margin-top:1.2rem; font-family:var(--serif); font-style:italic; font-size:.88rem; color:var(--slate-deep); opacity:0; }
+  .maps-btn{
+    display:inline-flex; align-items:center; gap:.5rem; margin-top:1.3rem;
+    padding:.6rem 1.4rem; border-radius:999px; border:1px solid var(--slate-deep);
+    color:var(--slate-deep); background:transparent; text-decoration:none;
+    font-family:var(--sans); font-weight:400; font-size:.76rem; letter-spacing:.07em;
+    text-transform:uppercase; opacity:0; transform:translateY(30px);
+    transition:background .3s ease, color .3s ease;
+  }
+  .maps-btn svg{ fill:currentColor; }
+  .maps-btn:hover{ background:var(--slate-deep); color:var(--ivory); }
+
+  /* ---------- SECTION 5 : events timeline ---------- */
+  .timeline{ position:relative; padding:.4rem 0; }
+  .timeline-track{
+    position:absolute; left:50%; top:0; bottom:0; width:1.5px; background:var(--gold-light);
+    transform:translateX(-50%) scaleY(0); transform-origin:top;
+  }
+  .tl-item{ position:relative; width:100%; padding:1.5rem 0; opacity:0; }
+  .tl-item .dot{
+    width:8px; height:8px; border-radius:50%; background:var(--gold);
+    margin:0 auto .6rem; box-shadow:0 0 0 4px rgba(251,246,236,.85), 0 0 0 5px var(--gold-light);
+    transform:scale(0);
+  }
+  .tl-item .ev-name{ font-family:var(--script); font-size:1.7rem; color:var(--slate-deep); }
+  .tl-item .ev-meta{ font-family:var(--sans); font-weight:300; font-size:.78rem; color:var(--ink-soft); letter-spacing:.04em; margin-top:.15rem; }
+
+  /* ---------- SECTION 6 : closing ---------- */
+  .closing-line{ font-family:var(--serif); font-style:italic; font-size:.98rem; color:var(--ink-soft); opacity:0; }
+  .closing-mono{ font-family:var(--script); font-size:clamp(2.1rem,8vw,3.3rem); color:var(--slate-deep); margin:1rem 0; opacity:0; transform:translateY(30px); }
+  .rsvp{ margin-top:1.3rem; font-family:var(--sans); font-weight:300; font-size:.78rem; letter-spacing:.03em; color:var(--ink-soft); opacity:0; }
+  .rsvp b{ color:var(--slate-deep); font-weight:500; }
+  .vine-divider{ width:100%; max-width:300px; height:30px; margin:1.3rem auto 0; opacity:.9; }
+  .vine-path{ stroke-dasharray:600; stroke-dashoffset:600; }
+
+  footer{
+    position:fixed; left:50%; bottom:18px; transform:translateX(-50%) translateY(10px);
+    z-index:8; text-align:center; padding:0 1rem;
+    font-family:var(--sans); font-size:.66rem; letter-spacing:.08em; color:rgba(255,255,255,.78);
+    opacity:0; pointer-events:none; white-space:nowrap;
+  }
+
+  @media (max-width:520px){ .card{ padding:0 .2rem; } }
+
+  @media (prefers-reduced-motion:reduce){
+    .scroll-cue svg{ animation:none !important; }
+  }
+</style>
+</head>
+<body class="intro-lock">
+
+<!-- fixed 9:16 envelope + butterfly video stage (sized to an exact vertical frame by JS) -->
+<div class="video-wrap" id="videoWrap">
+  <video id="bgVideo" muted autoplay playsinline webkit-playsinline="true"
+         disablePictureInPicture disableRemotePlayback
+         controlsList="nodownload noplaybackrate nofullscreen"
+         poster="poster.jpg" preload="auto">
+    <source src="wedding-envelope.mp4" type="video/mp4">
+  </video>
+  <div class="video-scrim"></div>
+</div>
+
+<button class="sound-btn" id="soundBtn" aria-label="Toggle sound">
+  <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path d="M17 8a5 5 0 0 1 0 8"/></svg>
+  <svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path d="M16 9l5 6M21 9l-5 6"/></svg>
+</button>
+
+<!-- scroll progress -->
+<div class="progress-rail">
+  <div class="progress-fill" id="progressFill"></div>
+  <div class="progress-marker" id="progressMarker"></div>
+</div>
+
+<!-- ======================= SVG SYMBOL LIBRARY ======================= -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="motif-paisley" viewBox="0 0 120 160">
+      <path fill="none" stroke="currentColor" stroke-width="1.3"
+        d="M60,150 C20,140 10,100 30,65 C45,40 40,20 60,10 C90,22 95,55 75,72 C60,85 65,105 85,110 C100,113 108,100 104,88"/>
+      <circle cx="60" cy="150" r="3" fill="currentColor"/>
+    </symbol>
+
+    <symbol id="motif-rose" viewBox="0 0 100 100">
+      <g fill="none" stroke="currentColor" stroke-width="1.4">
+        <path d="M50,50 C40,40 40,25 50,18 C60,25 60,40 50,50 Z"/>
+        <path d="M50,50 C32,46 22,55 20,70 C34,74 46,66 50,50 Z"/>
+        <path d="M50,50 C68,46 78,55 80,70 C66,74 54,66 50,50 Z"/>
+        <path d="M50,50 C45,64 50,80 62,88 C68,74 62,58 50,50 Z"/>
+        <path d="M50,50 C55,64 50,80 38,88 C32,74 38,58 50,50 Z"/>
+      </g>
+      <circle cx="50" cy="50" r="4" fill="currentColor"/>
+    </symbol>
+
+    <symbol id="motif-vine" viewBox="0 0 340 40">
+      <path class="vine-path" fill="none" stroke="currentColor" stroke-width="1.2"
+        d="M2,20 C40,4 60,36 100,20 C140,4 160,36 200,20 C240,4 260,36 300,20 C315,14 325,14 338,20"/>
+      <g fill="currentColor">
+        <ellipse cx="40" cy="9" rx="5" ry="2.6" transform="rotate(-30 40 9)"/>
+        <ellipse cx="100" cy="31" rx="5" ry="2.6" transform="rotate(20 100 31)"/>
+        <ellipse cx="160" cy="9" rx="5" ry="2.6" transform="rotate(-30 160 9)"/>
+        <ellipse cx="220" cy="31" rx="5" ry="2.6" transform="rotate(20 220 31)"/>
+        <ellipse cx="280" cy="9" rx="5" ry="2.6" transform="rotate(-30 280 9)"/>
+      </g>
+      <circle cx="170" cy="20" r="3" fill="currentColor"/>
+    </symbol>
+
+    <symbol id="motif-clock" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="46" fill="currentColor"/>
+      <circle cx="50" cy="50" r="39" fill="none" stroke="var(--ivory)" stroke-width="1" opacity=".5"/>
+      <line id="clockHour" x1="50" y1="50" x2="50" y2="28" stroke="var(--ivory)" stroke-width="4" stroke-linecap="round"/>
+      <line id="clockMin" x1="50" y1="50" x2="68" y2="50" stroke="var(--ivory)" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="50" cy="50" r="4.5" fill="var(--ivory)"/>
+    </symbol>
+
+    <symbol id="motif-calendar" viewBox="0 0 100 100">
+      <rect x="30" y="6" width="8" height="24" rx="4" fill="currentColor"/>
+      <rect x="62" y="6" width="8" height="24" rx="4" fill="currentColor"/>
+      <rect x="12" y="16" width="76" height="76" rx="10" fill="currentColor"/>
+      <path d="M12,42 L88,42 L88,82 C88,87.5 83.5,92 78,92 L22,92 C16.5,92 12,87.5 12,82 Z" fill="var(--ivory)"/>
+      <rect x="12" y="16" width="76" height="26" rx="10" fill="currentColor"/>
+      <rect x="12" y="30" width="76" height="12" fill="currentColor"/>
+      <g fill="currentColor">
+        <circle cx="28" cy="58" r="4"/><circle cx="50" cy="58" r="4"/><circle cx="72" cy="58" r="4"/>
+        <circle cx="28" cy="76" r="4"/><circle cx="50" cy="76" r="4"/>
+      </g>
+    </symbol>
+
+    <symbol id="motif-pin" viewBox="0 0 100 130">
+      <path fill="currentColor" fill-rule="evenodd"
+        d="M50,4 C74,4 92,22 92,46 C92,78 50,124 50,124 C50,124 8,78 8,46 C8,22 26,4 50,4 Z
+           M50,28 C41,28 34,35 34,44 C34,53 41,60 50,60 C59,60 66,53 66,44 C66,35 59,28 50,28 Z"/>
+    </symbol>
+
+    <symbol id="motif-rings" viewBox="0 0 140 80">
+      <circle cx="55" cy="40" r="26" fill="none" stroke="currentColor" stroke-width="3.4"/>
+      <circle cx="85" cy="40" r="26" fill="none" stroke="currentColor" stroke-width="3.4"/>
+    </symbol>
+  </defs>
+</svg>
+
+<main>
+
+  <!-- ============================= SECTION 1 — COVER ============================= -->
+  <section class="panel" id="s-cover">
+    <div class="card" id="coverCard">
+      <p class="bismillah" id="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+      <p class="eyebrow" style="margin-top:.8rem;">Together with their families</p>
+      <h1 class="cover-title">Wedding&nbsp;Invitation</h1>
+      <p class="cover-sub">REQUEST THE PLEASURE OF YOUR COMPANY</p>
+      <p class="cover-monogram">R &amp; N</p>
+      <div class="scroll-cue">
+        <span>Scroll</span>
+        <svg viewBox="0 0 14 22"><path d="M7,0 L7,22 M1,15 L7,22 L13,15" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= SECTION 2 — NAMES ============================= -->
+  <section class="panel" id="s-names">
+    <div class="card">
+      <p class="together" id="togetherLine">Together with their families</p>
+      <div class="name-row">
+        <div class="name-line" id="brideName" data-text="Ruqqiya Qaiser"></div>
+        <span class="amp" id="amp">&amp;</span>
+        <div class="name-line" id="groomName" data-text="Nouman Mukhtar"></div>
+      </div>
+      <p class="bride-family" id="brideFamily">
+        Bride, <b>Ruqqiya</b> — Daughter of<br>
+        <span data-editable="brideParents">Mr. &amp; Mrs. [Bride's Father Name] Qaiser</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= SECTION 3 — DATE & TIME ============================= -->
+  <section class="panel" id="s-date">
+    <div class="card">
+      <p class="eyebrow">Save the Date</p>
+      <svg width="40" height="40" viewBox="0 0 100 100" style="color:var(--slate-deep); margin:.7rem auto 0; display:block; opacity:0" id="calSvg">
+        <use href="#motif-calendar"/>
+      </svg>
+      <div class="date-block" id="dateBlock">
+        <div class="weekday" id="weekday">Thursday</div>
+        <div class="day-number" id="dayNumber">24</div>
+        <div class="month-year" id="monthYear">December, 2026</div>
+      </div>
+      <div class="time-pill" id="timePill">
+        <svg width="16" height="16" viewBox="0 0 100 100" style="color:var(--slate-deep)"><use href="#motif-clock"/></svg>
+        <span id="timeText">6:00 PM Onwards</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= SECTION 3B — COUNTDOWN ============================= -->
+  <section class="panel" id="s-countdown">
+    <div class="card">
+      <p class="eyebrow">Counting Down</p>
+      <div class="countdown" id="countdown">
+        <div class="cd-unit"><div class="cd-num" id="cdDays">00</div><div class="cd-label">Days</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><div class="cd-num" id="cdHours">00</div><div class="cd-label">Hours</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><div class="cd-num" id="cdMins">00</div><div class="cd-label">Minutes</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><div class="cd-num" id="cdSecs">00</div><div class="cd-label">Seconds</div></div>
+      </div>
+      <p class="countdown-note" id="countdownNote">until Ruqqiya &amp; Nouman begin their forever</p>
+    </div>
+  </section>
+
+  <!-- ============================= SECTION 4 — VENUE ============================= -->
+  <section class="panel" id="s-venue">
+    <div class="card">
+      <svg width="46" height="60" viewBox="0 0 100 130" style="color:var(--slate-deep); margin:0 auto 1rem; display:block;" id="pinSvg">
+        <use href="#motif-pin"/>
+      </svg>
+      <p class="eyebrow">The Venue</p>
+      <div class="venue-name" id="venueName">[Venue Name]</div>
+      <div class="venue-address" id="venueAddress">[Street Address, City, Country]</div>
+      <p class="venue-note" id="venueNote">A celebration under the stars awaits</p>
+      <a class="maps-btn" id="mapsBtn" href="#" target="_blank" rel="noopener noreferrer">
+        <svg width="14" height="14" viewBox="0 0 100 130"><use href="#motif-pin"/></svg>
+        <span>Get Directions</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================= SECTION 5 — EVENTS TIMELINE ============================= -->
+  <section class="panel" id="s-events">
+    <div class="card">
+      <p class="eyebrow">The Celebrations</p>
+      <div class="timeline" id="timeline">
+        <div class="timeline-track" id="timelineTrack"></div>
+        <div class="tl-item" data-ev="0"><div class="dot"></div><div class="ev-name">Mehndi</div><div class="ev-meta">[22 Dec 2026 · 7:00 PM]</div></div>
+        <div class="tl-item" data-ev="1"><div class="dot"></div><div class="ev-name">Baraat</div><div class="ev-meta">[24 Dec 2026 · 6:00 PM]</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= SECTION 6 — CLOSING ============================= -->
+  <section class="panel" id="s-closing">
+    <div class="card">
+      <svg width="104" height="60" viewBox="0 0 140 80" style="color:var(--gold); margin:0 auto .9rem; display:block;" id="ringsSvg">
+        <use href="#motif-rings"/>
+      </svg>
+      <p class="closing-line" id="closingLine">With love, gratitude, and open hearts,</p>
+      <div class="closing-mono" id="closingMono">Ruqqiya &amp; Nouman</div>
+      <svg class="vine-divider" viewBox="0 0 340 40" style="color:var(--gold)">
+        <use href="#motif-vine"/>
+      </svg>
+      <p class="rsvp" id="rsvpLine"><b>RSVP</b> by [date] — [phone / email]</p>
+    </div>
+  </section>
+
+  <!-- ============================= SECTION 7 — OUTRO (no text) =============================
+       Purely a scroll trigger: by the time a guest reaches this section the closing
+       card above has fully faded out, THEN the butterfly departs and the envelope
+       folds shut on the video, uninterrupted by any text. -->
+  <section class="panel" id="s-outro" aria-hidden="true"></section>
+
+</main>
+
+<footer id="watermark" aria-hidden="true">Design by Aleem</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* ====================================================================
+   CONFIG — every editable piece of invitation text.
+==================================================================== */
+const CONFIG = {
+  brideName: "Ruqqiya Qaiser",
+  groomName: "Nouman Mukhtar",
+  brideParentsLine: "Mr. & Mrs. [Bride's Father Name] Qaiser",
+
+  // Single source of truth — the weekday / day / month-year on the Date
+  // scene AND the live countdown both derive from this automatically.
+  weddingDateTime: "2026-12-24T18:00:00",
+  time: "6:00 PM Onwards",
+
+  venueName: "[Venue Name]",
+  venueAddress: "[Street Address, City, Country]",
+  // Optional: paste an exact Google Maps share link here for pinpoint
+  // accuracy. Leave empty to fall back to a text search of venueAddress.
+  mapsUrl: "",
+
+  events: [
+    { name: "Mehndi", meta: "22 Dec 2026 · 7:00 PM" },
+    { name: "Baraat", meta: "24 Dec 2026 · 6:00 PM" }
+  ],
+  rsvp: "by 10 Dec 2026 — [phone / email]"
+};
+
+const weddingDate = new Date(CONFIG.weddingDateTime);
+
+/* ---- lock the whole experience to a true 9:16 vertical frame ----
+   On a phone the viewport already is ~9:16, so the video simply fills
+   it. On a wider screen (desktop/tablet) the video is capped to an
+   exact 9:16 box and letterboxed — like watching a phone video — and
+   the text column is kept the same width so it always sits precisely
+   over the video, never spilling into the letterbox bars. */
+const videoWrap = document.getElementById('videoWrap');
+function sizeStage(){
+  const vw = window.innerWidth, vh = window.innerHeight;
+  let w = vh * 9 / 16, h = vh;
+  if(w > vw){ w = vw; h = vw * 16 / 9; }
+  videoWrap.style.width = w + 'px';
+  videoWrap.style.height = h + 'px';
+  document.querySelectorAll('.card').forEach(c => { c.style.maxWidth = (w - 40) + 'px'; });
+}
+sizeStage();
+window.addEventListener('resize', sizeStage);
+
+document.getElementById('weekday').textContent = weddingDate.toLocaleDateString('en-US', { weekday:'long' });
+document.getElementById('dayNumber').textContent = String(weddingDate.getDate()).padStart(2,'0');
+document.getElementById('monthYear').textContent = weddingDate.toLocaleDateString('en-US', { month:'long', year:'numeric' });
+document.getElementById('timeText').textContent = CONFIG.time;
+document.getElementById('venueName').textContent = CONFIG.venueName;
+document.getElementById('venueAddress').textContent = CONFIG.venueAddress;
+document.querySelector('[data-editable="brideParents"]').textContent = CONFIG.brideParentsLine;
+document.getElementById('rsvpLine').innerHTML = '<b>RSVP</b> ' + CONFIG.rsvp;
+
+document.getElementById('mapsBtn').href = CONFIG.mapsUrl
+  ? CONFIG.mapsUrl
+  : 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(CONFIG.venueAddress);
+
+/* ---- live countdown ---- */
+function updateCountdown(){
+  const diff = weddingDate.getTime() - Date.now();
+  const dEl=document.getElementById('cdDays'), hEl=document.getElementById('cdHours'),
+        mEl=document.getElementById('cdMins'), sEl=document.getElementById('cdSecs');
+  if(diff <= 0){
+    dEl.textContent=hEl.textContent=mEl.textContent=sEl.textContent='00';
+    document.getElementById('countdownNote').textContent = 'Today is the day!';
+    return;
+  }
+  let t=diff;
+  const days=Math.floor(t/86400000); t-=days*86400000;
+  const hrs=Math.floor(t/3600000); t-=hrs*3600000;
+  const mins=Math.floor(t/60000); t-=mins*60000;
+  const secs=Math.floor(t/1000);
+  dEl.textContent=String(days).padStart(2,'0');
+  hEl.textContent=String(hrs).padStart(2,'0');
+  mEl.textContent=String(mins).padStart(2,'0');
+  sEl.textContent=String(secs).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+const evItems = document.querySelectorAll('.tl-item');
+CONFIG.events.forEach((ev,i)=>{
+  if(evItems[i]){
+    evItems[i].querySelector('.ev-name').textContent = ev.name;
+    evItems[i].querySelector('.ev-meta').textContent = ev.meta;
+  }
+});
+
+/* ---- per-letter name reveal ---- */
+function buildLetters(el){
+  const text = el.dataset.text;
+  el.innerHTML = '';
+  [...text].forEach(ch=>{
+    const span = document.createElement('span');
+    span.className = 'ch';
+    span.textContent = ch === ' ' ? '\u00A0' : ch;
+    el.appendChild(span);
+  });
+  return el.querySelectorAll('.ch');
+}
+const brideChars = buildLetters(document.getElementById('brideName'));
+const groomChars = buildLetters(document.getElementById('groomName'));
+
+/* ---- scroll progress rail ---- */
+const fill = document.getElementById('progressFill');
+const marker = document.getElementById('progressMarker');
+function updateProgress(){
+  const h = document.documentElement;
+  const max = h.scrollHeight - h.clientHeight;
+  const pct = max > 0 ? (h.scrollTop/max)*100 : 0;
+  fill.style.height = pct + '%';
+  marker.style.top = pct + '%';
+}
+document.addEventListener('scroll', updateProgress, { passive:true });
+
+/* ====================================================================
+   VIDEO CHOREOGRAPHY
+   0.00s –  5.00s  envelope opens, butterfly settles      (plays once, scroll-locked)
+   5.00s – 29.50s  butterfly flutters, background static   (loops forever)
+   29.50s – 34.48s butterfly departs, envelope refolds     (plays once, on final scroll)
+==================================================================== */
+const bgVideo = document.getElementById('bgVideo');
+const INTRO_END = 5.0, LOOP_START = 5.0, LOOP_END = 29.5;
+let introDone = false, closingTriggered = false;
+
+function unlockPage(){
+  if(introDone) return;
+  introDone = true;
+  document.documentElement.classList.remove('intro-lock');
+  document.body.classList.remove('intro-lock');
+  document.getElementById('coverCard').classList.add('revealed');
+  if(window.__playCoverReveal) window.__playCoverReveal();
+}
+
+bgVideo.addEventListener('timeupdate', () => {
+  if(!introDone && bgVideo.currentTime >= INTRO_END){ unlockPage(); }
+  if(introDone && !closingTriggered && bgVideo.currentTime >= LOOP_END){
+    bgVideo.currentTime = LOOP_START;
+  }
+});
+// Safety net: if the browser blocks autoplay or the timeupdate event stalls,
+// don't trap the guest behind a frozen envelope forever.
+setTimeout(unlockPage, 6500);
+bgVideo.play().catch(unlockPage);
+
+/* ---- sound toggle ---- */
+const soundBtn = document.getElementById('soundBtn');
+soundBtn.addEventListener('click', () => {
+  bgVideo.muted = !bgVideo.muted;
+  soundBtn.classList.toggle('unmuted', !bgVideo.muted);
+});
+
+/* ====================================================================
+   GSAP ScrollTrigger — content cards reveal as each panel is scrolled
+   through; the final panel also drives the video's closing scene.
+==================================================================== */
+gsap.registerPlugin(ScrollTrigger);
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ====================================================================
+   UNIFIED CONTENT CHOREOGRAPHY
+   Safe-zone anchor: CSS .card { top:42%; } for EVERY section.
+   Butterfly safe area: approximately 14–36% of the 9:16 frame.
+
+   Entrance for every content line:
+       y:30 -> y:0 + opacity 0 -> 1
+   Dismissal for every content line:
+       y:0 -> y:-24 + opacity 1 -> 0
+
+   The names retain their distinctive character-by-character reveal,
+   but the character entrance distance is normalized to the same 30px.
+==================================================================== */
+const Y_IN = 30;
+const Y_OUT = -24;
+const IN_DUR = 0.62;
+const OUT_DUR = 0.72;
+const LINE_STAGGER = 0.12;
+const EASE_IN = 'power2.out';
+const EASE_OUT = 'power2.inOut';
+
+const q = (selector, root=document) => root.querySelector(selector);
+const qa = (selector, root=document) => Array.from(root.querySelectorAll(selector));
+
+function prepare(elements){
+  const els = elements.filter(Boolean);
+  gsap.set(els, { opacity:0, y:Y_IN });
+  return els;
+}
+
+function playIn(tl, elements, at=0){
+  tl.to(elements.filter(Boolean), {
+    opacity:1,
+    y:0,
+    duration:IN_DUR,
+    ease:EASE_IN,
+    stagger:LINE_STAGGER
+  }, at);
+  return tl;
+}
+
+function playOut(tl, elements, at){
+  tl.to(elements.filter(Boolean), {
+    opacity:0,
+    y:Y_OUT,
+    duration:OUT_DUR,
+    ease:EASE_OUT,
+    stagger:0.055
+  }, at);
+  return tl;
+}
+
+/* Everything that can be hidden/revealed is explicitly covered by the
+   reduced-motion fallback — including elements that previously had no
+   entrance state at all. */
+const allAnimated = [
+  '#coverCard',
+  '#bismillah', '#coverCard .eyebrow', '.cover-title', '.cover-sub', '.cover-monogram', '.scroll-cue',
+  '#togetherLine', '#brideName .ch', '#amp', '#groomName .ch', '#brideFamily',
+  '#s-date .eyebrow', '#calSvg', '#dateBlock', '#timePill',
+  '#s-countdown .eyebrow', '.cd-unit', '.cd-sep', '#countdownNote',
+  '#pinSvg', '#s-venue .eyebrow', '#venueName', '#venueAddress', '#venueNote', '#mapsBtn',
+  '#s-events .eyebrow', '.tl-item', '.tl-item .dot',
+  '#ringsSvg', '#closingLine', '#closingMono', '.vine-divider', '#rsvpLine', '#watermark'
+];
+
+if(reduceMotion){
+  gsap.set(allAnimated.join(','), { opacity:1, y:0, clearProps:'transform' });
+  gsap.set('.vine-path', { strokeDashoffset:0 });
+  gsap.set('#watermark', { opacity:0, y:10 });
+  document.getElementById('coverCard').classList.add('revealed');
+} else {
+
+  /* ================================================================
+     COVER — real GSAP stagger, no CSS block fade.
+  ================================================================= */
+  const coverLines = prepare([
+    q('#bismillah'),
+    q('#coverCard .eyebrow'),
+    q('.cover-title'),
+    q('.cover-sub'),
+    q('.cover-monogram'),
+    q('.scroll-cue')
+  ]);
+
+  const coverTl = gsap.timeline({ paused:true });
+  coverTl
+    .to('#coverCard', { opacity:1, duration:.35, ease:'power1.out' })
+    .to(coverLines, {
+      opacity:1,
+      y:0,
+      duration:IN_DUR,
+      ease:EASE_IN,
+      stagger:LINE_STAGGER
+    });
+
+  window.__playCoverReveal = () => {
+    if(coverTl.progress() === 0 && !coverTl.isActive()) coverTl.play();
+  };
+
+  /* Cover dismissal: begin BEFORE the content can drift into the
+     butterfly's 14–36% safe area. The cover is the only scene that
+     needs an earlier exit because it is not pinned like the later cards.
+     It keeps the same unified y:-24 / fade-out language. */
+  const coverOutLines = coverLines;
+  gsap.timeline({
+    scrollTrigger:{
+      trigger:'#s-cover',
+      start:'top 0%',
+      end:'top -4%',
+      scrub:.55
+    }
+  }).to(coverOutLines, {
+    opacity:0,
+    y:Y_OUT,
+    duration:1,
+    ease:EASE_OUT,
+    stagger:.045
+  });
+
+  /* ================================================================
+     NAMES — same reference choreography, now normalized to 30px.
+  ================================================================= */
+  const namesLines = [
+    q('#togetherLine'),
+    ...brideChars,
+    q('#amp'),
+    ...groomChars,
+    q('#brideFamily')
+  ];
+  prepare(namesLines);
+
+  const namesTl = gsap.timeline({
+    scrollTrigger:{ trigger:'#s-names', start:'top top', end:'+=140%', scrub:.6, pin:true }
+  });
+  namesTl
+    .to('#togetherLine', { opacity:1, y:0, duration:IN_DUR, ease:EASE_IN })
+    .to(brideChars, { opacity:1, y:0, duration:.52, ease:EASE_IN, stagger:.035 })
+    .to('#amp', { opacity:1, y:0, duration:.5, ease:EASE_IN })
+    .to(groomChars, { opacity:1, y:0, duration:.52, ease:EASE_IN, stagger:.035 })
+    .to('#brideFamily', { opacity:1, y:0, duration:IN_DUR, ease:EASE_IN })
+    .to({}, { duration:.42 })
+    .to(namesLines, { opacity:0, y:Y_OUT, duration:OUT_DUR, ease:EASE_OUT, stagger:.045 });
+
+  /* ================================================================
+     DATE — eyebrow participates as the first line in the same rise.
+  ================================================================= */
+  const dateLines = prepare([
+    q('#s-date .eyebrow'), q('#calSvg'), q('#dateBlock'), q('#timePill')
+  ]);
+  const dateTl = gsap.timeline({
+    scrollTrigger:{ trigger:'#s-date', start:'top top', end:'+=120%', scrub:.6, pin:true }
+  });
+  playIn(dateTl, dateLines);
+  dateTl
+    .to('#clockMin', { rotation:180, transformOrigin:'50px 50px', duration:.8 }, '-=.3')
+    .to({}, { duration:.38 })
+    .to(dateLines, { opacity:0, y:Y_OUT, duration:OUT_DUR, ease:EASE_OUT, stagger:.055 });
+
+  /* ================================================================
+     COUNTDOWN — eyebrow, each countdown unit, separators, note.
+  ================================================================= */
+  const countdownLines = prepare([
+    q('#s-countdown .eyebrow'),
+    ...qa('.cd-unit'),
+    ...qa('.cd-sep'),
+    q('#countdownNote')
+  ]);
+  const countdownTl = gsap.timeline({
+    scrollTrigger:{ trigger:'#s-countdown', start:'top top', end:'+=120%', scrub:.6, pin:true }
+  });
+  playIn(countdownTl, countdownLines);
+  countdownTl
+    .to({}, { duration:.42 })
+    .to(countdownLines, { opacity:0, y:Y_OUT, duration:OUT_DUR, ease:EASE_OUT, stagger:.055 });
+
+  /* ================================================================
+     VENUE — pin now rises from below with the rest; it NEVER falls in.
+  ================================================================= */
+  const venueLines = prepare([
+    q('#pinSvg'),
+    q('#s-venue .eyebrow'),
+    q('#venueName'),
+    q('#venueAddress'),
+    q('#venueNote'),
+    q('#mapsBtn')
+  ]);
+  const venueTl = gsap.timeline({
+    scrollTrigger:{ trigger:'#s-venue', start:'top top', end:'+=130%', scrub:.6, pin:true }
+  });
+  playIn(venueTl, venueLines);
+  venueTl
+    .to({}, { duration:.42 })
+    // Explicitly dismiss the pin/vector and every venue content node
+    // together; this prevents the center vector artwork from lingering.
+    .to(venueLines, { opacity:0, y:Y_OUT, duration:OUT_DUR, ease:EASE_OUT, stagger:.055 });
+
+  /* ================================================================
+     CELEBRATIONS — one shared scene timeline, line-by-line.
+  ================================================================= */
+  const eventLines = [
+    q('#s-events .eyebrow'),
+    ...qa('.tl-item')
+  ];
+  prepare(eventLines);
+  gsap.set('.tl-item .dot', { opacity:0, scale:0, y:Y_IN });
+
+  const eventsTl = gsap.timeline({
+    scrollTrigger:{ trigger:'#s-events', start:'top top', end:'+=125%', scrub:.6, pin:true }
+  });
+  eventsTl
+    .to('#timelineTrack', { scaleY:1, duration:.8, ease:EASE_IN })
+    .to('#s-events .eyebrow', { opacity:1, y:0, duration:IN_DUR, ease:EASE_IN })
+    .to('.tl-item', { opacity:1, y:0, duration:.7, ease:EASE_IN, stagger:.18 })
+    .to('.tl-item .dot', { opacity:1, scale:1, y:0, duration:.45, ease:EASE_IN, stagger:.18 }, '-=.55')
+    .to({}, { duration:.42 })
+    .to(eventLines, { opacity:0, y:Y_OUT, duration:OUT_DUR, ease:EASE_OUT, stagger:.055 });
+
+  /* ================================================================
+     CLOSING — no special scale/fall offsets; same 30px entrance.
+  ================================================================= */
+  const closingLines = prepare([
+    q('#ringsSvg'),
+    q('#closingLine'),
+    q('#closingMono'),
+    q('.vine-divider'),
+    q('#rsvpLine')
+  ]);
+  // Watermark is intentionally outside the closing fade-out envelope:
+  // it appears with the final message and remains visible until the end.
+  prepare([q('#watermark')]);
+  const closingTl = gsap.timeline({
+    scrollTrigger:{ trigger:'#s-closing', start:'top top', end:'+=130%', scrub:.6, pin:true }
+  });
+  playIn(closingTl, closingLines);
+  closingTl.to('#watermark', {
+    opacity:1, y:0, duration:IN_DUR, ease:EASE_IN
+  }, '>-0.18');
+  closingTl
+    .to('.vine-path', { strokeDashoffset:0, duration:1, ease:'power2.out' }, '-=.35')
+    .to({}, { duration:.48 })
+    .to(closingLines, { opacity:0, y:Y_OUT, duration:.9, ease:EASE_OUT, stagger:.055 })
+    .set('#watermark', { opacity:1, y:0 });
+
+  /* --- the text-free outro section drives the envelope-closing video scene,
+         so the departure + fold-shut only ever plays once every word above
+         has completely faded away --- */
+  ScrollTrigger.create({
+    trigger:'#s-outro', start:'top 65%',
+    onEnter:()=>{
+      closingTriggered = true;
+      if(bgVideo.currentTime < LOOP_END) bgVideo.currentTime = LOOP_END;
+      bgVideo.play();
+    },
+    onLeaveBack:()=>{
+      closingTriggered = false;
+      bgVideo.currentTime = LOOP_START;
+      bgVideo.play();
+    }
+  });
+
+  ScrollTrigger.refresh();
+}
+</script>
+</body>
+</html>
