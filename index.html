@@ -286,7 +286,9 @@
     letter-spacing:.14em; text-transform:uppercase; color:var(--slate-deep);
     opacity:0; transform:translateY(30px);
   }
-  .hosts-names{ margin-top:.3rem; display:flex; flex-direction:column; gap:.18rem; }
+  .hosts-names{ margin-top:.35rem; display:grid; grid-template-columns:repeat(2, auto); justify-content:center; column-gap:1.1rem; row-gap:.22rem; }
+  .hosts-names .host-name{ white-space:nowrap; font-size:.95rem; }
+  body.urdu-mode .hosts-names{ direction:rtl; }
   .host-name{
     font-family:var(--serif); font-weight:700; font-size:1.02rem; letter-spacing:.02em;
     color:var(--ink); opacity:0; transform:translateY(30px);
@@ -637,10 +639,12 @@ body.urdu-mode .urdu, body.urdu-mode .urdu *{ font-style:normal !important; }
       <p class="rsvp" id="rsvpLine"><span class="english-only">With joy in our hearts, we look forward to celebrating with you.</span><span class="urdu-only urdu">دل کی خوشی کے ساتھ، ہمیں آپ کے ہمراہ یہ خوشی منانے کا انتظار رہے گا۔</span></p>
       <p class="hosts-label" id="hostsLabel"><span class="english-only">RSVP · All Family Members</span><span class="urdu-only urdu">منتظر: جملہ اہلِ خانہ</span></p>
       <div class="hosts-names" id="hostsNames">
+        <!-- two columns, read row by row: left = Saad Ullah, Anser, Sultan · right = Abdullah, Aleem -->
         <p class="host-name"><span class="english-only">Muhammad Saad Ullah</span><span class="urdu-only urdu">محمد سعد اللہ</span></p>
         <p class="host-name"><span class="english-only">Muhammad Abdullah</span><span class="urdu-only urdu">محمد عبداللہ</span></p>
         <p class="host-name"><span class="english-only">Anser Mehmood</span><span class="urdu-only urdu">انصر محمود</span></p>
         <p class="host-name"><span class="english-only">Muhammad Aleem</span><span class="urdu-only urdu">محمد علیم</span></p>
+        <p class="host-name"><span class="english-only">Sultan Mehmood</span><span class="urdu-only urdu">سلطان محمود</span></p>
       </div>
       <p class="contact-line" id="contactLine"><span class="english-only">Contact</span><span class="urdu-only urdu">رابطہ</span> <a id="contactLink" href="tel:+923120387599">0312 0387599</a></p>
     </div>
@@ -717,7 +721,8 @@ function fitCards(){
     c.style.transform = 'translateX(-50%)';
     // tall screens may use the space below their box, down to just above the footer
     const need = c.scrollHeight, have = Math.max(c.clientHeight, window.innerHeight * .9 - c.getBoundingClientRect().top);
-    const k = need > have ? Math.max(.62, have / need) : 1;
+    const kw = c.scrollWidth > c.clientWidth ? c.clientWidth / c.scrollWidth : 1;
+    const k = Math.min(kw, need > have ? Math.max(.62, have / need) : 1);
     c.style.transformOrigin = 'top center';
     c.style.transform = 'translateX(-50%) scale(' + k.toFixed(3) + ')';
   });
