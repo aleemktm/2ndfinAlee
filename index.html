@@ -123,6 +123,7 @@
   /* continuous-scroll mode: all screens share one fixed spot; only the
      current screen's buttons/links receive taps */
   body.fx main .panel{ height:0; min-height:0; }
+  main .card > *{ flex-shrink:0; } /* never squash icons/dividers; fitCards() scales the whole screen instead */
   body.fx main .card{ position:fixed; pointer-events:none; }
   body.fx main .card.active{ pointer-events:auto; }
   .eyebrow{
@@ -714,7 +715,8 @@ function sizeStage(){
 function fitCards(){
   document.querySelectorAll('main .card').forEach(c => {
     c.style.transform = 'translateX(-50%)';
-    const need = c.scrollHeight, have = c.clientHeight;
+    // tall screens may use the space below their box, down to just above the footer
+    const need = c.scrollHeight, have = Math.max(c.clientHeight, window.innerHeight * .9 - c.getBoundingClientRect().top);
     const k = need > have ? Math.max(.62, have / need) : 1;
     c.style.transformOrigin = 'top center';
     c.style.transform = 'translateX(-50%) scale(' + k.toFixed(3) + ')';
@@ -982,7 +984,7 @@ function addScreen(sectionId, build){
   build(sub);
   const at = master.duration() ? Math.max(0, master.duration() - OVERLAP) : 0;
   master.add(sub, at);
-  screens.push({ card, at });
+  screens.push({ card, at, end: at + sub.duration() });
 }
 
 function setActive(idx){
@@ -1090,6 +1092,12 @@ function buildMaster(){
       let idx = 0;
       screens.forEach((sc,i) => { if(t >= sc.at + .25) idx = i; });
       setActive(idx);
+      // each screen exists only during its own slice of the scroll, so no
+      // element of one screen (rings, vines, lines) can ever show on another
+      screens.forEach(sc => {
+        const on = t >= sc.at - .02 && t <= sc.end + .02;
+        if(sc.on !== on){ sc.on = on; sc.card.style.visibility = on ? 'visible' : 'hidden'; }
+      });
       if(t >= outroAt && !closingTriggered){
         closingTriggered = true;
         if(bgVideo.currentTime < LOOP_END) bgVideo.currentTime = LOOP_END;
@@ -1101,6 +1109,7 @@ function buildMaster(){
       }
     }
   });
+  screens.forEach((sc,i) => { sc.on = i === 0; sc.card.style.visibility = i === 0 ? 'visible' : 'hidden'; });
   setActive(0);
   ScrollTrigger.refresh();
 }
