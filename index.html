@@ -114,6 +114,17 @@
     text-shadow:0 1px 2px rgba(255,255,255,.6), 0 8px 24px rgba(30,20,12,.35);
   }
 
+  .rotate-hint{ display:none; position:fixed; inset:0; z-index:90; background:#1b2333; color:#FBF6EC;
+    flex-direction:column; align-items:center; justify-content:center; gap:14px; text-align:center;
+    font-family:var(--sans); font-weight:600; font-size:1rem; letter-spacing:.04em; }
+  .rotate-hint span{ font-family:'Noto Nastaliq Urdu',serif; font-size:.95rem; }
+  @media (orientation:landscape) and (max-height:500px){ .rotate-hint{ display:flex; } }
+
+  /* continuous-scroll mode: all screens share one fixed spot; only the
+     current screen's buttons/links receive taps */
+  body.fx main .panel{ height:0; min-height:0; }
+  body.fx main .card{ position:fixed; pointer-events:none; }
+  body.fx main .card.active{ pointer-events:auto; }
   .eyebrow{
     font-family:var(--sans); font-weight:700; font-size:.84rem;
     letter-spacing:.26em; color:var(--slate-deep);
@@ -386,6 +397,11 @@ body.urdu-mode .urdu, body.urdu-mode .urdu *{ font-style:normal !important; }
   <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h3v14H7zM14 5h3v14h-3z"/></svg>
 </button>
 <audio id="bgMusic" src="wedding-ambient.mp3" loop preload="auto"></audio>
+
+<div class="rotate-hint" aria-live="polite">
+  <svg viewBox="0 0 48 48" width="54" height="54"><rect x="15" y="6" width="18" height="36" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M38 30a14 14 0 0 1-8 10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M29 36l1 4 4-1" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+  <p>Please turn your phone upright<br><span>براہِ کرم فون سیدھا کریں</span></p>
+</div>
 
 <!-- tap-to-open wax seal: guarantees music + video start together on every phone -->
 <div class="opener" id="opener" role="button" tabindex="0" aria-label="Tap to open the invitation">
@@ -693,8 +709,21 @@ function sizeStage(){
   videoWrap.style.height = h + 'px';
   document.querySelectorAll('.card').forEach(c => { c.style.maxWidth = (w - 40) + 'px'; });
 }
-sizeStage();
-window.addEventListener('resize', sizeStage);
+/* Shrink any screen whose text is taller than its box (small phones,
+   large accessibility font sizes) so nothing is ever cut off. */
+function fitCards(){
+  document.querySelectorAll('main .card').forEach(c => {
+    c.style.transform = 'translateX(-50%)';
+    const need = c.scrollHeight, have = c.clientHeight;
+    const k = need > have ? Math.max(.62, have / need) : 1;
+    c.style.transformOrigin = 'top center';
+    c.style.transform = 'translateX(-50%) scale(' + k.toFixed(3) + ')';
+  });
+}
+sizeStage(); fitCards();
+window.addEventListener('resize', () => { sizeStage(); fitCards(); });
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitCards);
+window.addEventListener('load', fitCards);
 
 document.querySelector('[data-editable="brideParents"]').textContent = CONFIG.brideParentsLine;
 const contactLink = document.getElementById('contactLink');
@@ -914,21 +943,23 @@ function playCoverReveal(onComplete){
     .to('#scrollCue', { opacity:.85, y:0, duration:.6 }, '-=.3');
 }
 
-/* Cover previously had no pin/exit of its own — it just sat in normal
-   document flow, so the very first scroll physically dragged the still-
-   fully-visible text straight up through the butterfly on its way
-   off-screen. Now it's pinned exactly like every other section, and the
-   text fades out completely (opacity 0, well inside the safe zone)
-   before the pin releases and the page moves on to the names scene. */
+/* ====================================================================
+   ONE CONTINUOUS SCROLL TIMELINE
+   Every screen's text sits in the same fixed spot below the butterfly.
+   Instead of pinning each section separately (which left a full blank
+   screen of scrolling between sections, and is unreliable on iPhones),
+   a single master timeline is scrubbed by the page scroll, and each
+   screen's exit cross-fades straight into the next screen's reveal —
+   so there is always text on screen.
+==================================================================== */
+const SCROLL_PER_UNIT = 0.42;   // screen-heights of scrolling per timeline second
+const OVERLAP = .5;             // how much each screen's reveal overlaps the previous exit
+let master = null, masterST = null, outroAt = 0, activeIdx = -1;
+const screens = [];             // { card, at } in timeline order
+
 function armCoverExit(){
   if(reduceMotion) return;
-  gsap.timeline({
-    scrollTrigger:{ trigger:'#s-cover', start:'top top', end:'+=100%', scrub:.6, pin:true }
-  })
-    .to('#s-cover', { duration:.3 }) // small buffer before it starts disappearing
-    .to(['#bismillah','#coverEyebrow','#coverTitle','#coverSub','#coverMonogram','#scrollCue'],
-        { opacity:0, y:-34, duration:1, stagger:.05 });
-  ScrollTrigger.refresh();
+  buildMaster();
 }
 
 if(reduceMotion){
@@ -943,117 +974,134 @@ if(reduceMotion){
   document.getElementById('timelineTrack').style.transform = 'translateX(-50%) scaleY(1)';
   // watermark is fixed full-width + text-align:center, so plain transform:none is safe here
   document.getElementById('watermark').style.cssText += 'opacity:1; transform:none;';
-} else {
+}
 
-  /* --- Quran + invitation --- */
-  const invitationTl = gsap.timeline({
-    scrollTrigger:{ trigger:'#s-invitation', start:'top top', end:'+=175%', scrub:.6, pin:true }
+function addScreen(sectionId, build){
+  const card = document.querySelector('#' + sectionId + ' .card');
+  const sub = gsap.timeline();
+  build(sub);
+  const at = master.duration() ? Math.max(0, master.duration() - OVERLAP) : 0;
+  master.add(sub, at);
+  screens.push({ card, at });
+}
+
+function setActive(idx){
+  if(idx === activeIdx) return;
+  const first = activeIdx === -1;
+  activeIdx = idx;
+  screens.forEach((sc,i) => sc.card.classList.toggle('active', i === idx));
+  if(!first) buzz(10);
+}
+
+function buildMaster(){
+  document.body.classList.add('fx');
+  master = gsap.timeline({ paused:true, defaults:{ ease:'power1.out' } });
+
+  /* cover: already revealed by time; it only needs to leave */
+  addScreen('s-cover', t => t
+    .to({}, { duration:.35 })
+    .to(['#bismillah','#coverEyebrow','#coverTitle','#coverSub','#coverMonogram','#scrollCue'],
+        { opacity:0, y:-34, duration:.8, stagger:.04 }));
+
+  /* Quran + invitation */
+  addScreen('s-invitation', t => t
+    .to('.verse-ar', { opacity:1, y:0, duration:.7 })
+    .to('.verse-en', { opacity:1, y:0, duration:.6 }, '-=.35')
+    .to('.verse-ref', { opacity:1, y:0, duration:.45 }, '-=.3')
+    .to('.verse-star', { opacity:1, y:0, scale:1, duration:.45 }, '-=.2')
+    .to('.invitation-intro', { opacity:1, y:0, duration:.55, stagger:.08 }, '-=.2')
+    .to('.family-line', { opacity:1, y:0, duration:.55, stagger:.08 }, '-=.2')
+    .to('.family-and', { opacity:1, y:0, duration:.45 }, '-=.2')
+    .to({}, { duration:.9 })
+    .to(['.verse-ar','.verse-en','.verse-ref','.verse-star','.invitation-intro','.family-line','.family-and'],
+        { opacity:0, y:-34, duration:.8, stagger:.02 }));
+
+  /* names */
+  addScreen('s-names', t => t
+    .to('#togetherLine', { opacity:1, y:0, duration:.55 })
+    .to(brideChars, { opacity:1, y:0, duration:.55, stagger:.03 }, '-=.1')
+    .to('#amp', { opacity:1, y:0, scale:1, duration:.45 })
+    .to(groomChars, { opacity:1, y:0, duration:.55, stagger:.03 })
+    .to('#brideFamily', { opacity:1, y:0, duration:.6 }, '-=.1')
+    .to({}, { duration:.9 })
+    .to(['#togetherLine','.name-line .ch','#amp','#brideFamily'], { opacity:0, y:-34, duration:.8 }));
+
+  /* Mehndi, Barat */
+  ['s-mehndi','s-barat'].forEach(id => {
+    const items = document.querySelectorAll('#' + id + ' .ev-r');
+    addScreen(id, t => t
+      .to(items, { opacity:1, y:0, duration:.5, stagger:.12 })
+      .to({}, { duration:1.1 })
+      .to(items, { opacity:0, y:-34, duration:.8, stagger:.015 }));
   });
-  invitationTl
-    .to('.verse-ar', { opacity:1, y:0, duration:.8 })
-    .to('.verse-en', { opacity:1, y:0, duration:.7 }, '-=.35')
-    .to('.verse-ref', { opacity:1, y:0, duration:.5 }, '-=.3')
-    .to('.verse-star', { opacity:1, y:0, scale:1, duration:.5 }, '-=.2')
-    .to('.invitation-intro', { opacity:1, y:0, duration:.65, stagger:.08 }, '-=.2')
-    .to('.family-line', { opacity:1, y:0, duration:.6, stagger:.08 }, '-=.2')
-    .to('.family-and', { opacity:1, y:0, duration:.5 }, '-=.2')
-    .to('#s-invitation', { duration:.4 })
-    .to(['.verse-ar','.verse-en','.verse-ref','.verse-star','.invitation-intro','.family-line','.family-and'], { opacity:0, y:-34, duration:.85, stagger:.035 }, '+=.2');
 
-  /* --- names (the reference reveal every other section now matches) --- */
-  const namesTl = gsap.timeline({
-    scrollTrigger:{ trigger:'#s-names', start:'top top', end:'+=140%', scrub:.6, pin:true }
-  });
-  namesTl
-    .to('#togetherLine', { opacity:1, y:0, duration:.6 })
-    .to(brideChars, { opacity:1, y:0, duration:.6, stagger:.03 }, '-=.1')
-    .to('#amp', { opacity:1, y:0, scale:1, duration:.5 })
-    .to(groomChars, { opacity:1, y:0, duration:.6, stagger:.03 })
-    .to('#brideFamily', { opacity:1, y:0, duration:.7 }, '-=.1')
-    .to('#s-names', { duration:.4 })
-    .to(['#togetherLine','.name-line .ch','#amp','#brideFamily'], { opacity:0, y:-34, duration:.8 }, '+=.2');
-
-  /* --- event screens (Mehndi, Barat): every line rises in, in reading order --- */
-  // ScrollTriggers with pins must be created in page order, so the Dua
-  // screen (which sits after the timeline) is wired up further below.
-  function eventPanelAnim(panel){
-    const items = panel.querySelectorAll('.ev-r');
-    gsap.timeline({
-      scrollTrigger:{ trigger:panel, start:'top top', end:'+=140%', scrub:.6, pin:true }
-    })
-      .to(items, { opacity:1, y:0, duration:.55, stagger:.16 })
-      .to(panel, { duration:.6 }) // hold so the details can be read
-      .to(items, { opacity:0, y:-34, duration:.8, stagger:.02 }, '+=.2');
-  }
-  document.querySelectorAll('.event-panel:not(#s-dua)').forEach(eventPanelAnim);
-
-  /* --- countdown --- */
-  gsap.timeline({
-    scrollTrigger:{ trigger:'#s-countdown', start:'top top', end:'+=110%', scrub:.6, pin:true }
-  })
+  /* countdown */
+  addScreen('s-countdown', t => t
     .to('#s-countdown .eyebrow', { opacity:1, y:0, duration:.5 })
-    .to('.cd-unit', { opacity:1, y:0, duration:.6, stagger:.1 }, '-=.2')
-    .to('.cd-sep', { opacity:1, duration:.5 }, '-=.5')
+    .to('.cd-unit', { opacity:1, y:0, duration:.55, stagger:.1 }, '-=.2')
+    .to('.cd-sep', { opacity:1, duration:.45 }, '-=.5')
     .to('#countdownNote', { opacity:1, y:0, duration:.5 }, '-=.2')
-    .to('#s-countdown', { duration:.4 })
-    .to(['#s-countdown .eyebrow','.cd-unit','.cd-sep','#countdownNote'], { opacity:0, y:-34, duration:.8 }, '+=.2');
+    .to({}, { duration:.8 })
+    .to(['#s-countdown .eyebrow','.cd-unit','.cd-sep','#countdownNote'], { opacity:0, y:-34, duration:.8 }));
 
-  /* --- events timeline --- */
-  const eventsTl = gsap.timeline({
-    scrollTrigger:{ trigger:'#s-events', start:'top top', end:'+=120%', scrub:.6, pin:true }
+  /* at a glance */
+  addScreen('s-events', t => {
+    t.to('#s-events .eyebrow', { opacity:1, y:0, duration:.5 })
+     .to('#timelineTrack', { scaleY:1, duration:.7 }, '-=.2');
+    document.querySelectorAll('.tl-item').forEach((item,i) => {
+      t.to(item, { opacity:1, y:0, duration:.55 }, i===0 ? '-=.3' : '-=.2')
+       .to(item.querySelector('.dot'), { scale:1, duration:.45 }, '-=.4');
+    });
+    t.to({}, { duration:.9 })
+     .to(['#s-events .eyebrow','.tl-item'], { opacity:0, y:-34, duration:.8 })
+     .to('#timelineTrack', { opacity:0, duration:.6 }, '<');
   });
-  eventsTl
-    .to('#s-events .eyebrow', { opacity:1, y:0, duration:.5 })
-    .to('#timelineTrack', { scaleY:1, duration:.8 }, '-=.2');
-  document.querySelectorAll('.tl-item').forEach((item,i)=>{
-    eventsTl
-      .to(item, { opacity:1, y:0, duration:.6 }, i===0 ? '-=.3' : '-=.2')
-      .to(item.querySelector('.dot'), { scale:1, duration:.5 }, '-=.4');
-  });
-  eventsTl
-    .to('#s-events', { duration:.4 })
-    .to(['#s-events .eyebrow','.tl-item'], { opacity:0, y:-34, duration:.8 }, '+=.2')
-    .to('#timelineTrack', { opacity:0, duration:.6 }, '<');
 
-  /* --- closing --- */
-  gsap.timeline({
-    scrollTrigger:{ trigger:'#s-closing', start:'top top', end:'+=130%', scrub:.6, pin:true }
-  })
-    .fromTo('#ringsSvg', { opacity:0, y:30 }, { opacity:1, y:0, duration:.7 })
-    .to('#closingLine', { opacity:1, y:0, duration:.6 }, '-=.25')
-    .fromTo('#closingMono', { opacity:0, y:30, scale:.9 }, { opacity:1, y:0, scale:1, duration:.8 }, '-=.2')
-    .to('.vine-path', { strokeDashoffset:0, duration:.9 }, '-=.3')
-    .to('#rsvpLine', { opacity:1, y:0, duration:.6 }, '-=.3')
-    .to('#hostsLabel', { opacity:1, y:0, duration:.5 }, '-=.3')
-    .to('.host-name', { opacity:1, y:0, duration:.5, stagger:.12 }, '-=.25')
-    .to('#contactLine', { opacity:1, y:0, duration:.5 }, '-=.2')
-    .to('#watermark', { opacity:1, y:0, duration:.6 }, '-=.3') // appears with the blessing, never fades back out
-    .to('#s-closing', { duration:.5 }) // hold so the blessing can be read in full
+  /* closing */
+  addScreen('s-closing', t => t
+    .fromTo('#ringsSvg', { opacity:0, y:30 }, { opacity:1, y:0, duration:.6 })
+    .to('#closingLine', { opacity:1, y:0, duration:.55 }, '-=.25')
+    .fromTo('#closingMono', { opacity:0, y:30, scale:.9 }, { opacity:1, y:0, scale:1, duration:.7 }, '-=.2')
+    .to('.vine-path', { strokeDashoffset:0, duration:.8 }, '-=.3')
+    .to('#rsvpLine', { opacity:1, y:0, duration:.5 }, '-=.3')
+    .to('#hostsLabel', { opacity:1, y:0, duration:.45 }, '-=.3')
+    .to('.host-name', { opacity:1, y:0, duration:.45, stagger:.1 }, '-=.25')
+    .to('#contactLine', { opacity:1, y:0, duration:.45 }, '-=.2')
+    .to('#watermark', { opacity:1, y:0, duration:.5 }, '-=.3')
+    .to({}, { duration:1.3 })
     .to(['#ringsSvg','#closingLine','#closingMono','.vine-divider','#rsvpLine','#hostsLabel','.host-name','#contactLine'],
-        { opacity:0, y:-34, duration:.9 }, '+=.2'); // fully gone before the outro begins
+        { opacity:0, y:-34, duration:.8 }));
 
-  /* --- haptic tick as each new screen arrives --- */
-  document.querySelectorAll('section.panel:not(#s-cover):not(#s-outro)').forEach(panel=>{
-    ScrollTrigger.create({ trigger:panel, start:'top top', onEnter:()=>buzz(10), onEnterBack:()=>buzz(10) });
-  });
+  /* text-free tail: the butterfly departs and the envelope folds shut */
+  outroAt = master.duration() - .05;
+  master.to({}, { duration:1.6 });
 
-  /* --- the text-free outro section drives the envelope-closing video scene,
-         so the departure + fold-shut only ever plays once every word above
-         has completely faded away --- */
-  ScrollTrigger.create({
-    trigger:'#s-outro', start:'top 65%',
-    onEnter:()=>{
-      closingTriggered = true;
-      if(bgVideo.currentTime < LOOP_END) bgVideo.currentTime = LOOP_END;
-      bgVideo.play();
-    },
-    onLeaveBack:()=>{
-      closingTriggered = false;
-      bgVideo.currentTime = LOOP_START;
-      bgVideo.play();
+  const total = () => master.duration() * SCROLL_PER_UNIT * window.innerHeight;
+  const mainEl = document.querySelector('main');
+  const sizeMain = () => { mainEl.style.height = (total() + window.innerHeight) + 'px'; };
+  sizeMain();
+  ScrollTrigger.addEventListener('refreshInit', sizeMain);
+
+  masterST = ScrollTrigger.create({
+    trigger: mainEl, start: 'top top', end: () => '+=' + total(),
+    scrub: .5, animation: master, invalidateOnRefresh: true,
+    onUpdate: () => {
+      const t = master.time();
+      let idx = 0;
+      screens.forEach((sc,i) => { if(t >= sc.at + .25) idx = i; });
+      setActive(idx);
+      if(t >= outroAt && !closingTriggered){
+        closingTriggered = true;
+        if(bgVideo.currentTime < LOOP_END) bgVideo.currentTime = LOOP_END;
+        bgVideo.play().catch(()=>{});
+      } else if(t < outroAt - .1 && closingTriggered){
+        closingTriggered = false;
+        bgVideo.currentTime = LOOP_START;
+        bgVideo.play().catch(()=>{});
+      }
     }
   });
-
+  setActive(0);
   ScrollTrigger.refresh();
 }
 </script>
