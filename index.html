@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ruqqiya & Nouman — Wedding Invitation</title>
+<meta name="description" content="Mehndi: Tue 10 Nov 2026, 7:00 PM at Residence · Barat: Wed 11 Nov 2026, 12:00 PM at Taj Green Banquet Hall">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ruqqiya & Nouman — Wedding Invitation">
+<meta property="og:description" content="Mehndi · Tue 10 Nov, 7 PM · Barat · Wed 11 Nov, 12 PM. Tap to open your invitation.">
+<meta property="og:url" content="https://aleemktm.github.io/2ndfinAlee/">
+<meta property="og:image" content="https://aleemktm.github.io/2ndfinAlee/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="R & N — Ruqqiya & Nouman wedding invitation">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#5F7690">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Allura&family=Amiri:wght@400;700&family=Jost:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -120,7 +131,7 @@
     opacity:0; transform:translateY(50px);
   }
   .cover-sub{ font-family:var(--sans); font-weight:500; font-size:.96rem; color:var(--ink); letter-spacing:.06em; opacity:0; transform:translateY(50px); }
-  .cover-monogram{ font-family:var(--script); font-size:clamp(2rem,6.6vw,2.6rem); line-height:1; color:var(--gold); margin-top:.8rem; opacity:0; transform:translateY(50px); }
+  .cover-monogram{ font-family:var(--script); font-size:clamp(3.6rem,15vw,4.8rem); line-height:.95; color:var(--gold); margin-top:.5rem; letter-spacing:.02em; opacity:0; transform:translateY(50px); }
   .scroll-cue{
     margin-top:.9rem; display:flex; flex-direction:column; align-items:center; gap:.3rem;
     color:var(--slate-deep); opacity:0; transform:translateY(36px);
@@ -195,6 +206,62 @@
     transform:scale(0);
   }
   .tl-item .ev-name{ font-family:var(--script); font-size:1.92rem; color:var(--slate-deep); }
+
+  /* ---------- EVENT SCREENS : one per function, scan order =
+       event name → date → time → venue → address → directions ---------- */
+  .ev-card{ padding-top:.4rem; }
+  .ev-r{ opacity:0; transform:translateY(40px); }
+  .ev-card .eyebrow{ font-size:.7rem; letter-spacing:.24em; }
+  .ev-title{ font-family:var(--script); font-weight:400; font-size:clamp(2.9rem,12vw,3.7rem); line-height:1; color:var(--slate-deep); margin:.15rem 0 .35rem; }
+  .ev-date{ display:flex; align-items:center; justify-content:center; gap:.7rem; }
+  .ev-day{ font-family:var(--serif); font-weight:700; font-size:clamp(3rem,13vw,3.8rem); line-height:.9; color:var(--ink); }
+  .ev-dm{ display:flex; flex-direction:column; align-items:flex-start; text-align:left; padding-left:.7rem; border-left:1.5px solid var(--gold); }
+  .ev-wd{ font-family:var(--sans); font-weight:800; font-size:.86rem; letter-spacing:.2em; text-transform:uppercase; color:var(--slate-deep); }
+  .ev-my{ font-family:var(--serif); font-weight:700; font-size:1.2rem; color:var(--ink); }
+  .ev-card .time-pill{ margin-top:.7rem; padding:.42rem 1.2rem; font-size:1rem; }
+  .ev-rule{ width:56px; height:1.5px; background:var(--gold); margin:.85rem auto .55rem; }
+  .ev-label{ display:inline-flex; align-items:center; gap:.4rem; font-family:var(--sans); font-weight:700; font-size:.68rem; letter-spacing:.2em; text-transform:uppercase; color:var(--slate-deep); }
+  .ev-label svg{ fill:currentColor; }
+  .ev-venue{ margin-top:.2rem; font-family:var(--serif); font-weight:700; font-size:clamp(1.35rem,5.6vw,1.65rem); line-height:1.15; color:var(--ink); }
+  .ev-addr{ margin-top:.15rem; font-family:var(--sans); font-weight:600; font-size:.88rem; line-height:1.4; color:var(--ink-soft); max-width:300px; }
+  .ev-card .maps-btn{ margin-top:.8rem; padding:.5rem 1.2rem; font-size:.8rem; }
+  .tl-item .ev-where{ font-family:var(--serif); font-weight:700; font-size:.98rem; color:var(--slate-deep); margin-top:.1rem; }
+  body.urdu-mode .ev-dm{ align-items:flex-end; text-align:right; border-left:none; border-right:1.5px solid var(--gold); padding-left:0; padding-right:.7rem; }
+  body.urdu-mode .ev-date{ flex-direction:row-reverse; }
+  body.urdu-mode .ev-title .urdu{ font-size:.62em; line-height:1.6; }
+  body.urdu-mode .ev-wd, body.urdu-mode .ev-label, body.urdu-mode .ev-card .eyebrow{ letter-spacing:0; }
+  body.urdu-mode .ev-venue .urdu{ font-size:.85em; line-height:1.7; }
+  body.urdu-mode .ev-addr .urdu, body.urdu-mode .ev-my .urdu{ font-size:.85em; line-height:1.8; }
+  .dua-ar{ font-family:'Amiri','Times New Roman',serif; font-weight:700; font-size:clamp(1.35rem,5.8vw,1.8rem); line-height:2; color:var(--ink); direction:rtl; margin-top:.6rem; max-width:340px; }
+  .dua-tr{ font-family:var(--serif); font-weight:600; font-style:italic; font-size:clamp(1rem,4vw,1.18rem); line-height:1.4; color:var(--ink-soft); margin-top:.5rem; max-width:330px; }
+  .dua-ref{ margin-top:.6rem; }
+  body.urdu-mode .dua-tr .urdu{ font-size:.85em; line-height:1.9; }
+
+  /* ---------- tap-to-open wax seal ---------- */
+  .opener{
+    position:fixed; inset:0; z-index:80; display:flex; flex-direction:column; align-items:center;
+    justify-content:flex-start; padding-top:36vh; cursor:pointer; -webkit-tap-highlight-color:transparent;
+    background:radial-gradient(ellipse at 50% 40%, rgba(13,17,25,0) 0%, rgba(13,17,25,.28) 70%);
+  }
+  .seal{ position:relative; width:112px; height:112px; display:grid; place-items:center;
+    animation:sealPulse 2.4s ease-in-out infinite; }
+  .seal::before{ content:""; position:absolute; inset:10px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #F1D58F 0%, #C9993F 45%, #8E5F18 100%);
+    box-shadow:0 10px 26px rgba(30,20,12,.45), inset 0 2px 6px rgba(255,255,255,.45), inset 0 -4px 10px rgba(80,50,10,.45); }
+  .seal::after{ content:""; position:absolute; inset:18px; border-radius:50%; border:1.5px dashed rgba(255,240,205,.55); }
+  .seal-mono{ position:relative; z-index:1; font-family:var(--script); font-size:2.3rem; color:#FFF6E2;
+    text-shadow:0 1px 0 rgba(90,55,10,.6), 0 2px 6px rgba(60,35,5,.5); }
+  .seal-ring{ position:absolute; inset:0; transform:rotate(-90deg); }
+  .seal-ring circle{ fill:none; stroke-width:2.5; }
+  .ring-bg{ stroke:rgba(251,246,236,.45); }
+  .ring-fill{ stroke:var(--gold-light); stroke-linecap:round; stroke-dasharray:352; stroke-dashoffset:352; transition:stroke-dashoffset .4s ease; }
+  .opener-text{ margin-top:1.1rem; font-family:var(--sans); font-weight:700; font-size:.82rem; letter-spacing:.18em;
+    text-transform:uppercase; color:#FBF6EC; text-shadow:0 2px 10px rgba(13,17,25,.7); display:flex; flex-direction:column; gap:.35rem; align-items:center; }
+  .opener-ur{ font-family:'Noto Nastaliq Urdu',serif; letter-spacing:0; text-transform:none; font-size:.85rem; }
+  .opener.opening{ pointer-events:none; }
+  @keyframes sealPulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.05); } }
+  @media (prefers-reduced-motion:reduce){ .seal{ animation:none; } }
+
   .tl-item .ev-meta{ font-family:var(--sans); font-weight:700; font-size:.91rem; color:var(--ink); letter-spacing:.03em; margin-top:.15rem; }
 
   /* ---------- SECTION 6 : closing ---------- */
@@ -212,6 +279,11 @@
     font-family:var(--serif); font-weight:700; font-size:1.02rem; letter-spacing:.02em;
     color:var(--ink); opacity:0; transform:translateY(30px);
   }
+  .venue-home{ margin-top:1rem; padding-top:.8rem; border-top:1px solid rgba(156,107,31,.35); opacity:0; transform:translateY(36px); }
+  .venue-home-label{ font-family:var(--sans); font-weight:700; font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; color:var(--slate-deep); }
+  .venue-home-addr{ margin-top:.25rem; font-family:var(--serif); font-weight:700; font-size:1rem; line-height:1.35; color:var(--ink); }
+  .contact-line{ margin-top:.55rem; font-family:var(--sans); font-weight:700; font-size:.86rem; letter-spacing:.06em; color:var(--slate-deep); opacity:0; transform:translateY(30px); }
+  .contact-line a{ color:var(--ink); text-decoration:none; border-bottom:1px solid var(--gold-light); padding-bottom:1px; margin-left:.35rem; direction:ltr; unicode-bidi:isolate; font-family:var(--sans); }
   .vine-divider{ width:100%; max-width:260px; height:24px; margin:.7rem auto 0; opacity:.9; }
   .vine-path{ stroke-dasharray:600; stroke-dashoffset:600; }
 
@@ -300,11 +372,10 @@ body.urdu-mode .urdu, body.urdu-mode .urdu *{ font-style:normal !important; }
 
 <!-- fixed 9:16 envelope + butterfly video stage (sized to an exact vertical frame by JS) -->
 <div class="video-wrap" id="videoWrap">
-  <video id="bgVideo" muted autoplay playsinline webkit-playsinline="true"
+  <video id="bgVideo" muted playsinline webkit-playsinline="true"
          disablePictureInPicture disableRemotePlayback
          controlsList="nodownload noplaybackrate nofullscreen"
          poster="poster.jpg" preload="auto">
-    <source src="wedding-envelope.mp4" type="video/mp4">
   </video>
   <div class="video-scrim"></div>
 </div>
@@ -314,7 +385,19 @@ body.urdu-mode .urdu, body.urdu-mode .urdu *{ font-style:normal !important; }
   <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M13 5v9.18A3.5 3.5 0 1 0 15 17V9.17l5 1.67V8.75L13 5Zm-3 15a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z"/></svg>
   <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h3v14H7zM14 5h3v14h-3z"/></svg>
 </button>
-<audio id="bgMusic" src="wedding-ambient.mp3" loop preload="auto" autoplay></audio>
+<audio id="bgMusic" src="wedding-ambient.mp3" loop preload="auto"></audio>
+
+<!-- tap-to-open wax seal: guarantees music + video start together on every phone -->
+<div class="opener" id="opener" role="button" tabindex="0" aria-label="Tap to open the invitation">
+  <div class="seal" id="seal">
+    <svg class="seal-ring" viewBox="0 0 120 120" aria-hidden="true">
+      <circle cx="60" cy="60" r="56" class="ring-bg"/>
+      <circle cx="60" cy="60" r="56" class="ring-fill" id="sealProgress"/>
+    </svg>
+    <span class="seal-mono">R&amp;N</span>
+  </div>
+  <p class="opener-text"><span class="opener-en">Tap to open your invitation</span><span class="opener-ur">دعوت نامہ کھولنے کے لیے ٹیپ کریں</span></p>
+</div>
 
 <div class="atmosphere" id="atmosphere" aria-hidden="true"></div>
 
@@ -446,22 +529,51 @@ body.urdu-mode .urdu, body.urdu-mode .urdu *{ font-style:normal !important; }
     </div>
   </section>
 
-  <!-- ============================= SECTION 3 — DATE & TIME ============================= -->
-  <section class="panel" id="s-date">
-    <div class="card">
-      <p class="eyebrow"><span class="english-only">Save the Date</span><span class="urdu-only urdu">تاریخ محفوظ رکھیں</span></p>
-      <svg width="40" height="40" viewBox="0 0 100 100" style="color:var(--slate-deep); margin:.7rem auto 0; display:block; opacity:0" id="calSvg">
-        <use href="#motif-calendar"/>
-      </svg>
-      <div class="date-block" id="dateBlock">
-        <div class="weekday" id="weekday">Thursday</div>
-        <div class="day-number" id="dayNumber">24</div>
-        <div class="month-year" id="monthYear">December, 2026</div>
+  <!-- ============================= EVENT — MEHNDI ============================= -->
+  <section class="panel event-panel" id="s-mehndi">
+    <div class="card ev-card">
+      <p class="eyebrow ev-r"><span class="english-only">The First Celebration</span><span class="urdu-only urdu">پہلی تقریب</span></p>
+      <h2 class="ev-title ev-r"><span class="english-only">Mehndi</span><span class="urdu-only urdu">مہندی</span></h2>
+      <div class="ev-date ev-r">
+        <span class="ev-day">10</span>
+        <span class="ev-dm"><span class="ev-wd"><span class="english-only">Tuesday</span><span class="urdu-only urdu">منگل</span></span><span class="ev-my"><span class="english-only">November 2026</span><span class="urdu-only urdu">نومبر 2026</span></span></span>
       </div>
-      <div class="time-pill" id="timePill">
+      <div class="time-pill ev-r">
         <svg width="16" height="16" viewBox="0 0 100 100" style="color:var(--slate-deep)"><use href="#motif-clock"/></svg>
-        <span id="timeText">8:00 PM · Mehndi</span>
+        <span><span class="english-only">7:00 PM</span><span class="urdu-only urdu">شام 7 بجے</span></span>
       </div>
+      <div class="ev-rule ev-r"></div>
+      <p class="ev-label ev-r"><svg width="11" height="14" viewBox="0 0 100 130"><use href="#motif-pin"/></svg><span class="english-only">Venue · Residence</span><span class="urdu-only urdu">مقام · رہائش گاہ</span></p>
+      <p class="ev-venue ev-r"><span class="english-only">House No. 27, C Block</span><span class="urdu-only urdu">مکان نمبر 27، سی بلاک</span></p>
+      <p class="ev-addr ev-r"><span class="english-only">Main Road, Roshaan Homes<br>Bahawal Valley</span><span class="urdu-only urdu">مین روڈ، روشان ہومز (بہاول ویلی)</span></p>
+      <a class="maps-btn ev-r" id="mehndiMapsBtn" href="#" target="_blank" rel="noopener noreferrer">
+        <svg width="14" height="14" viewBox="0 0 100 130"><use href="#motif-pin"/></svg>
+        <span class="english-only">Get Directions</span><span class="urdu-only urdu">راستہ دیکھیں</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================= EVENT — BARAT ============================= -->
+  <section class="panel event-panel" id="s-barat">
+    <div class="card ev-card">
+      <p class="eyebrow ev-r"><span class="english-only">The Second Celebration</span><span class="urdu-only urdu">دوسری تقریب</span></p>
+      <h2 class="ev-title ev-r"><span class="english-only">Barat</span><span class="urdu-only urdu">بارات</span></h2>
+      <div class="ev-date ev-r">
+        <span class="ev-day">11</span>
+        <span class="ev-dm"><span class="ev-wd"><span class="english-only">Wednesday</span><span class="urdu-only urdu">بدھ</span></span><span class="ev-my"><span class="english-only">November 2026</span><span class="urdu-only urdu">نومبر 2026</span></span></span>
+      </div>
+      <div class="time-pill ev-r">
+        <svg width="16" height="16" viewBox="0 0 100 100" style="color:var(--slate-deep)"><use href="#motif-clock"/></svg>
+        <span><span class="english-only">12:00 PM</span><span class="urdu-only urdu">دوپہر 12 بجے</span></span>
+      </div>
+      <div class="ev-rule ev-r"></div>
+      <p class="ev-label ev-r"><svg width="11" height="14" viewBox="0 0 100 130"><use href="#motif-pin"/></svg><span class="english-only">Venue</span><span class="urdu-only urdu">مقام</span></p>
+      <p class="ev-venue ev-r"><span class="english-only">Taj Green Banquet Hall</span><span class="urdu-only urdu">تاج گرین بینکوئٹ ہال</span></p>
+      <p class="ev-addr ev-r"><span class="english-only">Sargodha Mall Road</span><span class="urdu-only urdu">سرگودھا مال روڈ</span></p>
+      <a class="maps-btn ev-r" id="mapsBtn" href="#" target="_blank" rel="noopener noreferrer">
+        <svg width="14" height="14" viewBox="0 0 100 130"><use href="#motif-pin"/></svg>
+        <span class="english-only">Get Directions</span><span class="urdu-only urdu">راستہ دیکھیں</span>
+      </a>
     </div>
   </section>
 
@@ -482,32 +594,25 @@ body.urdu-mode .urdu, body.urdu-mode .urdu *{ font-style:normal !important; }
     </div>
   </section>
 
-  <!-- ============================= SECTION 4 — VENUE ============================= -->
-  <section class="panel" id="s-venue">
-    <div class="card">
-      <svg width="46" height="60" viewBox="0 0 100 130" style="color:var(--slate-deep); margin:0 auto 1rem; display:block;" id="pinSvg">
-        <use href="#motif-pin"/>
-      </svg>
-      <p class="eyebrow"><span class="english-only">The Venue</span><span class="urdu-only urdu">تقریب کا مقام</span></p>
-      <div class="venue-name" id="venueName">Royal Taj Marriage Hall</div>
-      <div class="venue-address" id="venueAddress">Sargodha Mall Road</div>
-      <p class="venue-note" id="venueNote"><span class="english-only">A joyful celebration awaits</span><span class="urdu-only urdu">ایک پُرمسرت تقریب آپ کی منتظر ہے</span></p>
-      <a class="maps-btn" id="mapsBtn" href="#" target="_blank" rel="noopener noreferrer">
-        <svg width="14" height="14" viewBox="0 0 100 130"><use href="#motif-pin"/></svg>
-        <span>Get Directions</span>
-      </a>
-    </div>
-  </section>
-
   <!-- ============================= SECTION 5 — EVENTS TIMELINE ============================= -->
   <section class="panel" id="s-events">
     <div class="card">
-      <p class="eyebrow"><span class="english-only">The Celebrations</span><span class="urdu-only urdu">تقریبات</span></p>
+      <p class="eyebrow"><span class="english-only">At a Glance</span><span class="urdu-only urdu">ایک نظر میں</span></p>
       <div class="timeline" id="timeline">
         <div class="timeline-track" id="timelineTrack"></div>
-        <div class="tl-item" data-ev="0"><div class="dot"></div><div class="ev-name"><span class="english-only">Mehndi</span><span class="urdu-only urdu">مہندی</span></div><div class="ev-meta"><span class="english-only">9 November 2026 · 8:00 PM</span><span class="urdu-only urdu">9 نومبر 2026 · رات 8 بجے</span></div></div>
-        <div class="tl-item" data-ev="1"><div class="dot"></div><div class="ev-name"><span class="english-only">Barat</span><span class="urdu-only urdu">بارات</span></div><div class="ev-meta"><span class="english-only">10 November 2026 · 1:00 PM</span><span class="urdu-only urdu">10 نومبر 2026 · دوپہر 1 بجے</span></div></div>
+        <div class="tl-item" data-ev="0"><div class="dot"></div><div class="ev-name"><span class="english-only">Mehndi</span><span class="urdu-only urdu">مہندی</span></div><div class="ev-meta"><span class="english-only">Tuesday, 10 November 2026 · 7:00 PM</span><span class="urdu-only urdu">منگل، 10 نومبر 2026 · شام 7 بجے</span></div><div class="ev-where"><span class="english-only">At Residence · Roshaan Homes</span><span class="urdu-only urdu">رہائش گاہ · روشان ہومز</span></div></div>
+        <div class="tl-item" data-ev="1"><div class="dot"></div><div class="ev-name"><span class="english-only">Barat</span><span class="urdu-only urdu">بارات</span></div><div class="ev-meta"><span class="english-only">Wednesday, 11 November 2026 · 12:00 PM</span><span class="urdu-only urdu">بدھ، 11 نومبر 2026 · دوپہر 12 بجے</span></div><div class="ev-where"><span class="english-only">Taj Green Banquet Hall</span><span class="urdu-only urdu">تاج گرین بینکوئٹ ہال</span></div></div>
       </div>
+    </div>
+  </section>
+
+  <!-- ============================= DUA FOR THE COUPLE ============================= -->
+  <section class="panel event-panel" id="s-dua">
+    <div class="card ev-card">
+      <p class="eyebrow ev-r"><span class="english-only">A Prayer for the Couple</span><span class="urdu-only urdu">دلہا دلہن کے لیے دعا</span></p>
+      <p class="dua-ar ev-r">بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ</p>
+      <p class="dua-tr ev-r"><span class="english-only">“May Allah bless you both, shower His blessings upon you, and unite you in goodness.”</span><span class="urdu-only urdu">"اللہ تم دونوں کو برکت دے، تم پر برکتیں نازل فرمائے، اور تم دونوں کو خیر کے ساتھ جمع رکھے۔"</span></p>
+      <p class="verse-ref dua-ref ev-r">— Sunan Abi Dawud 2130</p>
     </div>
   </section>
 
@@ -523,12 +628,14 @@ body.urdu-mode .urdu, body.urdu-mode .urdu *{ font-style:normal !important; }
         <use href="#motif-vine"/>
       </svg>
       <p class="rsvp" id="rsvpLine"><span class="english-only">With joy in our hearts, we look forward to celebrating with you.</span><span class="urdu-only urdu">دل کی خوشی کے ساتھ، ہمیں آپ کے ہمراہ یہ خوشی منانے کا انتظار رہے گا۔</span></p>
-      <p class="hosts-label" id="hostsLabel"><span class="english-only">Hosted with joy by</span><span class="urdu-only urdu">میزبانانِ تقریب</span></p>
+      <p class="hosts-label" id="hostsLabel"><span class="english-only">RSVP · All Family Members</span><span class="urdu-only urdu">منتظر: جملہ اہلِ خانہ</span></p>
       <div class="hosts-names" id="hostsNames">
-        <p class="host-name"><span class="english-only">Anser Mehmood</span><span class="urdu-only urdu">انصر محمود</span></p>
-        <p class="host-name"><span class="english-only">Muhammad Saad</span><span class="urdu-only urdu">محمد سعد</span></p>
+        <p class="host-name"><span class="english-only">Muhammad Saad Ullah</span><span class="urdu-only urdu">محمد سعد اللہ</span></p>
         <p class="host-name"><span class="english-only">Muhammad Abdullah</span><span class="urdu-only urdu">محمد عبداللہ</span></p>
+        <p class="host-name"><span class="english-only">Anser Mehmood</span><span class="urdu-only urdu">انصر محمود</span></p>
+        <p class="host-name"><span class="english-only">Muhammad Aleem</span><span class="urdu-only urdu">محمد علیم</span></p>
       </div>
+      <p class="contact-line" id="contactLine"><span class="english-only">Contact</span><span class="urdu-only urdu">رابطہ</span> <a id="contactLink" href="tel:+923120387599">0312 0387599</a></p>
     </div>
   </section>
 
@@ -555,21 +662,27 @@ const CONFIG = {
 
   // Single source of truth — the weekday / day / month-year on the Date
   // scene AND the live countdown both derive from this automatically.
-  saveDateTime: "2026-11-09T20:00:00",
-  weddingDateTime: "2026-11-10T13:00:00",
-  time: "8:00 PM · Mehndi",
+  saveDateTime: "2026-11-10T19:00:00",
+  weddingDateTime: "2026-11-11T12:00:00",
+  time: "7:00 PM · Mehndi",
 
-  venueName: "Royal Taj Marriage Hall",
+  // Mehndi is at the house. Paste an exact Google Maps pin link into
+  // mehndiMapsUrl for accuracy; empty falls back to a search of mehndiAddress.
+  mehndiAddress: "House No. 27, C Block, Main Road, Roshaan Homes, Bahawal Valley",
+  mehndiMapsUrl: "https://maps.app.goo.gl/hFhirx3C2rLXTYtm7",
+
+  // Barat venue
+  venueName: "Taj Green Banquet Hall",
   venueAddress: "Sargodha Mall Road",
   // Optional: paste an exact Google Maps share link here for pinpoint
   // accuracy. Leave empty to fall back to a text search of venueAddress.
   mapsUrl: "https://maps.app.goo.gl/L6EMLK5ZhBzyyEvS7?g_st=ic",
 
   events: [
-    { name: "Mehndi", meta: "9 November 2026 · 8:00 PM" },
-    { name: "Baraat", meta: "10 November 2026 · 1:00 PM" }
+    { name: "Mehndi", meta: "Tuesday, 10 November 2026 · 7:00 PM" },
+    { name: "Barat", meta: "Wednesday, 11 November 2026 · 12:00 PM" }
   ],
-  rsvp: ""
+  contact: "0312 0387599"
 };
 
 const weddingDate = new Date(CONFIG.weddingDateTime);
@@ -593,15 +706,14 @@ function sizeStage(){
 sizeStage();
 window.addEventListener('resize', sizeStage);
 
-document.getElementById('weekday').textContent = saveDate.toLocaleDateString('en-US', { weekday:'long' });
-document.getElementById('dayNumber').textContent = String(saveDate.getDate()).padStart(2,'0');
-document.getElementById('monthYear').textContent = saveDate.toLocaleDateString('en-US', { month:'long', year:'numeric' });
-document.getElementById('timeText').textContent = CONFIG.time;
-document.getElementById('venueName').textContent = CONFIG.venueName;
-document.getElementById('venueAddress').textContent = CONFIG.venueAddress;
 document.querySelector('[data-editable="brideParents"]').textContent = CONFIG.brideParentsLine;
-document.getElementById('rsvpLine').innerHTML = '<b>RSVP</b> ' + CONFIG.rsvp;
+const contactLink = document.getElementById('contactLink');
+contactLink.textContent = CONFIG.contact;
+contactLink.href = 'tel:+92' + CONFIG.contact.replace(/\D/g,'').replace(/^0/,'');
 
+document.getElementById('mehndiMapsBtn').href = CONFIG.mehndiMapsUrl
+  ? CONFIG.mehndiMapsUrl
+  : 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(CONFIG.mehndiAddress);
 document.getElementById('mapsBtn').href = CONFIG.mapsUrl
   ? CONFIG.mapsUrl
   : 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(CONFIG.venueAddress);
@@ -693,10 +805,54 @@ bgVideo.addEventListener('timeupdate', () => {
     bgVideo.currentTime = LOOP_START;
   }
 });
-// Safety net: if the browser blocks autoplay or the timeupdate event stalls,
-// don't trap the guest behind a frozen envelope forever.
-setTimeout(unlockPage, 6500);
-bgVideo.play().catch(unlockPage);
+/* ---- pick the video quality for this guest's connection ----
+   HD (1080p) by default; the lighter 720p file on slow mobile data or
+   when the phone has Data Saver on. iPhones don't report connection
+   speed, so they always get HD (the seal screen hides the loading). */
+const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+const slowNet = !!conn && (conn.saveData || /(^|-)2g|3g/.test(conn.effectiveType || '') || (conn.downlink && conn.downlink < 3));
+bgVideo.src = slowNet ? 'wedding-envelope-lite.mp4' : 'wedding-envelope.mp4';
+bgVideo.load();
+
+/* ---- light haptic tick (Android; iPhone silently ignores it) ---- */
+let lastBuzz = 0;
+function buzz(ms){
+  const now = Date.now();
+  if(now - lastBuzz < 250 || !navigator.vibrate) return;
+  lastBuzz = now;
+  try{ navigator.vibrate(ms || 12); }catch(e){}
+}
+
+/* ---- seal: shows buffering progress, opens everything on tap ---- */
+const opener = document.getElementById('opener');
+const sealProgress = document.getElementById('sealProgress');
+function updateSealProgress(){
+  let pct = 0;
+  try{
+    if(bgVideo.buffered.length && bgVideo.duration){
+      pct = Math.min(1, bgVideo.buffered.end(bgVideo.buffered.length-1) / Math.min(bgVideo.duration, 8));
+    }
+  }catch(e){}
+  if(bgVideo.readyState >= 4) pct = 1;
+  sealProgress.style.strokeDashoffset = 352 * (1 - pct);
+}
+['progress','loadeddata','canplay','canplaythrough'].forEach(e => bgVideo.addEventListener(e, updateSealProgress));
+
+let opened = false;
+function openInvitation(){
+  if(opened) return;
+  opened = true;
+  buzz(25);
+  startMusic();
+  opener.classList.add('opening');
+  gsap.to('#seal', { scale:1.25, opacity:0, duration:.6, ease:'power2.in' });
+  gsap.to(opener, { opacity:0, duration:.7, delay:.25, onComplete:()=>opener.remove() });
+  bgVideo.play().catch(unlockPage);
+  // Safety net: if the video stalls, don't trap the guest behind a frozen envelope.
+  setTimeout(unlockPage, 7000);
+}
+opener.addEventListener('click', openInvitation);
+opener.addEventListener('keydown', e => { if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openInvitation(); } });
 
 /* ====================================================================
    GSAP ScrollTrigger — every section uses the exact same reveal
@@ -729,11 +885,6 @@ function applyLanguage(){
   document.body.classList.toggle('urdu-mode', urduMode);
   langBtn.textContent=urduMode ? 'EN' : 'اردو';
   langBtn.setAttribute('aria-label', urduMode ? 'Switch to English' : 'Switch to Urdu');
-  document.getElementById('weekday').textContent = urduMode ? 'پیر' : saveDate.toLocaleDateString('en-US', { weekday:'long' });
-  document.getElementById('monthYear').textContent = urduMode ? 'نومبر، 2026' : weddingDate.toLocaleDateString('en-US', { month:'long', year:'numeric' });
-  document.getElementById('timeText').textContent = urduMode ? 'رات 8 بجے · مہندی' : CONFIG.time;
-  document.getElementById('venueAddress').textContent = urduMode ? 'سرگودھا مال روڈ' : CONFIG.venueAddress;
-  document.getElementById('venueName').textContent = urduMode ? 'رائل تاج میرج ہال' : CONFIG.venueName;
 }
 langBtn.addEventListener('click',()=>{ urduMode=!urduMode; applyLanguage(); });
 applyLanguage();
@@ -747,11 +898,7 @@ async function startMusic(){
   try{ await bgMusic.play(); }catch(e){}
   syncMusicButton();
 }
-startMusic();
-// If the browser blocks audio autoplay, begin it at the first guest interaction.
-['pointerdown','touchstart','keydown','wheel'].forEach(evt=>{
-  window.addEventListener(evt, startMusic, { once:true, passive:true });
-});
+// Music starts from the seal tap (openInvitation) — browsers allow audio after a tap.
 musicBtn.addEventListener('click', async()=>{
   if(bgMusic.paused){ await startMusic(); }
   else { bgMusic.pause(); syncMusicButton(); }
@@ -798,7 +945,7 @@ if(reduceMotion){
   document.querySelectorAll(
     '[style*="opacity:0"], .ch, .amp, .cd-unit, .cd-sep, .countdown-note, .maps-btn, ' +
     '.eyebrow, .weekday, .day-number, .month-year, .time-pill, .together, .bride-family, ' +
-    '.venue-name, .venue-address, .venue-note, .tl-item, .closing-line, .closing-mono, .rsvp, .hosts-label, .host-name'
+    '.ev-r, .tl-item, .closing-line, .closing-mono, .rsvp, .hosts-label, .host-name, .contact-line'
   ).forEach(el=>{
     el.style.opacity = 1; el.style.transform = 'none';
   });
@@ -836,21 +983,19 @@ if(reduceMotion){
     .to('#s-names', { duration:.4 })
     .to(['#togetherLine','.name-line .ch','#amp','#brideFamily'], { opacity:0, y:-34, duration:.8 }, '+=.2');
 
-  /* --- date & time --- */
-  const dateTl = gsap.timeline({
-    scrollTrigger:{ trigger:'#s-date', start:'top top', end:'+=120%', scrub:.6, pin:true }
-  });
-  dateTl
-    .to('#s-date .eyebrow', { opacity:1, y:0, duration:.5 })
-    .to('#calSvg', { opacity:1, y:0, duration:.5 }, '-=.25')
-    .to('#weekday', { opacity:1, y:0, duration:.5 }, '-=.2')
-    .to('#dayNumber', { opacity:1, y:0, duration:.6 }, '-=.25')
-    .to('#monthYear', { opacity:1, y:0, duration:.5 }, '-=.3')
-    .to('#timePill', { opacity:1, y:0, duration:.6 }, '-=.2')
-    .to('#clockMin', { rotation:180, transformOrigin:'50px 50px', duration:.8 }, '<')
-    .to('#s-date', { duration:.4 })
-    .to(['#s-date .eyebrow','#calSvg','#weekday','#dayNumber','#monthYear','#timePill'],
-        { opacity:0, y:-34, duration:.8 }, '+=.2');
+  /* --- event screens (Mehndi, Barat): every line rises in, in reading order --- */
+  // ScrollTriggers with pins must be created in page order, so the Dua
+  // screen (which sits after the timeline) is wired up further below.
+  function eventPanelAnim(panel){
+    const items = panel.querySelectorAll('.ev-r');
+    gsap.timeline({
+      scrollTrigger:{ trigger:panel, start:'top top', end:'+=140%', scrub:.6, pin:true }
+    })
+      .to(items, { opacity:1, y:0, duration:.55, stagger:.16 })
+      .to(panel, { duration:.6 }) // hold so the details can be read
+      .to(items, { opacity:0, y:-34, duration:.8, stagger:.02 }, '+=.2');
+  }
+  document.querySelectorAll('.event-panel:not(#s-dua)').forEach(eventPanelAnim);
 
   /* --- countdown --- */
   gsap.timeline({
@@ -862,21 +1007,6 @@ if(reduceMotion){
     .to('#countdownNote', { opacity:1, y:0, duration:.5 }, '-=.2')
     .to('#s-countdown', { duration:.4 })
     .to(['#s-countdown .eyebrow','.cd-unit','.cd-sep','#countdownNote'], { opacity:0, y:-34, duration:.8 }, '+=.2');
-
-  /* --- venue --- */
-  const venueTl = gsap.timeline({
-    scrollTrigger:{ trigger:'#s-venue', start:'top top', end:'+=130%', scrub:.6, pin:true }
-  });
-  venueTl
-    .fromTo('#pinSvg', { y:30, opacity:0 }, { y:0, opacity:1, duration:.7 })
-    .to('#s-venue .eyebrow', { opacity:1, y:0, duration:.5 }, '-=.3')
-    .to('#venueName', { opacity:1, y:0, duration:.6 }, '-=.25')
-    .to('#venueAddress', { opacity:1, y:0, duration:.5 }, '-=.3')
-    .to('#venueNote', { opacity:1, y:0, duration:.5 }, '-=.2')
-    .to('#mapsBtn', { opacity:1, y:0, duration:.5 }, '-=.15')
-    .to('#s-venue', { duration:.4 })
-    .to(['#pinSvg','#s-venue .eyebrow','#venueName','#venueAddress','#venueNote','#mapsBtn'],
-        { opacity:0, y:-34, duration:.8 }, '+=.2');
 
   /* --- events timeline --- */
   const eventsTl = gsap.timeline({
@@ -895,6 +1025,9 @@ if(reduceMotion){
     .to(['#s-events .eyebrow','.tl-item'], { opacity:0, y:-34, duration:.8 }, '+=.2')
     .to('#timelineTrack', { opacity:0, duration:.6 }, '<');
 
+  /* --- dua --- */
+  eventPanelAnim(document.getElementById('s-dua'));
+
   /* --- closing --- */
   gsap.timeline({
     scrollTrigger:{ trigger:'#s-closing', start:'top top', end:'+=130%', scrub:.6, pin:true }
@@ -906,10 +1039,16 @@ if(reduceMotion){
     .to('#rsvpLine', { opacity:1, y:0, duration:.6 }, '-=.3')
     .to('#hostsLabel', { opacity:1, y:0, duration:.5 }, '-=.3')
     .to('.host-name', { opacity:1, y:0, duration:.5, stagger:.12 }, '-=.25')
+    .to('#contactLine', { opacity:1, y:0, duration:.5 }, '-=.2')
     .to('#watermark', { opacity:1, y:0, duration:.6 }, '-=.3') // appears with the blessing, never fades back out
     .to('#s-closing', { duration:.5 }) // hold so the blessing can be read in full
-    .to(['#ringsSvg','#closingLine','#closingMono','.vine-divider','#rsvpLine','#hostsLabel','.host-name'],
+    .to(['#ringsSvg','#closingLine','#closingMono','.vine-divider','#rsvpLine','#hostsLabel','.host-name','#contactLine'],
         { opacity:0, y:-34, duration:.9 }, '+=.2'); // fully gone before the outro begins
+
+  /* --- haptic tick as each new screen arrives --- */
+  document.querySelectorAll('main > .panel:not(#s-cover):not(#s-outro)').forEach(panel=>{
+    ScrollTrigger.create({ trigger:panel, start:'top top', onEnter:()=>buzz(10), onEnterBack:()=>buzz(10) });
+  });
 
   /* --- the text-free outro section drives the envelope-closing video scene,
          so the departure + fold-shut only ever plays once every word above
