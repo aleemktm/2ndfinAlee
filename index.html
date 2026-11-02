@@ -606,16 +606,6 @@ body.urdu-mode .urdu, body.urdu-mode .urdu *{ font-style:normal !important; }
     </div>
   </section>
 
-  <!-- ============================= DUA FOR THE COUPLE ============================= -->
-  <section class="panel event-panel" id="s-dua">
-    <div class="card ev-card">
-      <p class="eyebrow ev-r"><span class="english-only">A Prayer for the Couple</span><span class="urdu-only urdu">دلہا دلہن کے لیے دعا</span></p>
-      <p class="dua-ar ev-r">بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ</p>
-      <p class="dua-tr ev-r"><span class="english-only">“May Allah bless you both, shower His blessings upon you, and unite you in goodness.”</span><span class="urdu-only urdu">"اللہ تم دونوں کو برکت دے، تم پر برکتیں نازل فرمائے، اور تم دونوں کو خیر کے ساتھ جمع رکھے۔"</span></p>
-      <p class="verse-ref dua-ref ev-r">— Sunan Abi Dawud 2130</p>
-    </div>
-  </section>
-
   <!-- ============================= SECTION 6 — CLOSING ============================= -->
   <section class="panel" id="s-closing">
     <div class="card">
@@ -1024,9 +1014,6 @@ if(reduceMotion){
     .to('#s-events', { duration:.4 })
     .to(['#s-events .eyebrow','.tl-item'], { opacity:0, y:-34, duration:.8 }, '+=.2')
     .to('#timelineTrack', { opacity:0, duration:.6 }, '<');
-
-  /* --- dua --- */
-  eventPanelAnim(document.getElementById('s-dua'));
 
   /* --- closing --- */
   gsap.timeline({
