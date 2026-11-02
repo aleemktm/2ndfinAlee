@@ -1033,7 +1033,7 @@ if(reduceMotion){
         { opacity:0, y:-34, duration:.9 }, '+=.2'); // fully gone before the outro begins
 
   /* --- haptic tick as each new screen arrives --- */
-  document.querySelectorAll('main > .panel:not(#s-cover):not(#s-outro)').forEach(panel=>{
+  document.querySelectorAll('section.panel:not(#s-cover):not(#s-outro)').forEach(panel=>{
     ScrollTrigger.create({ trigger:panel, start:'top top', onEnter:()=>buzz(10), onEnterBack:()=>buzz(10) });
   });
 
