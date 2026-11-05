@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ruqqiya &amp; Nouman — Wedding Invitation</title>
+<meta name="description" content="Mehndi: Tue 10 Nov 2026, 7:00 PM · Barat: Wed 11 Nov 2026, 12:00 PM, Taj Green Banquet Hall">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ruqqiya &amp; Nouman — Wedding Invitation">
+<meta property="og:description" content="Mehndi · Tue 10 Nov, 7 PM · Barat · Wed 11 Nov, 12 PM. Tap to open your invitation.">
+<meta property="og:url" content="https://aleemktm.github.io/2ndfinAlee/pink/">
+<meta property="og:image" content="https://aleemktm.github.io/2ndfinAlee/pink/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#f4c6d3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Allura&family=Amiri:wght@700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="door-left.jpg">
+<link rel="preload" as="image" href="door-right.jpg">
+<link rel="preload" as="image" href="seal.png">
+<style>
+  :root{ --u:3.9px; --ink:#5b3a2c; --ink2:#6b4636; --gold:#b9852a; --gold2:#a06a22; }
+  *{ box-sizing:border-box; margin:0; padding:0; font-variant-numeric:lining-nums; }
+  html,body{ height:100%; overflow:hidden; background:#f3d6de; -webkit-tap-highlight-color:transparent; }
+  body{ display:grid; place-items:center; font-family:'Cormorant Garamond', serif; color:var(--ink); }
+  .backdrop{ position:fixed; inset:-40px; background:url(page.jpg) center/cover; filter:blur(28px) saturate(1.1); opacity:.7; }
+
+  #stage{ position:relative; width:calc(var(--u)*100); height:calc(var(--u)*177.78); overflow:hidden;
+    box-shadow:0 20px 60px rgba(120,50,70,.25); perspective:calc(var(--u)*260); }
+
+  /* ---------- inside (revealed when the doors open) ---------- */
+  #inside{ position:absolute; inset:0; background:url(page.jpg) center/100% 100%; transform:scale(1.06); filter:brightness(.92);
+    transition:transform 2.2s cubic-bezier(.2,.7,.2,1), filter 2.2s ease; }
+  body.open #inside{ transform:scale(1); filter:none; }
+  #chand{ position:absolute; left:50%; top:4.4%; width:calc(var(--u)*21); margin-left:calc(var(--u)*-10.5);
+    transform-origin:50% 0; animation:swing 5.5s ease-in-out infinite; opacity:0; transition:opacity 1.2s ease .6s; }
+  body.open #chand{ opacity:1; }
+  body.open.p2 #chand{ opacity:0; transition-delay:0s; }
+  @keyframes swing{ 0%,100%{ transform:rotate(-2.2deg); } 50%{ transform:rotate(2.2deg); } }
+
+  .page{ position:absolute; left:13%; right:13%; top:19%; bottom:10%; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; text-align:center; transform-origin:50% 0; }
+  .page.hidden{ pointer-events:none; }
+  [data-r]{ opacity:0; transform:translateY(calc(var(--u)*2.4)); filter:blur(4px);
+    transition:opacity .9s ease, transform 1.1s cubic-bezier(.2,.7,.2,1), filter .9s ease; transition-delay:var(--d,0s); }
+  .show [data-r]{ opacity:1; transform:none; filter:none; }
+  .leave [data-r]{ opacity:0; transform:translateY(calc(var(--u)*-3)); filter:blur(3px); transition-duration:.55s; transition-delay:0s; }
+
+  .gold{ background:linear-gradient(100deg,#9a6a1c 0%,#d9ad52 22%,#fbe7a6 32%,#c9952f 44%,#8f6118 60%,#d9ad52 78%,#a8741e 100%);
+    background-size:220% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
+    padding:0 .3em .14em; margin:0 -.3em; animation:shimmer 6s linear infinite; filter:drop-shadow(0 1px 0 rgba(107,66,16,.3)); }
+  @keyframes shimmer{ from{ background-position:100% 0; } to{ background-position:-120% 0; } }
+
+  .bism{ font-family:'Amiri', serif; font-weight:700; font-size:calc(var(--u)*5.4); line-height:1.35; direction:rtl; }
+  .caps{ font-weight:700; text-transform:uppercase; letter-spacing:.2em; font-size:calc(var(--u)*2.55); color:var(--ink); line-height:1.5; }
+  .script{ font-family:'Allura', cursive; font-weight:400; line-height:1.02; }
+  .host{ font-size:calc(var(--u)*10); }
+  .cer{ font-size:calc(var(--u)*7.4); }
+  .dau{ font-size:calc(var(--u)*7.6); }
+  .nm{ font-size:calc(var(--u)*10.6); white-space:nowrap; }
+  .with{ font-style:italic; font-weight:600; font-size:calc(var(--u)*3.7); color:#8a5a48; margin:calc(var(--u)*-.4) 0; }
+  .son{ font-weight:600; font-size:calc(var(--u)*3.15); letter-spacing:.04em; color:var(--ink2); margin-top:calc(var(--u)*1); }
+  .rule{ width:calc(var(--u)*34); height:calc(var(--u)*2.4); margin:calc(var(--u)*2.6) 0 calc(var(--u)*1.2); }
+  .lf{ font-size:calc(var(--u)*6.4); }
+  .names{ margin-top:calc(var(--u)*.8); }
+  .names p{ font-weight:700; text-transform:uppercase; letter-spacing:.08em; font-size:calc(var(--u)*2.75); line-height:1.65; white-space:nowrap; }
+  .names i{ font-style:normal; color:#c9952f; margin:0 .6em; }
+  .foot{ display:flex; gap:calc(var(--u)*9); justify-content:center; margin-top:calc(var(--u)*2.6); }
+  .foot div{ display:flex; flex-direction:column; align-items:center; }
+  .foot .k{ font-weight:700; letter-spacing:.3em; font-size:calc(var(--u)*2.4); color:var(--gold2); }
+  .foot .v{ font-weight:700; letter-spacing:.08em; font-size:calc(var(--u)*2.9); text-transform:uppercase; }
+  .foot a{ color:inherit; text-decoration:none; border-bottom:1px solid rgba(185,133,42,.5); }
+
+  /* events page */
+  .tc{ font-weight:700; letter-spacing:.32em; font-size:calc(var(--u)*2.6); color:var(--gold2); }
+  .evn{ font-size:calc(var(--u)*13); margin-top:calc(var(--u)*.4); }
+  .sub{ font-style:italic; font-weight:600; font-size:calc(var(--u)*3.4); color:#8a5a48; margin-top:calc(var(--u)*-1); }
+  .when{ display:flex; width:100%; margin-top:calc(var(--u)*2.2); }
+  .when div{ flex:1; display:flex; flex-direction:column; align-items:center; }
+  .when div+div{ border-left:1.3px solid rgba(185,133,42,.45); }
+  .when svg{ width:calc(var(--u)*5); height:calc(var(--u)*5); }
+  .when .k{ margin-top:calc(var(--u)*.8); font-weight:700; letter-spacing:.26em; font-size:calc(var(--u)*2.2); color:var(--gold2); }
+  .when .v{ margin-top:calc(var(--u)*.3); font-weight:700; font-size:calc(var(--u)*3.5); line-height:1.25; }
+  .venue{ margin-top:calc(var(--u)*2.6); width:100%; padding:calc(var(--u)*2.2) calc(var(--u)*2.6); border:1.3px solid rgba(185,133,42,.5);
+    border-radius:calc(var(--u)*2.6); background:rgba(255,250,246,.7); display:flex; flex-direction:column; align-items:center; }
+  .venue .k{ font-weight:700; letter-spacing:.24em; font-size:calc(var(--u)*2.1); color:var(--gold2); }
+  .venue .n{ font-weight:700; font-size:calc(var(--u)*4.4); line-height:1.15; margin-top:calc(var(--u)*.4); }
+  .venue .a{ font-weight:600; font-size:calc(var(--u)*3.1); color:var(--ink2); line-height:1.3; margin-top:calc(var(--u)*.3); }
+  .dir{ margin-top:calc(var(--u)*1.8); display:inline-flex; align-items:center; gap:calc(var(--u)*1.4);
+    padding:calc(var(--u)*1.5) calc(var(--u)*4); border-radius:999px; text-decoration:none;
+    background:linear-gradient(180deg,#e2b85c,#b9852a); color:#fffaf0; font-weight:700; letter-spacing:.16em;
+    font-size:calc(var(--u)*2.5); box-shadow:0 calc(var(--u)*.6) calc(var(--u)*2) rgba(140,90,20,.35); }
+  .dir svg{ width:calc(var(--u)*2.6); height:calc(var(--u)*3.3); fill:#fffaf0; }
+  .div2{ width:calc(var(--u)*40); height:calc(var(--u)*4); margin:calc(var(--u)*2.4) 0 calc(var(--u)*.6); }
+
+  /* nav button between pages */
+  .nav{ position:absolute; left:50%; bottom:3.1%; transform:translateX(-50%); z-index:5; border:0; cursor:pointer;
+    display:flex; align-items:center; gap:calc(var(--u)*1.4); padding:calc(var(--u)*1.6) calc(var(--u)*4.2);
+    border-radius:999px; background:rgba(255,250,246,.88); color:var(--gold2); font-family:'Cormorant Garamond', serif;
+    font-weight:700; letter-spacing:.2em; font-size:calc(var(--u)*2.5); box-shadow:0 calc(var(--u)*.6) calc(var(--u)*2.4) rgba(140,60,80,.22);
+    border:1.3px solid rgba(185,133,42,.55); opacity:0; pointer-events:none; transition:opacity .8s ease; }
+  .nav.on{ opacity:1; pointer-events:auto; animation:bob 2.4s ease-in-out infinite; }
+  .nav svg{ width:calc(var(--u)*2.8); height:calc(var(--u)*2.8); }
+  @keyframes bob{ 0%,100%{ transform:translate(-50%,0); } 50%{ transform:translate(-50%,calc(var(--u)*-.8)); } }
+
+  /* ---------- the closed gatefold ---------- */
+  #doors{ position:absolute; inset:0; transform-style:preserve-3d; z-index:10; cursor:pointer; }
+  .door{ position:absolute; top:0; bottom:0; width:50%; transform-style:preserve-3d;
+    transition:transform 2s cubic-bezier(.55,.05,.25,1); }
+  .door.l{ left:0; transform-origin:0 50%; }
+  .door.r{ right:0; transform-origin:100% 50%; }
+  .face{ position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+  .door.l .front{ background:url(door-left.jpg) center/100% 100%; }
+  .door.r .front{ background:url(door-right.jpg) center/100% 100%; }
+  .back{ transform:rotateY(180deg); background:linear-gradient(90deg,#f9dfe6,#fdf0f3 60%,#f7d8e1); }
+  .door .shade{ position:absolute; inset:0; pointer-events:none; opacity:0; transition:opacity 2s ease; }
+  .door.l .shade{ background:linear-gradient(90deg,rgba(90,30,50,0),rgba(90,30,50,.35)); }
+  .door.r .shade{ background:linear-gradient(270deg,rgba(90,30,50,0),rgba(90,30,50,.35)); }
+  .door.l::after,.door.r::after{ content:""; position:absolute; top:0; bottom:0; width:6%; pointer-events:none; }
+  .door.l::after{ right:0; background:linear-gradient(90deg,rgba(150,70,90,0),rgba(150,70,90,.18)); }
+  .door.r::after{ left:0; background:linear-gradient(270deg,rgba(255,255,255,0),rgba(255,255,255,.35)); }
+  body.open .door.l{ transform:rotateY(-112deg); }
+  body.open .door.r{ transform:rotateY(112deg); }
+  body.open .door .shade{ opacity:1; }
+  body.gone #doors{ display:none; }
+
+  #seal{ position:absolute; left:50%; top:50%; width:calc(var(--u)*44); transform:translate(-50%,-50%); z-index:12;
+    filter:drop-shadow(0 calc(var(--u)*1) calc(var(--u)*2) rgba(120,50,70,.3)); animation:pulse 2.6s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{ transform:translate(-50%,-50%) scale(1); } 50%{ transform:translate(-50%,-50%) scale(1.035); } }
+  body.opening #seal{ animation:sealOff 1s cubic-bezier(.5,0,.75,0) forwards; }
+  @keyframes sealOff{ 0%{ transform:translate(-50%,-50%) scale(1); opacity:1; }
+    25%{ transform:translate(-50%,-50%) scale(1.12); opacity:1; }
+    100%{ transform:translate(-50%,-95%) scale(.6) rotate(-14deg); opacity:0; } }
+  .tap{ position:absolute; left:0; right:0; top:calc(50% + var(--u)*31); z-index:12; text-align:center;
+    font-weight:700; letter-spacing:.3em; font-size:calc(var(--u)*2.7); color:#8a4a5c; text-transform:uppercase;
+    animation:tapIn 1.2s ease .8s both, glow 2.6s ease-in-out 2s infinite; text-shadow:0 1px 0 rgba(255,255,255,.7); }
+  .tap span{ display:block; margin-top:calc(var(--u)*1.2); font-family:'Allura', cursive; letter-spacing:0; text-transform:none;
+    font-size:calc(var(--u)*6); color:#b9852a; font-weight:400; }
+  @keyframes tapIn{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:none; } }
+  @keyframes glow{ 0%,100%{ opacity:1; } 50%{ opacity:.55; } }
+  body.opening .tap{ animation:none; opacity:0; transition:opacity .4s ease; }
+
+  /* ---------- petals + sparkles ---------- */
+  #fx{ position:absolute; inset:0; pointer-events:none; z-index:20; overflow:hidden; }
+  .petal{ position:absolute; top:-6%; width:calc(var(--u)*var(--s)); height:calc(var(--u)*var(--s)*1.25);
+    background:radial-gradient(ellipse at 40% 30%,#fde3ea,#f2a3ba 60%,#e07c97);
+    border-radius:80% 0 80% 0; opacity:.75; animation:fall var(--t) linear var(--dl) infinite; }
+  @keyframes fall{ 0%{ transform:translate(0,0) rotate(0deg); }
+    25%{ transform:translate(calc(var(--u)*var(--sw)),25vh) rotate(90deg); }
+    50%{ transform:translate(0,50vh) rotate(180deg); }
+    75%{ transform:translate(calc(var(--u)*var(--sw)*-1),75vh) rotate(270deg); }
+    100%{ transform:translate(0,110vh) rotate(360deg); } }
+  .spark{ position:absolute; width:calc(var(--u)*1.6); height:calc(var(--u)*1.6); opacity:0;
+    background:radial-gradient(circle,#fff6d5 0,#f0cf7a 35%,rgba(240,207,122,0) 70%); animation:tw var(--t) ease-in-out var(--dl) infinite; }
+  .spark::before,.spark::after{ content:""; position:absolute; left:50%; top:50%; width:240%; height:12%; background:linear-gradient(90deg,transparent,#fff3c4,transparent); transform:translate(-50%,-50%); }
+  .spark::after{ transform:translate(-50%,-50%) rotate(90deg); }
+  @keyframes tw{ 0%,100%{ opacity:0; transform:scale(.4); } 50%{ opacity:1; transform:scale(1); } }
+
+  /* ---------- music button ---------- */
+  #music{ position:absolute; top:2.2%; right:4%; z-index:30; width:calc(var(--u)*9); height:calc(var(--u)*9); border-radius:50%;
+    border:1.3px solid rgba(185,133,42,.6); background:rgba(255,250,246,.85); display:grid; place-items:center; cursor:pointer;
+    opacity:0; pointer-events:none; transition:opacity .8s ease; }
+  body.open #music{ opacity:1; pointer-events:auto; }
+  #music svg{ width:45%; height:45%; fill:#b9852a; }
+  #music .off{ display:none; } #music.muted .on{ display:none; } #music.muted .off{ display:block; }
+
+  .rotate{ display:none; }
+  @media (orientation:landscape) and (max-height:500px){
+    .rotate{ position:fixed; inset:0; z-index:99; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;
+      background:#f8e1e7; color:#8a4a5c; font-weight:700; letter-spacing:.1em; text-align:center; }
+  }
+  @media (prefers-reduced-motion:reduce){ .petal,.spark{ display:none; } #chand,.gold,#seal,.nav.on{ animation:none !important; } }
+</style>
+</head>
+<body>
+<div class="backdrop"></div>
+<div class="rotate">Please turn your phone upright</div>
+
+<div id="stage">
+  <section id="inside">
+    <img id="chand" src="chand.png" alt="">
+
+    <!-- page 1: invitation -->
+    <div class="page" id="p1">
+      <div class="bism gold" data-r>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+      <div class="caps" data-r style="margin-top:calc(var(--u)*1.4)">Mrs. &amp; Late Mr.</div>
+      <div class="script host gold" data-r>Qaiser Mehmood</div>
+      <div class="caps" data-r style="font-size:calc(var(--u)*2.35);margin-top:calc(var(--u)*.6)">would be delighted to have your<br>gracious presence at the</div>
+      <div class="script cer gold" data-r>Wedding Ceremony</div>
+      <div class="caps" data-r style="font-size:calc(var(--u)*2.35)">of their beloved</div>
+      <div class="script dau gold" data-r>Daughter</div>
+      <div class="script nm gold" data-r style="margin-top:calc(var(--u)*.6)">Ruqqiya Qaiser</div>
+      <div class="with" data-r>with</div>
+      <div class="script nm gold" data-r>Nouman Mukhtar</div>
+      <div class="son" data-r>S/O Mr. Mukhtar Ahmed &amp; Mrs. Ansa Mukhtar</div>
+      <svg class="rule" data-r viewBox="0 0 240 16"><path d="M4 8 C60 1,90 15,120 8 C150 1,180 15,236 8" fill="none" stroke="#c9952f" stroke-width="1.4"/><circle cx="120" cy="8" r="3.8" fill="#b9852a"/></svg>
+      <div class="script lf gold" data-r>Looking Forward</div>
+      <div class="names" data-r>
+        <p>Muhammad Saad Ullah<i>•</i>Muhammad Abdullah</p>
+        <p>Anser Mehmood<i>•</i>Sultan Mehmood</p>
+        <p>Muhammad Aleem</p>
+      </div>
+      <div class="foot" data-r>
+        <div><span class="k">R.S.V.P</span><span class="v">All Family Members</span></div>
+        <div><span class="k">CONTACT</span><span class="v"><a href="tel:+923120387599">0312 0387599</a></span></div>
+      </div>
+    </div>
+
+    <!-- page 2: celebrations -->
+    <div class="page hidden" id="p2" style="top:17.5%">
+      <div class="tc" data-r>THE CELEBRATIONS</div>
+
+      <div class="script evn gold" data-r>Mehndi</div>
+      <div class="when" data-r>
+        <div><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="#b9852a" stroke-width="1.6"/><path d="M3 10h18M8 3v4M16 3v4" stroke="#b9852a" stroke-width="1.6" stroke-linecap="round"/></svg><span class="k">DATE</span><span class="v">Tuesday<br>10 November 2026</span></div>
+        <div><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#b9852a" stroke-width="1.6"/><path d="M12 7v5l3.5 2" fill="none" stroke="#b9852a" stroke-width="1.6" stroke-linecap="round"/></svg><span class="k">TIME</span><span class="v">7:00 PM</span></div>
+      </div>
+      <div class="venue" data-r>
+        <span class="k">VENUE · RESIDENCE</span>
+        <span class="n">House No. 27, C Block</span>
+        <span class="a">Main Road, Roshaan Homes, Bahawal Valley</span>
+        <a class="dir" href="https://maps.app.goo.gl/hFhirx3C2rLXTYtm7" target="_blank" rel="noopener"><svg viewBox="0 0 100 130"><path d="M50,4 C74,4 92,22 92,46 C92,78 50,124 50,124 C50,124 8,78 8,46 C8,22 26,4 50,4 Z M50,28 C41,28 34,35 34,44 C34,53 41,60 50,60 C59,60 66,53 66,44 C66,35 59,28 50,28 Z" fill-rule="evenodd"/></svg>GET DIRECTIONS</a>
+      </div>
+
+      <svg class="div2" data-r viewBox="0 0 300 30"><path d="M8 15 C70 4,110 26,150 15 C190 4,230 26,292 15" fill="none" stroke="#c9952f" stroke-width="1.3"/><circle cx="150" cy="15" r="4" fill="#b9852a"/><circle cx="105" cy="17" r="2.2" fill="#d9ad52"/><circle cx="195" cy="13" r="2.2" fill="#d9ad52"/></svg>
+
+      <div class="script evn gold" data-r>Barat</div>
+      <div class="when" data-r>
+        <div><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="#b9852a" stroke-width="1.6"/><path d="M3 10h18M8 3v4M16 3v4" stroke="#b9852a" stroke-width="1.6" stroke-linecap="round"/></svg><span class="k">DATE</span><span class="v">Wednesday<br>11 November 2026</span></div>
+        <div><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#b9852a" stroke-width="1.6"/><path d="M12 7v5l3.5 2" fill="none" stroke="#b9852a" stroke-width="1.6" stroke-linecap="round"/></svg><span class="k">TIME</span><span class="v">12:00 PM</span></div>
+      </div>
+      <div class="venue" data-r>
+        <span class="k">VENUE</span>
+        <span class="n">Taj Green Banquet Hall</span>
+        <span class="a">Sargodha Mall Road</span>
+        <a class="dir" href="https://maps.app.goo.gl/veZsVajiEbBnzujY8?g_st=ic" target="_blank" rel="noopener"><svg viewBox="0 0 100 130"><path d="M50,4 C74,4 92,22 92,46 C92,78 50,124 50,124 C50,124 8,78 8,46 C8,22 26,4 50,4 Z M50,28 C41,28 34,35 34,44 C34,53 41,60 50,60 C59,60 66,53 66,44 C66,35 59,28 50,28 Z" fill-rule="evenodd"/></svg>GET DIRECTIONS</a>
+      </div>
+    </div>
+
+    <button class="nav" id="nav" aria-label="View the celebrations">
+      <span id="navText">VIEW CELEBRATIONS</span>
+      <svg id="navIco" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="#a06a22" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </section>
+
+  <div id="doors" role="button" tabindex="0" aria-label="Tap to open the invitation">
+    <div class="door l"><div class="face front"></div><div class="face back"></div><div class="shade"></div></div>
+    <div class="door r"><div class="face front"></div><div class="face back"></div><div class="shade"></div></div>
+    <img id="seal" src="seal.png" alt="R & N">
+    <div class="tap">Tap to open<span>your invitation</span></div>
+  </div>
+
+  <div id="fx"></div>
+
+  <button id="music" aria-label="Music on/off">
+    <svg class="on" viewBox="0 0 24 24"><path d="M13 5v9.18A3.5 3.5 0 1 0 15 17V9.17l5 1.67V8.75L13 5Z"/></svg>
+    <svg class="off" viewBox="0 0 24 24"><path d="M13 5v9.18A3.5 3.5 0 1 0 15 17V9.17l5 1.67V8.75L13 5Z"/><path d="M3 3l18 18" stroke="#b9852a" stroke-width="2"/></svg>
+  </button>
+</div>
+
+<audio id="bgm" src="../wedding-ambient.mp3" loop preload="auto"></audio>
+
+<script>
+/* ---- size the 9:16 stage to the screen ---- */
+const stage = document.getElementById('stage');
+function fit(){
+  const vw = window.innerWidth, vh = window.innerHeight;
+  let w = Math.min(vw, vh * 9/16);
+  document.documentElement.style.setProperty('--u', (w/100) + 'px');
+  // shrink a page only if its content is taller than its box (very small phones)
+  document.querySelectorAll('.page').forEach(p => {
+    p.style.transform = 'none';
+    const k = Math.min(1, p.clientHeight / p.scrollHeight);
+    p.style.transform = k < 1 ? `scale(${k.toFixed(3)})` : 'none';
+  });
+}
+fit();
+window.addEventListener('resize', fit);
+if(document.fonts) document.fonts.ready.then(fit);
+
+/* ---- falling petals + gold sparkles ---- */
+const fx = document.getElementById('fx');
+for(let i=0;i<12;i++){
+  const p = document.createElement('i'); p.className = 'petal';
+  p.style.left = (Math.random()*100) + '%';
+  p.style.setProperty('--s', (2.2 + Math.random()*2.2).toFixed(2));
+  p.style.setProperty('--sw', (4 + Math.random()*8).toFixed(1));
+  p.style.setProperty('--t', (9 + Math.random()*9).toFixed(1) + 's');
+  p.style.setProperty('--dl', (-Math.random()*18).toFixed(1) + 's');
+  fx.appendChild(p);
+}
+// sparkles hug the rose borders
+for(let i=0;i<22;i++){
+  const s = document.createElement('i'); s.className = 'spark';
+  const edge = Math.random();
+  let x, y;
+  if(edge < .3){ x = Math.random()*100; y = Math.random()*9; }
+  else if(edge < .55){ x = Math.random()*100; y = 91 + Math.random()*8; }
+  else if(edge < .78){ x = Math.random()*12; y = Math.random()*100; }
+  else { x = 88 + Math.random()*12; y = Math.random()*100; }
+  s.style.left = x + '%'; s.style.top = y + '%';
+  s.style.setProperty('--t', (2.4 + Math.random()*2.6).toFixed(1) + 's');
+  s.style.setProperty('--dl', (-Math.random()*5).toFixed(1) + 's');
+  fx.appendChild(s);
+}
+
+/* ---- staggered reveal ---- */
+function reveal(page, startDelay){
+  page.classList.remove('leave', 'hidden');
+  [...page.querySelectorAll('[data-r]')].forEach((el,i) => el.style.setProperty('--d', (startDelay + i*.22).toFixed(2) + 's'));
+  void page.offsetWidth;
+  page.classList.add('show');
+}
+function hide(page){
+  page.classList.remove('show'); page.classList.add('leave');
+  setTimeout(() => page.classList.add('hidden'), 600);
+}
+
+/* ---- music ---- */
+const bgm = document.getElementById('bgm'), musicBtn = document.getElementById('music');
+bgm.volume = .5;
+musicBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  if(bgm.paused){ bgm.play().catch(()=>{}); musicBtn.classList.remove('muted'); }
+  else { bgm.pause(); musicBtn.classList.add('muted'); }
+});
+
+/* ---- opening ---- */
+const doors = document.getElementById('doors');
+const p1 = document.getElementById('p1'), p2 = document.getElementById('p2');
+const nav = document.getElementById('nav'), navText = document.getElementById('navText'), navIco = document.getElementById('navIco');
+let opened = false, onPage = 1;
+function openCard(){
+  if(opened) return; opened = true;
+  try{ navigator.vibrate && navigator.vibrate(20); }catch(e){}
+  bgm.play().catch(() => musicBtn.classList.add('muted'));
+  document.body.classList.add('opening');
+  setTimeout(() => document.body.classList.add('open'), 650);
+  setTimeout(() => reveal(p1, 0), 1500);
+  setTimeout(() => document.body.classList.add('gone'), 2900);
+  setTimeout(() => nav.classList.add('on'), 1500 + p1.querySelectorAll('[data-r]').length*220 + 900);
+}
+doors.addEventListener('click', openCard);
+doors.addEventListener('keydown', e => { if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openCard(); } });
+
+/* ---- switch between invitation and celebrations ---- */
+function go(n){
+  if(n === onPage) return;
+  onPage = n;
+  document.body.classList.toggle('p2', n === 2);
+  nav.classList.remove('on');
+  if(n === 2){ hide(p1); setTimeout(() => reveal(p2, 0), 450); navText.textContent = 'BACK TO INVITATION'; navIco.style.transform = 'rotate(180deg)'; }
+  else { hide(p2); setTimeout(() => reveal(p1, 0), 450); navText.textContent = 'VIEW CELEBRATIONS'; navIco.style.transform = 'none'; }
+  const cnt = (n===2 ? p2 : p1).querySelectorAll('[data-r]').length;
+  setTimeout(() => nav.classList.add('on'), 450 + cnt*220 + 600);
+}
+nav.addEventListener('click', () => go(onPage === 1 ? 2 : 1));
+// swipe up / down
+let y0 = null;
+stage.addEventListener('touchstart', e => { y0 = e.touches[0].clientY; }, {passive:true});
+stage.addEventListener('touchend', e => {
+  if(!opened || y0 === null) return;
+  const dy = e.changedTouches[0].clientY - y0; y0 = null;
+  if(dy < -50) go(2); else if(dy > 50) go(1);
+}, {passive:true});
+window.addEventListener('wheel', e => { if(!opened) return; if(e.deltaY > 30) go(2); else if(e.deltaY < -30) go(1); }, {passive:true});
+</script>
+</body>
+</html>
