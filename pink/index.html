@@ -37,7 +37,6 @@
   #chand{ position:absolute; left:50%; top:4.4%; width:calc(var(--u)*21); margin-left:calc(var(--u)*-10.5);
     transform-origin:50% 0; animation:swing 5.5s ease-in-out infinite; opacity:0; transition:opacity 1.2s ease .6s; }
   body.open #chand{ opacity:1; }
-  body.open.p2 #chand{ opacity:0; transition-delay:0s; }
   @keyframes swing{ 0%,100%{ transform:rotate(-2.2deg); } 50%{ transform:rotate(2.2deg); } }
 
   .page{ position:absolute; left:13%; right:13%; top:19%; bottom:10%; display:flex; flex-direction:column; align-items:center;
@@ -94,6 +93,31 @@
     font-size:calc(var(--u)*2.5); box-shadow:0 calc(var(--u)*.6) calc(var(--u)*2) rgba(140,90,20,.35); }
   .dir svg{ width:calc(var(--u)*2.6); height:calc(var(--u)*3.3); fill:#fffaf0; }
   .div2{ width:calc(var(--u)*40); height:calc(var(--u)*4); margin:calc(var(--u)*2.4) 0 calc(var(--u)*.6); }
+
+  .big.evn{ font-size:calc(var(--u)*17); }
+  .page .rule{ margin:calc(var(--u)*2.4) 0 calc(var(--u)*2); }
+  .names.big p{ font-size:calc(var(--u)*3.4); line-height:1.75; letter-spacing:.1em; }
+  .page#p3 .venue, .page#p4 .venue{ margin-top:calc(var(--u)*4); }
+  .page#p3 .when .v, .page#p4 .when .v{ font-size:calc(var(--u)*4); }
+  .dots{ position:absolute; right:3.2%; top:50%; transform:translateY(-50%); z-index:6; display:flex; flex-direction:column; gap:calc(var(--u)*1.6);
+    opacity:0; transition:opacity .8s ease; }
+  body.open .dots{ opacity:1; }
+  .dots i{ width:calc(var(--u)*1.5); height:calc(var(--u)*1.5); border-radius:50%; background:rgba(185,133,42,.3); border:1px solid rgba(185,133,42,.6); transition:all .4s ease; }
+  .dots i.on{ background:#b9852a; transform:scale(1.35); }
+
+  .sd{ display:flex; align-items:flex-start; justify-content:center; gap:calc(var(--u)*5); margin-top:calc(var(--u)*2); }
+  .sd > div{ display:flex; flex-direction:column; align-items:center; }
+  .sdn{ font-weight:700; font-size:calc(var(--u)*19); line-height:.9; color:var(--ink); }
+  .sd .k{ font-weight:700; letter-spacing:.24em; font-size:calc(var(--u)*2.3); color:var(--gold2); margin-top:calc(var(--u)*1.2); }
+  .sde{ font-size:calc(var(--u)*8); margin-top:calc(var(--u)*.4); }
+  .sda{ font-size:calc(var(--u)*11); margin-top:calc(var(--u)*4); }
+  .sdm{ font-weight:700; font-size:calc(var(--u)*5.2); letter-spacing:.06em; margin-top:calc(var(--u)*1); }
+  .cd{ display:flex; align-items:flex-start; justify-content:center; gap:calc(var(--u)*1.6); margin-top:calc(var(--u)*2.2); }
+  .cd div{ display:flex; flex-direction:column; align-items:center; min-width:calc(var(--u)*13); padding:calc(var(--u)*1.6) 0;
+    border:1.3px solid rgba(185,133,42,.5); border-radius:calc(var(--u)*2.2); background:rgba(255,250,246,.7); }
+  .cd b{ font-weight:700; font-size:calc(var(--u)*7.4); line-height:1; color:var(--ink); font-variant-numeric:lining-nums tabular-nums; }
+  .cd span{ font-weight:700; letter-spacing:.18em; font-size:calc(var(--u)*1.9); color:var(--gold2); margin-top:calc(var(--u)*.8); }
+  .cd i{ font-style:normal; font-weight:700; font-size:calc(var(--u)*6); color:#c9952f; margin-top:calc(var(--u)*1.6); }
 
   /* nav button between pages */
   .nav{ position:absolute; left:50%; bottom:3.1%; transform:translateX(-50%); z-index:5; border:0; cursor:pointer;
@@ -182,37 +206,53 @@
   <section id="inside">
     <img id="chand" src="chand.png" alt="">
 
-    <!-- page 1: invitation -->
+    <!-- 1: invitation -->
     <div class="page" id="p1">
-      <div class="bism gold" data-r>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
-      <div class="caps" data-r style="margin-top:calc(var(--u)*1.4)">Mrs. &amp; Late Mr.</div>
-      <div class="script host gold" data-r>Qaiser Mehmood</div>
-      <div class="caps" data-r style="font-size:calc(var(--u)*2.35);margin-top:calc(var(--u)*.6)">would be delighted to have your<br>gracious presence at the</div>
-      <div class="script cer gold" data-r>Wedding Ceremony</div>
-      <div class="caps" data-r style="font-size:calc(var(--u)*2.35)">of their beloved</div>
-      <div class="script dau gold" data-r>Daughter</div>
-      <div class="script nm gold" data-r style="margin-top:calc(var(--u)*.6)">Ruqqiya Qaiser</div>
-      <div class="with" data-r>with</div>
-      <div class="script nm gold" data-r>Nouman Mukhtar</div>
-      <div class="son" data-r>S/O Mr. Mukhtar Ahmed &amp; Mrs. Ansa Mukhtar</div>
+      <div class="bism gold xl" data-r>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
       <svg class="rule" data-r viewBox="0 0 240 16"><path d="M4 8 C60 1,90 15,120 8 C150 1,180 15,236 8" fill="none" stroke="#c9952f" stroke-width="1.4"/><circle cx="120" cy="8" r="3.8" fill="#b9852a"/></svg>
-      <div class="script lf gold" data-r>Looking Forward</div>
-      <div class="names" data-r>
-        <p>Muhammad Saad Ullah<i>•</i>Muhammad Abdullah</p>
-        <p>Anser Mehmood<i>•</i>Sultan Mehmood</p>
-        <p>Muhammad Aleem</p>
-      </div>
-      <div class="foot" data-r>
-        <div><span class="k">R.S.V.P</span><span class="v">All Family Members</span></div>
-        <div><span class="k">CONTACT</span><span class="v"><a href="tel:+923120387599">0312 0387599</a></span></div>
-      </div>
+      <div class="caps" data-r style="font-size:calc(var(--u)*3)">Mrs. &amp; Late Mr.</div>
+      <div class="script host gold" data-r style="font-size:calc(var(--u)*11);white-space:nowrap">Qaiser Mehmood</div>
+      <div class="caps" data-r style="font-size:calc(var(--u)*2.8);margin-top:calc(var(--u)*1.6)">would be delighted to have your<br>gracious presence at the</div>
+      <div class="script cer gold" data-r style="font-size:calc(var(--u)*10.5)">Wedding Ceremony</div>
+      <div class="caps" data-r style="font-size:calc(var(--u)*2.8)">of their beloved</div>
+      <div class="script dau gold" data-r style="font-size:calc(var(--u)*11)">Daughter</div>
     </div>
 
-    <!-- page 2: celebrations -->
-    <div class="page hidden" id="p2" style="top:17.5%">
-      <div class="tc" data-r>THE CELEBRATIONS</div>
+    <!-- 2: the couple -->
+    <div class="page hidden" id="p2">
+      <div class="tc" data-r>TOGETHER WITH THEIR FAMILIES</div>
+      <div class="script nm gold" data-r style="font-size:calc(var(--u)*11.4);margin-top:calc(var(--u)*3)">Ruqqiya Qaiser</div>
+      <div class="caps" data-r style="font-size:calc(var(--u)*2.5);margin-top:calc(var(--u)*.6)">Daughter of Late Qaiser Mehmood<br>&amp; Mrs. Samina Qaiser</div>
+      <div class="script gold" data-r style="font-size:calc(var(--u)*11);margin:calc(var(--u)*2) 0">&amp;</div>
+      <div class="script nm gold" data-r style="font-size:calc(var(--u)*10.8)">Nouman Mukhtar</div>
+      <div class="caps" data-r style="font-size:calc(var(--u)*2.5);margin-top:calc(var(--u)*.6)">Son of Mr. Mukhtar Ahmed<br>&amp; Mrs. Ansa Mukhtar</div>
+    </div>
 
-      <div class="script evn gold" data-r>Mehndi</div>
+    <!-- save the date + live countdown -->
+    <div class="page hidden" id="pc">
+      <div class="tc" data-r>SAVE THE DATE</div>
+      <div class="sd" data-r>
+        <div><span class="sdn">10</span><span class="k">TUESDAY</span><span class="script gold sde">Mehndi</span></div>
+        <span class="script gold sda">&amp;</span>
+        <div><span class="sdn">11</span><span class="k">WEDNESDAY</span><span class="script gold sde">Barat</span></div>
+      </div>
+      <div class="sdm" data-r>November 2026</div>
+      <svg class="rule" data-r viewBox="0 0 240 16"><path d="M4 8 C60 1,90 15,120 8 C150 1,180 15,236 8" fill="none" stroke="#c9952f" stroke-width="1.4"/><circle cx="120" cy="8" r="3.8" fill="#b9852a"/></svg>
+      <div class="caps" data-r style="font-size:calc(var(--u)*2.4);color:#a06a22;letter-spacing:.3em">Counting down to the Barat</div>
+      <div class="cd" data-r>
+        <div><b id="cdD">00</b><span>DAYS</span></div><i>:</i>
+        <div><b id="cdH">00</b><span>HOURS</span></div><i>:</i>
+        <div><b id="cdM">00</b><span>MINS</span></div><i>:</i>
+        <div><b id="cdS">00</b><span>SECS</span></div>
+      </div>
+      <div class="with" data-r id="cdNote" style="margin-top:calc(var(--u)*2.4)">until Ruqqiya &amp; Nouman begin their forever</div>
+    </div>
+
+    <div class="page hidden" id="p3">
+      <div class="tc" data-r>THE FIRST CELEBRATION</div>
+      <div class="script evn gold big" data-r>Mehndi</div>
+      <div class="sub" data-r>an evening of colour &amp; music</div>
+      <svg class="rule" data-r viewBox="0 0 240 16"><path d="M4 8 C60 1,90 15,120 8 C150 1,180 15,236 8" fill="none" stroke="#c9952f" stroke-width="1.4"/><circle cx="120" cy="8" r="3.8" fill="#b9852a"/></svg>
       <div class="when" data-r>
         <div><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="#b9852a" stroke-width="1.6"/><path d="M3 10h18M8 3v4M16 3v4" stroke="#b9852a" stroke-width="1.6" stroke-linecap="round"/></svg><span class="k">DATE</span><span class="v">Tuesday<br>10 November 2026</span></div>
         <div><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#b9852a" stroke-width="1.6"/><path d="M12 7v5l3.5 2" fill="none" stroke="#b9852a" stroke-width="1.6" stroke-linecap="round"/></svg><span class="k">TIME</span><span class="v">7:00 PM</span></div>
@@ -223,10 +263,13 @@
         <span class="a">Main Road, Roshaan Homes, Bahawal Valley</span>
         <a class="dir" href="https://maps.app.goo.gl/hFhirx3C2rLXTYtm7" target="_blank" rel="noopener"><svg viewBox="0 0 100 130"><path d="M50,4 C74,4 92,22 92,46 C92,78 50,124 50,124 C50,124 8,78 8,46 C8,22 26,4 50,4 Z M50,28 C41,28 34,35 34,44 C34,53 41,60 50,60 C59,60 66,53 66,44 C66,35 59,28 50,28 Z" fill-rule="evenodd"/></svg>GET DIRECTIONS</a>
       </div>
+    </div>
 
-      <svg class="div2" data-r viewBox="0 0 300 30"><path d="M8 15 C70 4,110 26,150 15 C190 4,230 26,292 15" fill="none" stroke="#c9952f" stroke-width="1.3"/><circle cx="150" cy="15" r="4" fill="#b9852a"/><circle cx="105" cy="17" r="2.2" fill="#d9ad52"/><circle cx="195" cy="13" r="2.2" fill="#d9ad52"/></svg>
-
-      <div class="script evn gold" data-r>Barat</div>
+    <div class="page hidden" id="p4">
+      <div class="tc" data-r>THE SECOND CELEBRATION</div>
+      <div class="script evn gold big" data-r>Barat</div>
+      <div class="sub" data-r>the wedding ceremony</div>
+      <svg class="rule" data-r viewBox="0 0 240 16"><path d="M4 8 C60 1,90 15,120 8 C150 1,180 15,236 8" fill="none" stroke="#c9952f" stroke-width="1.4"/><circle cx="120" cy="8" r="3.8" fill="#b9852a"/></svg>
       <div class="when" data-r>
         <div><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="#b9852a" stroke-width="1.6"/><path d="M3 10h18M8 3v4M16 3v4" stroke="#b9852a" stroke-width="1.6" stroke-linecap="round"/></svg><span class="k">DATE</span><span class="v">Wednesday<br>11 November 2026</span></div>
         <div><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#b9852a" stroke-width="1.6"/><path d="M12 7v5l3.5 2" fill="none" stroke="#b9852a" stroke-width="1.6" stroke-linecap="round"/></svg><span class="k">TIME</span><span class="v">12:00 PM</span></div>
@@ -239,9 +282,25 @@
       </div>
     </div>
 
-    <button class="nav" id="nav" aria-label="View the celebrations">
-      <span id="navText">VIEW CELEBRATIONS</span>
-      <svg id="navIco" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="#a06a22" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <!-- 5: closing -->
+    <div class="page hidden" id="p5">
+      <div class="script gold" data-r style="font-size:calc(var(--u)*9)">With Best Compliments</div>
+      <svg class="rule" data-r viewBox="0 0 240 16"><path d="M4 8 C60 1,90 15,120 8 C150 1,180 15,236 8" fill="none" stroke="#c9952f" stroke-width="1.4"/><circle cx="120" cy="8" r="3.8" fill="#b9852a"/></svg>
+      <div class="script lf gold" data-r style="font-size:calc(var(--u)*9.5)">Looking Forward</div>
+      <div class="names big" data-r>
+        <p>Muhammad Saad Ullah</p><p>Muhammad Abdullah</p><p>Anser Mehmood</p><p>Sultan Mehmood</p><p>Muhammad Aleem</p>
+      </div>
+      <svg class="rule" data-r viewBox="0 0 240 16"><path d="M4 8 C60 1,90 15,120 8 C150 1,180 15,236 8" fill="none" stroke="#c9952f" stroke-width="1.4"/><circle cx="120" cy="8" r="3.8" fill="#b9852a"/></svg>
+      <div class="foot" data-r>
+        <div><span class="k">R.S.V.P</span><span class="v">All Family Members</span></div>
+        <div><span class="k">CONTACT</span><span class="v"><a href="tel:+923120387599">0312 0387599</a></span></div>
+      </div>
+    </div>
+
+    <div class="dots" id="dots"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+    <button class="nav" id="nav" aria-label="Next">
+      <span id="navText">SWIPE UP</span>
+      <svg id="navIco" viewBox="0 0 24 24"><path d="M6 15l6-6 6 6" fill="none" stroke="#a06a22" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
   </section>
 
@@ -345,27 +404,65 @@ function openCard(){
 doors.addEventListener('click', openCard);
 doors.addEventListener('keydown', e => { if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openCard(); } });
 
-/* ---- switch between invitation and celebrations ---- */
-function go(n){
-  if(n === onPage) return;
-  onPage = n;
-  document.body.classList.toggle('p2', n === 2);
-  nav.classList.remove('on');
-  if(n === 2){ hide(p1); setTimeout(() => reveal(p2, 0), 450); navText.textContent = 'BACK TO INVITATION'; navIco.style.transform = 'rotate(180deg)'; }
-  else { hide(p2); setTimeout(() => reveal(p1, 0), 450); navText.textContent = 'VIEW CELEBRATIONS'; navIco.style.transform = 'none'; }
-  const cnt = (n===2 ? p2 : p1).querySelectorAll('[data-r]').length;
-  setTimeout(() => nav.classList.add('on'), 450 + cnt*220 + 600);
+/* ---- live countdown to the Barat (12:00 PM Pakistan time) ---- */
+const BARAT = new Date('2026-11-11T12:00:00+05:00').getTime();
+const pad = n => String(n).padStart(2,'0');
+function tick(){
+  let d = BARAT - Date.now();
+  if(d <= 0){ ['cdD','cdH','cdM','cdS'].forEach(id => document.getElementById(id).textContent = '00');
+    document.getElementById('cdNote').textContent = 'Today is the day — Alhamdulillah!'; return; }
+  const days = Math.floor(d/864e5); d -= days*864e5;
+  const h = Math.floor(d/36e5); d -= h*36e5;
+  const m = Math.floor(d/6e4); d -= m*6e4;
+  document.getElementById('cdD').textContent = pad(days);
+  document.getElementById('cdH').textContent = pad(h);
+  document.getElementById('cdM').textContent = pad(m);
+  document.getElementById('cdS').textContent = pad(Math.floor(d/1e3));
 }
-nav.addEventListener('click', () => go(onPage === 1 ? 2 : 1));
-// swipe up / down
+tick(); setInterval(tick, 1000);
+
+/* ---- swipe through the screens ---- */
+const pages = [...document.querySelectorAll('.page')];
+const dots = [...document.querySelectorAll('#dots i')];
+let busy = false;
+function setNav(){
+  const last = onPage === pages.length;
+  navText.textContent = last ? 'BACK TO START' : 'SWIPE UP';
+  navIco.style.transform = last ? 'rotate(180deg)' : 'none';
+}
+function go(n){
+  if(busy || n < 1 || n > pages.length || n === onPage) return;
+  busy = true;
+  const from = pages[onPage-1], to = pages[n-1];
+  onPage = n;
+  dots.forEach((d,i) => d.classList.toggle('on', i === n-1));
+  nav.classList.remove('on');
+  try{ navigator.vibrate && navigator.vibrate(10); }catch(e){}
+  hide(from);
+  setTimeout(() => { reveal(to, 0); setNav(); }, 450);
+  const cnt = to.querySelectorAll('[data-r]').length;
+  setTimeout(() => { nav.classList.add('on'); busy = false; }, 450 + Math.min(cnt*220, 1300) + 300);
+}
+nav.addEventListener('click', () => go(onPage === pages.length ? 1 : onPage + 1));
+dots.forEach((d,i) => d.addEventListener('click', e => { e.stopPropagation(); go(i+1); }));
 let y0 = null;
 stage.addEventListener('touchstart', e => { y0 = e.touches[0].clientY; }, {passive:true});
 stage.addEventListener('touchend', e => {
   if(!opened || y0 === null) return;
   const dy = e.changedTouches[0].clientY - y0; y0 = null;
-  if(dy < -50) go(2); else if(dy > 50) go(1);
+  if(dy < -45) go(onPage + 1); else if(dy > 45) go(onPage - 1);
 }, {passive:true});
-window.addEventListener('wheel', e => { if(!opened) return; if(e.deltaY > 30) go(2); else if(e.deltaY < -30) go(1); }, {passive:true});
+let wheelLock = 0;
+window.addEventListener('wheel', e => {
+  if(!opened || Date.now() < wheelLock) return;
+  if(e.deltaY > 25){ go(onPage + 1); wheelLock = Date.now() + 900; }
+  else if(e.deltaY < -25){ go(onPage - 1); wheelLock = Date.now() + 900; }
+}, {passive:true});
+window.addEventListener('keydown', e => {
+  if(!opened) return;
+  if(e.key === 'ArrowDown' || e.key === 'PageDown') go(onPage + 1);
+  if(e.key === 'ArrowUp' || e.key === 'PageUp') go(onPage - 1);
+});
 </script>
 </body>
 </html>
