@@ -148,7 +148,7 @@
   body.open .door.l{ transform:rotateY(-112deg); }
   body.open .door.r{ transform:rotateY(112deg); }
   body.open .door .shade{ opacity:1; }
-  body.gone #doors{ display:none; }
+  body.gone #doors{ visibility:hidden; pointer-events:none; } /* not display:none: that would restart the seal's exit animation on close */
 
   /* seal + "tap to open" live in one column so the text can never overlap the seal */
   #sealWrap{ position:absolute; left:50%; top:50%; z-index:12; display:flex; flex-direction:column; align-items:center;
